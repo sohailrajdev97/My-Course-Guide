@@ -2,44 +2,22 @@
 
 require("dotenv").config();
 
-const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const express = require('express');
 const app = express();
 const chalk = require('chalk');
 const compression = require('compression');
-const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+const passport = require('passport');
 
 const PORT = process.env.PORT || 3000;
-
-/****************** Sessions ******************/
-
-// If you have set `DB_URI` env var in your `.env` file then use that DB to store sessions
-if (process.env.DB_URI) {
-	app.use(session({
-		secret: process.env.SESSION_SECRET,
-		resave: true,
-		saveUninitialized: true,
-		cookie: { maxAge: 600000 },
-		store: new MongoStore({ mongooseConnection: mongoose.connection }) // Use mong to store sessions
-	}));
-} else {
-	app.use(session({
-		secret: process.env.SESSION_SECRET,
-		resave: true,
-		saveUninitialized: true,
-		cookie: { maxAge: 600000 }
-	}));
-}
 
 /****************** Server Options ******************/
 const cacheTime = 172800000; // 2 Days in ms - Tells clients to cache static files
 
+app.use(passport.initialize()); // Initialize passport for authentication
 app.use(helmet()); // Sets some good default headers
 app.use(compression()); // Enables gzip compression
 app.use(bodyParser.json()) // Lets express handle JSON encoded data sent on the body of requests
