@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 3000;
 // If you have set `DB_URI` env var in your `.env` file then use that DB to store sessions
 if (process.env.DB_URI) {
 	app.use(session({
-		secret: 'ENTER YOUR SECRET HERE FOR SESSIONS',
+		secret: process.env.SESSION_SECRET,
 		resave: true,
 		saveUninitialized: true,
 		cookie: { maxAge: 600000 },
@@ -30,7 +30,7 @@ if (process.env.DB_URI) {
 	}));
 } else {
 	app.use(session({
-		secret: 'ENTER YOUR SECRET HERE FOR SESSIONS',
+		secret: process.env.SESSION_SECRET,
 		resave: true,
 		saveUninitialized: true,
 		cookie: { maxAge: 600000 }
