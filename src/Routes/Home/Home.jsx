@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import Loadable from 'react-loadable';
+import { GoogleLogin } from 'react-google-login';
+import Button from 'antd/lib/button';
 import './home.css';
 
 class Home extends Component {
@@ -12,25 +13,20 @@ class Home extends Component {
 	}
 
 	render() {
+		let responseGoogle = data => {
+			console.log(data);
+		}
 		return (
 			<div className="home">
 				<h1>Welcome</h1>
-
-				<h2>Here's a list of awesome features that you have!</h2>
-
-				<ul>
-					<li>MERN Stack 😎</li>
-					<li>React Router Client Side Routing</li>
-					<li>Lazy Loading/Dynamic Imports for Each Route</li>
-					<li>CSS/SASS/LESS</li>
-					<li>Babel 7 + Webpack 4</li>
-					<li>Webpack Dev Server + Express API Server</li>
-					<li>HMR for CSS/SASS/LESS</li>
-					<li>Live Reload for HTML/JS/JSX changes</li>
-					<li>ESLint</li>
-					<li>Stylelint</li>
-					<li>PostCSS + Autoprefixer</li>
-				</ul>
+				<Button type="primary">Button</Button>
+				<br/>
+				<GoogleLogin
+					clientId="780021042626-li4g2v5l3pr2s4kdmssdsdtcuc0v2e6m.apps.googleusercontent.com"
+					buttonText="Login"
+					onSuccess={responseGoogle}
+					onFailure={responseGoogle}
+  			/>
 			</div>
 		);
 	}

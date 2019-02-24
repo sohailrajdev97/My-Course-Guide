@@ -13,7 +13,3 @@
 .home ul li {
 	font-size: 20px;
 }
-
-.home ul li:before {
-	content: "⭐ ";
-}
