@@ -2,9 +2,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const departmentSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    minlength: 1,
+    trim: true
+  },
   campus: {
     type: String,
+    required: true,
     index: true
   },
   hod: {
