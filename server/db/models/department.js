@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const departmentSchema = new Schema({
   name: String,
+  campus: {
+    type: String,
+    index: true
+  },
   hod: {
     type: Schema.Types.ObjectId,
     ref: "Professor"
