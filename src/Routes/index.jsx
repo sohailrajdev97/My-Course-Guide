@@ -6,12 +6,25 @@
 
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
+import { Redirect } from "react-router";
+import { checkToken } from "./utils/jwt";
 
 // Navbar should appear on every page and so should not be lazy loaded
 import Navbar from "../Navbar/Navbar.jsx";
 
 // Import lazy loaded route components
 import { Home, Login, ErrorPage } from "./LazyLoadRoutes.jsx";
+
+const ProtectedRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        checkToken() ? <Component {...props} /> : <Redirect to="/login" />
+      }
+    />
+  );
+};
 
 class Routes extends Component {
   constructor(props) {
@@ -25,7 +38,7 @@ class Routes extends Component {
         <Navbar />
 
         <Switch className="main">
-          <Route exact path="/" component={Home} />
+          <ProtectedRoute exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route component={ErrorPage} />{" "}
           {/* This route is run when no matches are found - It's your 404 fallbback */}
