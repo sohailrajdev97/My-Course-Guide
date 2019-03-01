@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const professorSchema = new Schema({
@@ -13,8 +13,8 @@ const professorSchema = new Schema({
   },
   department: {
     type: Schema.Types.ObjectId,
-    ref: 'Department'
-  },
+    ref: "Department"
+  }
 });
 
-mongoose.model('Professor', professorSchema);
+mongoose.model("Professor", professorSchema);

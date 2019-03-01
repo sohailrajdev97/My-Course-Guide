@@ -1,12 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const departmentSchema = new Schema({
   name: String,
   hod: {
     type: Schema.Types.ObjectId,
-    ref: 'Professor'
+    ref: "Professor"
   }
 });
 
-mongoose.model('Department', departmentSchema);
+mongoose.model("Department", departmentSchema);

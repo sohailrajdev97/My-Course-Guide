@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const adminSchema = new Schema({
@@ -9,4 +9,4 @@ const adminSchema = new Schema({
   }
 });
 
-mongoose.model('Admin', adminSchema);
+mongoose.model("Admin", adminSchema);

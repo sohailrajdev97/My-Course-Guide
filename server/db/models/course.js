@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -11,16 +11,18 @@ const courseSchema = new Schema({
   },
   department: {
     type: Schema.Types.ObjectId,
-    ref: 'Department'
+    ref: "Department"
   },
-  history: [{
-    year: Number,
-    semester: Number,
-    professor: {
-      type: Schema.Types.ObjectId,
-      ref: 'Professor'
+  history: [
+    {
+      year: Number,
+      semester: Number,
+      professor: {
+        type: Schema.Types.ObjectId,
+        ref: "Professor"
+      }
     }
-  }]
+  ]
 });
 
 // This registers the model into mongoose so that anywhere else in your server you can do
@@ -28,4 +30,4 @@ const courseSchema = new Schema({
 `const User = mongoose.model('Course');`
 `User.update(...)`
 */
-mongoose.model('Course', courseSchema);
+mongoose.model("Course", courseSchema);

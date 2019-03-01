@@ -1,7 +1,7 @@
-export default function (templateConfig) {
-        const { title, message } = templateConfig.htmlWebpackPlugin.options;
+export default function(templateConfig) {
+  const { title, message } = templateConfig.htmlWebpackPlugin.options;
 
-    return `
+  return `
         <!DOCTYPE html>
         <html lang="en">
             <head>
