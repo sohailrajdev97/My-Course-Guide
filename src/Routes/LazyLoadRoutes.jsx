@@ -6,20 +6,20 @@
  * display while the component is loading
  */
 
-import React from 'react';
-import Loadable from 'react-loadable';
+import React from "react";
+import Loadable from "react-loadable";
 
 export const Home = Loadable({
-	loader: () => import('./Home/Home.jsx'),
-	loading: () => <div>Loading...</div>
+  loader: () => import("./Home/Home.jsx"),
+  loading: () => <div>Loading...</div>
 });
 
 export const Subpage = Loadable({
-	loader: () => import ('./Subpage/Subpage.jsx'),
-	loading: () => <div>Loading...</div>
+  loader: () => import("./Subpage/Subpage.jsx"),
+  loading: () => <div>Loading...</div>
 });
 
 export const ErrorPage = Loadable({
-	loader: () => import ('./404/404.jsx'),
-	loading: () => <div>Loading...</div>
+  loader: () => import("./404/404.jsx"),
+  loading: () => <div>Loading...</div>
 });
