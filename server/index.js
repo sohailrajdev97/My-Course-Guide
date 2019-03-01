@@ -11,12 +11,14 @@ const compression = require("compression");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
 const passport = require("passport");
+const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 
 /****************** Server Options ******************/
 const cacheTime = 172800000; // 2 Days in ms - Tells clients to cache static files
 
+app.use(cors());
 app.use(passport.initialize()); // Initialize passport for authentication
 app.use(helmet()); // Sets some good default headers
 app.use(compression()); // Enables gzip compression

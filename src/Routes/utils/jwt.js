@@ -1,13 +1,13 @@
 const axios = require("axios");
 const jwtDecode = require("jwt-decode");
+const config = require("./config");
 
 let getToken = (token, callback) => {
   axios
-    .post("/api/auth", {
-      token
-    })
+    .get(`${config.server}/api/auth?access_token=${token}`)
     .then(response => {
       if (response.status === 200) {
+        sessionStorage.setItem("token", response.data.token);
         callback(null, response.data.token);
       } else {
         callback(true, null);
@@ -29,7 +29,11 @@ let checkToken = () => {
 };
 
 let getDecodedToken = () => {
-  return jwtDecode(sessionStorage.getItem("token"));
+  try {
+    return jwtDecode(sessionStorage.getItem("token"));
+  } catch (e) {
+    return false;
+  }
 };
 
 module.exports = {
