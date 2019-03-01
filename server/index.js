@@ -46,10 +46,27 @@ app.use("*", (req, res, next) => {
   next();
 });
 
-/****************** Route Handling ******************/
-// Use api.js for any and all requests made to /api
-app.use("/api", require("./api.js"));
+/****************** Start the Server and DB (if DB_URI env var is set) ******************/
+if (process.env.DB_URI && process.env.DB_URI !== "") {
+  require("./db");
+  app.use("/api", require("./api"));
 
+  app.listen(PORT, () => {
+    console.log(chalk.green(`Listening on port ${PORT}`));
+  });
+} else {
+  console.log(
+    chalk.red(
+      "process.env.DB_URI is undefined (this should be set in your .env file).\nSkipping opening connection to DB.\nSessions are being stored in memory\n/api will not be accessible\n"
+    )
+  );
+
+  app.listen(PORT, () => {
+    console.log(chalk.green(`Listening on port ${PORT}`));
+  });
+}
+
+/****************** Route Handling ******************/
 app.use("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
@@ -58,25 +75,3 @@ app.use("/*", (req, res) => {
 app.use("*", (req, res) => {
   res.status(404).send(`<h1>404 Page Not Found</h1>`);
 });
-
-/****************** Start the Server and DB (if DB_URI env var is set) ******************/
-if (process.env.DB_URI && process.env.DB_URI !== "") {
-  require("./db")
-    .then(() => {
-      app.listen(PORT, () => {
-        console.log(chalk.green(`Listening on port ${PORT}`));
-      });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-} else {
-  console.log(
-    chalk.red(
-      "process.env.DB_URI is undefined (this should be set in your .env file).\nSkipping opening connection to DB.\nSessions are being stored in memory"
-    )
-  );
-  app.listen(PORT, () => {
-    console.log(chalk.green(`Listening on port ${PORT}`));
-  });
-}
