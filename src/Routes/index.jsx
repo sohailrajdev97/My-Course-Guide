@@ -35,8 +35,6 @@ class Routes extends Component {
   render() {
     return (
       <div>
-        <Navbar />
-
         <Switch className="main">
           <ProtectedRoute exact path="/" component={Home} />
           <Route path="/login" component={Login} />

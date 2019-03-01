@@ -3,6 +3,9 @@ import { Redirect } from "react-router";
 import { GoogleLogin } from "react-google-login";
 import { getToken, getDecodedToken } from "./utils/jwt";
 
+import Jumbotron from "react-bootstrap/Jumbotron";
+import Button from "react-bootstrap/Button";
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -36,21 +39,23 @@ class Home extends Component {
     } else {
       return (
         <div className="home">
-          <h1>Welcome</h1>
-          <br />
-          <GoogleLogin
-            clientId="780021042626-li4g2v5l3pr2s4kdmssdsdtcuc0v2e6m.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={googleSuccess}
-            onFailure={googleFailure}
-          />
-          <br />
-          <br />
-          <font color="red">
-            {this.state.failed
-              ? "Account not found. Make sure you are using your BITS mail to login"
-              : ""}
-          </font>
+          <Jumbotron>
+            <h1>My Course Guide</h1>
+            <p>Login to access course material, reviews and lots more !</p>
+            <p>
+              <GoogleLogin
+                clientId="780021042626-li4g2v5l3pr2s4kdmssdsdtcuc0v2e6m.apps.googleusercontent.com"
+                buttonText="Login"
+                onSuccess={googleSuccess}
+                onFailure={googleFailure}
+              />
+            </p>
+            <font color="red">
+              {this.state.failed
+                ? "Account not found. Make sure you are using your BITS mail to login"
+                : ""}
+            </font>
+          </Jumbotron>
         </div>
       );
     }
