@@ -23,7 +23,10 @@ router.get(
   (req, res, next) => {
     let token = jwt.sign(
       { email: req.user.emails[0].value },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      {
+        expiresIn: 21600 // 6 hours
+      }
     );
     return res.json({ token });
   }
