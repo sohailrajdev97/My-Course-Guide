@@ -12,10 +12,6 @@ const departmentSchema = new Schema({
     type: String,
     required: true,
     index: true
-  },
-  hod: {
-    type: Schema.Types.ObjectId,
-    ref: "Professor"
   }
 });
 

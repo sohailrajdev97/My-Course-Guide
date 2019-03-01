@@ -9,10 +9,6 @@ const courseSchema = new Schema({
   name: {
     type: String
   },
-  department: {
-    type: Schema.Types.ObjectId,
-    ref: "Department"
-  },
   history: [
     {
       year: Number,

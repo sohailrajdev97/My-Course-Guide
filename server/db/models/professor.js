@@ -5,6 +5,7 @@ const professorSchema = new Schema({
   name: String,
   email: {
     type: String,
+    unique: true,
     index: true
   },
   campus: {
@@ -14,6 +15,10 @@ const professorSchema = new Schema({
   department: {
     type: Schema.Types.ObjectId,
     ref: "Department"
+  },
+  hod: {
+    type: Boolean,
+    default: false
   }
 });
 

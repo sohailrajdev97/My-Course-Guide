@@ -8,20 +8,28 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      authenticated: getDecodedToken() ? true : false
+      authenticated: getDecodedToken() ? true : false,
+      failed: false
     };
   }
 
   render() {
     let googleSuccess = data => {
       getToken(data.tokenObj.access_token, (err, token) => {
+        if (err) {
+          return this.setState({
+            failed: true
+          });
+        }
         this.setState({
           authenticated: true
         });
       });
     };
     let googleFailure = data => {
-      console.log(data.tokenObj.access_token);
+      this.setState({
+        failed: true
+      });
     };
     if (this.state.authenticated) {
       return <Redirect to="/" />;
@@ -36,6 +44,13 @@ class Home extends Component {
             onSuccess={googleSuccess}
             onFailure={googleFailure}
           />
+          <br />
+          <br />
+          <font color="red">
+            {this.state.failed
+              ? "Account not found. Make sure you are using your BITS mail to login"
+              : ""}
+          </font>
         </div>
       );
     }
