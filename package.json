@@ -7,7 +7,6 @@
   "version": "0.0.1",
   "description": "",
   "dependencies": {
-    "antd": "^3.13.5",
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "chalk": "^2.3.2",

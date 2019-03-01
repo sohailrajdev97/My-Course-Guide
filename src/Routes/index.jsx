@@ -11,7 +11,7 @@ import { Route, Switch } from "react-router-dom";
 import Navbar from "../Navbar/Navbar.jsx";
 
 // Import lazy loaded route components
-import { Home, Subpage, ErrorPage } from "./LazyLoadRoutes.jsx";
+import { Home, Login, ErrorPage } from "./LazyLoadRoutes.jsx";
 
 class Routes extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class Routes extends Component {
 
         <Switch className="main">
           <Route exact path="/" component={Home} />
-          <Route path="/subpage" component={Subpage} />
+          <Route path="/login" component={Login} />
           <Route component={ErrorPage} />{" "}
           {/* This route is run when no matches are found - It's your 404 fallbback */}
         </Switch>

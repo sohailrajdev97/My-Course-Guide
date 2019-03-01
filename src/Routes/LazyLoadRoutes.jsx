@@ -14,8 +14,8 @@ export const Home = Loadable({
   loading: () => <div>Loading...</div>
 });
 
-export const Subpage = Loadable({
-  loader: () => import("./Subpage/Subpage.jsx"),
+export const Login = Loadable({
+  loader: () => import("./Login.jsx"),
   loading: () => <div>Loading...</div>
 });
 
