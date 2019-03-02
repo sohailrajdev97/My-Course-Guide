@@ -5,16 +5,17 @@ const professorSchema = new Schema({
   name: String,
   email: {
     type: String,
-    unique: true,
-    index: true
+    index: {
+      unique: true
+    }
   },
   campus: {
     type: String,
     index: true
   },
   department: {
-    type: Schema.Types.ObjectId,
-    ref: "Department"
+    type: String,
+    required: true
   },
   hod: {
     type: Boolean,

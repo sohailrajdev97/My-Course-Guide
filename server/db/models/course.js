@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 const courseSchema = new Schema({
   id: {
     type: String,
-    index: true
+    index: {
+      unique: true
+    }
   },
   name: {
     type: String
@@ -14,6 +16,7 @@ const courseSchema = new Schema({
       year: Number,
       semester: Number,
       professor: {
+        _id: false,
         type: Schema.Types.ObjectId,
         ref: "Professor"
       }

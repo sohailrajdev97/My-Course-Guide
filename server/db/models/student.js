@@ -5,11 +5,14 @@ const studentSchema = new Schema({
   name: String,
   id: {
     type: String,
-    index: true
+    index: true,
+    unique: true
   },
   email: {
     type: String,
-    index: true
+    index: {
+      unique: true
+    }
   },
   campus: {
     type: String,
@@ -17,6 +20,7 @@ const studentSchema = new Schema({
   },
   courses: [
     {
+      _id: false,
       id: {
         type: Schema.Types.ObjectId,
         ref: "Course"

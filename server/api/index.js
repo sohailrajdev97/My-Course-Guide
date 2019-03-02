@@ -3,7 +3,6 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 
 const auth = require("./auth");
-const department = require("./department");
 const csv = require("./csv");
 
 router.all("/", (req, res, next) => {
@@ -12,7 +11,6 @@ router.all("/", (req, res, next) => {
 });
 
 router.use("/auth", auth);
-router.use("/departments", department);
 router.use("/csv", csv);
 
 module.exports = router;
