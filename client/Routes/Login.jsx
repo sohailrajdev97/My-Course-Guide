@@ -6,7 +6,7 @@ import { getToken, getDecodedToken } from "./utils/jwt";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Button from "react-bootstrap/Button";
 
-class Home extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -62,4 +62,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default Login;
