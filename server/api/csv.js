@@ -42,10 +42,12 @@ let validator = async data => {
     try {
       let course = await Course.findOne({ id: data.id });
       let prof = await Professor.findOne({ email: data.professor });
-
-      if (!prof) {
+      console.log(data.professor, prof == null);
+      if (prof == null) {
+        console.log("returning");
         return false;
       }
+      console.log("mo retrunr");
       if (course) {
         course.name = data.name;
         let historyUpdated = false;
@@ -136,17 +138,25 @@ router.post("/", upload.single("csv"), (req, res, next) => {
       msg: "Only CSV files are allowed"
     });
   }
+  let invalidRows = [];
   csv
     .fromPath(req.file.path, { headers: true })
-    .validate(data => {
-      return validator(data);
+    .validate((data, next) => {
+      validator(data).then(isValid => {
+        next(null, isValid);
+      });
     })
-    .on("data-invalid", (data, index) => {
-      console.log("INVALID ", data, index);
+    .on("data-invalid", data => {
+      console.log("invalid", data);
+      invalidRows.push(data);
     })
     .on("data", data => {})
     .on("end", () => {
-      res.send("Done");
+      if (invalidRows.length == 0) {
+        res.status(200).json({});
+      } else {
+        res.status(400).json({ invalidRows });
+      }
     });
 });
 
