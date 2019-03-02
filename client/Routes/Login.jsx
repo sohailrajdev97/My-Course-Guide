@@ -4,7 +4,6 @@ import { GoogleLogin } from "react-google-login";
 import { getToken, getDecodedToken } from "../utils/jwt";
 
 import Jumbotron from "react-bootstrap/Jumbotron";
-import Button from "react-bootstrap/Button";
 
 class Login extends Component {
   constructor(props) {

@@ -19,6 +19,11 @@ export const Login = Loadable({
   loading: () => <div>Loading...</div>
 });
 
+export const Upload = Loadable({
+  loader: () => import("../components/admin/Upload.jsx"),
+  loading: () => <div>Loading...</div>
+});
+
 export const ErrorPage = Loadable({
   loader: () => import("./404/404.jsx"),
   loading: () => <div>Loading...</div>

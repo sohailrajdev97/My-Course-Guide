@@ -7,15 +7,15 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router";
-import { checkToken } from "../utils/jwt";
+import { checkToken, getDecodedToken } from "../utils/jwt";
 
 // Navbar should appear on every page and so should not be lazy loaded
-import Navbar from "../components/Navbar/Navbar.jsx";
+import Header from "../components/Header.jsx";
 
 // Import lazy loaded route components
-import { Home, Login, ErrorPage } from "./LazyLoadRoutes.jsx";
+import { Home, Login, ErrorPage, Upload } from "./LazyLoadRoutes.jsx";
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
+const CommonRoute = ({ component: Component, ...rest }) => {
   return (
     <Route
       {...rest}
@@ -26,20 +26,58 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
   );
 };
 
+const AdminRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        checkToken() && getDecodedToken().role == "admin" ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/login" />
+        )
+      }
+    />
+  );
+};
+
 class Routes extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      role: getDecodedToken() ? getDecodedToken().role : null
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    let token = getDecodedToken();
+    if (token && token.role != this.state.role) {
+      this.setState({
+        role: token.role
+      });
+    }
   }
 
   render() {
     return (
       <div>
-        <Navbar />
+        <Header role={this.state.role} />
         <Switch className="main">
-          <ProtectedRoute exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route component={ErrorPage} />{" "}
+          <CommonRoute exact path="/" component={Home} />
+          <AdminRoute exact path="/upload" component={Upload} />
+          <Route
+            path="/login"
+            component={Login}
+            setParentState={this.setState}
+          />
+          <Route
+            path="/logout"
+            render={props => {
+              sessionStorage.removeItem("token");
+              return <Redirect to="/login" />;
+            }}
+          />
+          <Route component={ErrorPage} />
           {/* This route is run when no matches are found - It's your 404 fallbback */}
         </Switch>
 
