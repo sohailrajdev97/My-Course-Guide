@@ -7,10 +7,10 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Redirect } from "react-router";
-import { checkToken } from "./utils/jwt";
+import { checkToken } from "../utils/jwt";
 
 // Navbar should appear on every page and so should not be lazy loaded
-import Navbar from "../Navbar/Navbar.jsx";
+import Navbar from "../components/Navbar/Navbar.jsx";
 
 // Import lazy loaded route components
 import { Home, Login, ErrorPage } from "./LazyLoadRoutes.jsx";
@@ -35,6 +35,7 @@ class Routes extends Component {
   render() {
     return (
       <div>
+        <Navbar />
         <Switch className="main">
           <ProtectedRoute exact path="/" component={Home} />
           <Route path="/login" component={Login} />

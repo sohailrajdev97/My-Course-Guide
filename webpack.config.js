@@ -22,7 +22,7 @@ module.exports = () => {
 
   return {
     entry: {
-      main: "./src/index.jsx" // Entry point of where webpack should start from
+      main: "./client/index.jsx" // Entry point of where webpack should start from
     },
     output: {
       // output build file to /public folder and call the file bundle.js
