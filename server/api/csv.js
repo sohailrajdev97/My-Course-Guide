@@ -3,7 +3,9 @@ const router = express.Router();
 
 const _ = require("lodash");
 const multer = require("multer");
-const upload = multer({ dest: process.env.UPLOAD_DIR });
+const upload = multer({
+  dest: process.env.UPLOAD_DIR
+});
 const csv = require("fast-csv");
 
 const mongoose = require("mongoose");
@@ -25,13 +27,17 @@ const studentHeaders = [
 
 let validator = async data => {
   if (_.isEqual(Object.keys(data), profHeaders)) {
-    console.log("profess");
     data.hod = data.hod == "YES" ? true : false;
     try {
-      let doc = await Professor.findOneAndUpdate({ email: data.email }, data, {
-        upsert: true
-      });
-      console.log(doc);
+      let doc = await Professor.findOneAndUpdate(
+        {
+          email: data.email
+        },
+        data,
+        {
+          upsert: true
+        }
+      );
       return true;
     } catch (e) {
       console.log(e);
@@ -40,14 +46,15 @@ let validator = async data => {
   }
   if (_.isEqual(Object.keys(data), courseHeaders)) {
     try {
-      let course = await Course.findOne({ id: data.id });
-      let prof = await Professor.findOne({ email: data.professor });
-      console.log(data.professor, prof == null);
+      let course = await Course.findOne({
+        id: data.id
+      });
+      let prof = await Professor.findOne({
+        email: data.professor
+      });
       if (prof == null) {
-        console.log("returning");
         return false;
       }
-      console.log("mo retrunr");
       if (course) {
         course.name = data.name;
         let historyUpdated = false;
@@ -89,8 +96,9 @@ let validator = async data => {
   }
   if (_.isEqual(Object.keys(data), studentHeaders)) {
     try {
-      let course = await Course.findOne({ id: data.course });
-
+      let course = await Course.findOne({
+        id: data.course
+      });
       if (!course) return false;
 
       let offeredInGivenSemester = false;
@@ -107,7 +115,9 @@ let validator = async data => {
       if (!offeredInGivenSemester) return false;
 
       let student = await Student.findOneAndUpdate(
-        { id: data.id },
+        {
+          id: data.id
+        },
         {
           $set: {
             name: data.name,
@@ -123,9 +133,13 @@ let validator = async data => {
             }
           }
         },
-        { upsert: true }
+        {
+          upsert: true
+        }
       );
+      return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -140,14 +154,15 @@ router.post("/", upload.single("csv"), (req, res, next) => {
   }
   let invalidRows = [];
   csv
-    .fromPath(req.file.path, { headers: true })
+    .fromPath(req.file.path, {
+      headers: true
+    })
     .validate((data, next) => {
       validator(data).then(isValid => {
         next(null, isValid);
       });
     })
     .on("data-invalid", data => {
-      console.log("invalid", data);
       invalidRows.push(data);
     })
     .on("data", data => {})
@@ -155,7 +170,9 @@ router.post("/", upload.single("csv"), (req, res, next) => {
       if (invalidRows.length == 0) {
         res.status(200).json({});
       } else {
-        res.status(400).json({ invalidRows });
+        res.status(400).json({
+          invalidRows
+        });
       }
     });
 });
