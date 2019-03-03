@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Upload from "./admin/Upload.jsx";
 
 class AdminDashboard extends Component {
   constructor(props) {
@@ -6,7 +7,7 @@ class AdminDashboard extends Component {
     this.state = {};
   }
   render() {
-    return <div />;
+    return <Upload />;
   }
 }
 
