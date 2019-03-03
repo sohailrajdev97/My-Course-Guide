@@ -89,7 +89,7 @@ module.exports = () => {
         template: "HTMLTemplate.js",
         dest: "index.html",
         inject: false,
-        title: "Premiere Mern Stack"
+        title: "My Course Guide"
       }),
 
       // Optimizes css by minifying it and removing comments

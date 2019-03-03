@@ -12,6 +12,10 @@ import { checkToken, getDecodedToken } from "../utils/jwt";
 // Navbar should appear on every page and so should not be lazy loaded
 import Header from "../components/Header.jsx";
 
+import { loadProgressBar } from "axios-progress-bar";
+import "../styles/progres-bar.css";
+loadProgressBar();
+
 // Import lazy loaded route components
 import { Home, Login, ErrorPage, Upload } from "./LazyLoadRoutes.jsx";
 import Logout from "./Logout.jsx";
