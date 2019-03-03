@@ -16,7 +16,12 @@ router.get("/", async (req, res, next) => {
 router.get("/name/:name", async (req, res, next) => {
   let regex = ".*" + req.params.name.split(" ").join(".*") + ".*";
   try {
-    let courses = await Course.find({ name: { $regex: regex, $options: "i" } });
+    let courses = await Course.find({
+      $or: [
+        { id: { $regex: regex, $options: "i" } },
+        { name: { $regex: regex, $options: "i" } }
+      ]
+    });
     return res.json(courses);
   } catch (e) {
     console.log(e);

@@ -63,7 +63,6 @@ class Routes extends Component {
       <div>
         <Header decodedToken={getDecodedToken()} />
         <Switch className="main">
-          <CommonRoute exact path="/" component={Home} />
           <AdminRoute exact path="/upload" component={Upload} />
           <Route
             path="/login"
@@ -77,6 +76,7 @@ class Routes extends Component {
               <Logout {...props} setRouterToken={this.setToken.bind(this)} />
             )}
           />
+          <CommonRoute exact path="/" component={Home} />
           <Route component={ErrorPage} />
           {/* This route is run when no matches are found - It's your 404 fallbback */}
         </Switch>

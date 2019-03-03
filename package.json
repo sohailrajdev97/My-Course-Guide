@@ -32,6 +32,7 @@
     "qs": "^6.6.0",
     "react": "^16.2.0",
     "react-bootstrap": "^1.0.0-beta.5",
+    "react-bootstrap-typeahead": "^4.0.0-alpha.2",
     "react-dom": "^16.2.0",
     "react-filepond": "^7.0.1",
     "react-google-login": "^5.0.2",

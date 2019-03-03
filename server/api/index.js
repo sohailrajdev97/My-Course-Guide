@@ -11,7 +11,7 @@ router.all("/", (req, res, next) => {
 });
 
 router.use("/auth", auth);
-router.use("/course", course);
+router.use("/courses", course);
 router.use("/csv", csv);
 
 module.exports = router;

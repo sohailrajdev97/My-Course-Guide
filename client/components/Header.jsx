@@ -1,14 +1,18 @@
 import React, { Component } from "react";
+import { axiosGET } from "../utils/axiosClient";
 
 import Navbar from "react-bootstrap/Navbar";
 import { LinkContainer } from "react-router-bootstrap";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Image from "react-bootstrap/Image";
 import logo from "../assets/logo.png";
+
+import { AsyncTypeahead, Menu } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
+import "react-bootstrap-typeahead/css/Typeahead-bs4.css";
+
+import "../styles/header.css";
 
 class Header extends Component {
   constructor(props) {
@@ -16,9 +20,12 @@ class Header extends Component {
     let decodedToken = this.props.decodedToken;
     this.state = {
       role: decodedToken ? decodedToken.role : null,
-      decodedToken
+      decodedToken,
+      isSearchLoading: false,
+      courses: []
     };
   }
+
   componentWillReceiveProps(nextProps) {
     let nextDecoded = nextProps.decodedToken;
     if (nextDecoded !== this.state.decodedToken) {
@@ -31,6 +38,7 @@ class Header extends Component {
   getCommonJSX() {
     return (
       <Nav>
+        {this.getSearchBarJSX()}
         <NavDropdown
           title={this.state.decodedToken.name}
           id="collasible-nav-dropdown"
@@ -61,16 +69,41 @@ class Header extends Component {
       </Nav>
     );
   }
+  // redirect(courses) {
+  //   console.log("as", courses);
+  // }
   getSearchBarJSX() {
     return (
-      <Form inline>
-        <FormControl
-          type="text"
-          placeholder="Search Courses"
-          className="mr-sm-2"
-        />
-        <Button variant="outline-light">Search</Button>
-      </Form>
+      <AsyncTypeahead
+        isLoading={this.state.isSearchLoading}
+        id="searchTypeahead"
+        align="left"
+        placeholder="Search Courses"
+        selected={this.state.selectedCourse}
+        onSearch={query => {
+          if (query.length >= 2) {
+            this.setState({ isSearchLoading: true });
+            axiosGET(`/api/courses/name/${query}`).then(res => {
+              let courses = res.data.map(({ name, id, ...rest }) => {
+                return { label: id + " " + name, ...rest, id };
+              });
+              this.setState({ isSearchLoading: false, courses });
+            });
+          }
+        }}
+        renderMenu={(results, menuProps) => (
+          <Menu {...menuProps}>
+            {results.map((result, index) => (
+              <LinkContainer to={`/courses/${result.id}`} key={result.id}>
+                <Nav.Link>
+                  <div className="searchItem">{result.label}</div>
+                </Nav.Link>
+              </LinkContainer>
+            ))}
+          </Menu>
+        )}
+        options={this.state.courses}
+      />
     );
   }
   render() {
@@ -82,14 +115,13 @@ class Header extends Component {
               src={logo}
               height="30"
               className="d-inline-block align-top"
-              alt="React Bootstrap logo"
+              alt="My Course Guide"
             />
           </Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           {this.state.role == "admin" ? this.getAdminJSX() : null}
-          {this.state.role ? this.getSearchBarJSX() : null}
           {this.state.role ? this.getCommonJSX() : null}
         </Navbar.Collapse>
       </Navbar>

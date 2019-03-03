@@ -1,0 +1,6 @@
+.searchItem {
+  color: black !important;
+}
+.searchItem:hover {
+  background: #F1F0EF;
+}
