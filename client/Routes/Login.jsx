@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router";
 import { GoogleLogin } from "react-google-login";
 import { getToken, checkToken } from "../utils/jwt";
+import "../styles/background.css"
 
 import Jumbotron from "react-bootstrap/Jumbotron";
 
@@ -14,10 +15,8 @@ class Login extends Component {
       failed: false
     };
   }
-
   render() {
     let googleSuccess = data => {
-      console.log(this.props);
       getToken(data.tokenObj.access_token, (err, token) => {
         if (err) {
           this.setState({
@@ -33,6 +32,7 @@ class Login extends Component {
         failed: true
       });
     };
+    
     if (this.state.authenticated) {
       return <Redirect to="/" />;
     } else {
