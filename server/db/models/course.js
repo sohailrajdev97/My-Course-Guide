@@ -13,6 +13,7 @@ const courseSchema = new Schema({
   },
   history: [
     {
+      _id: false,
       year: Number,
       semester: Number,
       professor: {
