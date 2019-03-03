@@ -18,6 +18,7 @@ loadProgressBar();
 
 // Import lazy loaded route components
 import { Home, Login, ErrorPage, Upload } from "./LazyLoadRoutes.jsx";
+import Course from "../components/Course.jsx";
 import Logout from "./Logout.jsx";
 
 const CommonRoute = ({ component: Component, ...rest }) => {
@@ -64,6 +65,7 @@ class Routes extends Component {
         <Header decodedToken={getDecodedToken()} />
         <Switch className="main">
           <AdminRoute exact path="/upload" component={Upload} />
+          <Route exact path="/courses/:id" component={Course} />
           <Route
             path="/login"
             render={props => (

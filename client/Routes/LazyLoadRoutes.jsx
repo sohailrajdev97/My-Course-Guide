@@ -24,6 +24,11 @@ export const Upload = Loadable({
   loading: () => <div>Loading...</div>
 });
 
+export const Course = Loadable({
+  loader: () => import("../components/Course.jsx"),
+  loading: () => <div>Loading...</div>
+});
+
 export const ErrorPage = Loadable({
   loader: () => import("./404/404.jsx"),
   loading: () => <div>Loading...</div>
