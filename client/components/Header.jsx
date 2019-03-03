@@ -10,20 +10,31 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Image from "react-bootstrap/Image";
 import logo from "../assets/logo.png";
 
-import { getDecodedToken } from "../utils/jwt";
-
 class Header extends Component {
   constructor(props) {
     super(props);
+    let decodedToken = this.props.decodedToken;
     this.state = {
-      role: this.props.role,
-      token: getDecodedToken()
+      role: decodedToken ? decodedToken.role : null,
+      decodedToken
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    let nextDecoded = nextProps.decodedToken;
+    if (nextDecoded !== this.state.decodedToken) {
+      this.setState({
+        role: nextDecoded ? nextDecoded.role : null,
+        decodedToken: nextProps.decodedToken
+      });
+    }
   }
   getCommonJSX() {
     return (
       <Nav>
-        <NavDropdown title={this.state.token.name} id="collasible-nav-dropdown">
+        <NavDropdown
+          title={this.state.decodedToken.name}
+          id="collasible-nav-dropdown"
+        >
           <NavDropdown.Item href="#">Preferences</NavDropdown.Item>
           <NavDropdown.Divider />
           <LinkContainer to="/logout">
@@ -32,7 +43,7 @@ class Header extends Component {
         </NavDropdown>
         <Navbar.Brand>
           <Image
-            src={this.state.token.picture}
+            src={this.state.decodedToken.picture}
             width="35"
             height="35"
             roundedCircle

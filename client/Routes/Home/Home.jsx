@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { getDecodedToken } from "../../utils/jwt";
-import "./home.css";
-import AdminDash from "../../components/AdminDash.jsx";
+import AdminDashboard from "../../components/AdminDashboard.jsx";
 
 class Home extends Component {
   constructor(props) {
@@ -11,7 +10,9 @@ class Home extends Component {
 
   render() {
     let role = getDecodedToken().role;
-    return <div className="home">{role == "admin" ? <AdminDash /> : ""}</div>;
+    if (role == "admin") {
+      return <AdminDashboard />;
+    }
   }
 }
 

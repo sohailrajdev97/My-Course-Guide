@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
 import { GoogleLogin } from "react-google-login";
-import { getToken, getDecodedToken } from "../utils/jwt";
+import { getToken, checkToken } from "../utils/jwt";
 
 import Jumbotron from "react-bootstrap/Jumbotron";
 
@@ -10,22 +10,22 @@ class Login extends Component {
     super(props);
 
     this.state = {
-      authenticated: getDecodedToken() ? true : false,
+      authenticated: checkToken(),
       failed: false
     };
   }
 
   render() {
     let googleSuccess = data => {
+      console.log(this.props);
       getToken(data.tokenObj.access_token, (err, token) => {
         if (err) {
-          return this.setState({
+          this.setState({
             failed: true
           });
         }
-        this.setState({
-          authenticated: true
-        });
+        this.props.setRouterToken(token);
+        this.setState({ authenticated: true });
       });
     };
     let googleFailure = data => {

@@ -32,7 +32,7 @@ let getDecodedToken = () => {
   try {
     return jwtDecode(sessionStorage.getItem("token"));
   } catch (e) {
-    return false;
+    return null;
   }
 };
 

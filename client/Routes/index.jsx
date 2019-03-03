@@ -14,6 +14,7 @@ import Header from "../components/Header.jsx";
 
 // Import lazy loaded route components
 import { Home, Login, ErrorPage, Upload } from "./LazyLoadRoutes.jsx";
+import Logout from "./Logout.jsx";
 
 const CommonRoute = ({ component: Component, ...rest }) => {
   return (
@@ -45,37 +46,32 @@ class Routes extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      role: getDecodedToken() ? getDecodedToken().role : null
+      token: null
     };
   }
-
-  componentDidUpdate(prevProps) {
-    let token = getDecodedToken();
-    if (token && token.role != this.state.role) {
-      this.setState({
-        role: token.role
-      });
-    }
+  setToken(token) {
+    this.setState({
+      token
+    });
   }
-
   render() {
     return (
       <div>
-        <Header role={this.state.role} />
+        <Header decodedToken={getDecodedToken()} />
         <Switch className="main">
           <CommonRoute exact path="/" component={Home} />
           <AdminRoute exact path="/upload" component={Upload} />
           <Route
             path="/login"
-            component={Login}
-            setParentState={this.setState}
+            render={props => (
+              <Login {...props} setRouterToken={this.setToken.bind(this)} />
+            )}
           />
           <Route
             path="/logout"
-            render={props => {
-              sessionStorage.removeItem("token");
-              return <Redirect to="/login" />;
-            }}
+            render={props => (
+              <Logout {...props} setRouterToken={this.setToken.bind(this)} />
+            )}
           />
           <Route component={ErrorPage} />
           {/* This route is run when no matches are found - It's your 404 fallbback */}
