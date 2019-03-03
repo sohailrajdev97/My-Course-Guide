@@ -26,6 +26,7 @@ const studentHeaders = [
 ];
 
 let validator = async data => {
+  if (!data) return false;
   if (_.isEqual(Object.keys(data), profHeaders)) {
     data.hod = data.hod == "YES" ? true : false;
     try {

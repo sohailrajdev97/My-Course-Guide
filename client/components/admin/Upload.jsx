@@ -8,9 +8,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-let xhook = require("xhook");
-
-// Import FilePond
 import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 
@@ -21,55 +18,95 @@ class Upload extends Component {
       invalidRows: null,
       cols: null
     };
-  }
-  render() {
-    let clearTable = () => {
+    this.clearTable = () => {
       this.setState({
         invalidRows: null,
-        cols: null
+        cols: null,
+        errorMsg: null
       });
     };
-    let enableHook = () => {
-      xhook.enable();
-      xhook.after((req, res, next) => {
-        if (res.status == 400) {
-          xhook.disable();
-          let rows = JSON.parse(res.data).invalidRows;
-          let keys = Object.keys(rows[0]);
-          let cols = [];
-          keys.forEach(key => {
-            cols.push({
-              Header: key,
-              accessor: key
-            });
-          });
-          this.setState({ invalidRows: rows, cols });
-        }
-        next();
+  }
+  handleError(res) {
+    let data = JSON.parse(res);
+    console.log(data);
+    if (!data.invalidRows && data.msg) {
+      this.setState({
+        errorMsg: data.msg
       });
-    };
+      return;
+    }
+    let rows = data.invalidRows;
+    console.log(rows, data, data.invalidRows);
+    if (!rows || !rows.length) {
+      this.setState({
+        errorMsg:
+          "There was an error while parsing the file. Please ensure it is valid."
+      });
+      return;
+    }
+    let keys = Object.keys(rows[0]);
+    let cols = [];
+    keys.forEach(key => {
+      if (!key) {
+        this.setState({
+          errorMsg:
+            "There was an error while parsing the file. Please ensure it is valid."
+        });
+        return;
+      }
+      cols.push({
+        Header: key,
+        accessor: key
+      });
+    });
+    this.setState({
+      invalidRows: rows,
+      cols: cols,
+      errorMsg:
+        "Errors were encountered while parsing the following lines in the uploaded file:"
+    });
+  }
+  handleInit() {
+    console.log(this.pond);
+    this.pond._pond.setOptions({
+      server: {
+        url: `${server}/api/csv`,
+        process: {
+          url: "/",
+          timeout: 3000000,
+          method: "POST",
+          onload: this.clearTable,
+          onerror: res => this.handleError(res)
+        },
+        revert: null,
+        restore: null,
+        remove: null
+      }
+    });
+  }
+  render() {
     return (
       <Container>
         <br />
         <Row>
           <Col lg={12}>
             <FilePond
+              ref={ref => (this.pond = ref)}
+              oninit={() => this.handleInit()}
               name="csv"
-              server={`${server}/api/csv`}
-              onremovefile={clearTable}
-              onaddfile={enableHook}
+              onremovefile={this.clearTable}
             />
-            {this.state.cols ? (
+            {this.state.errorMsg ? (
               <div>
-                <p>
-                  Errors were encountered while parsing the following lines in
-                  the uploaded file
-                </p>
-                <ReactTable
-                  data={this.state.invalidRows}
-                  columns={this.state.cols}
-                  defaultPageSize={5}
-                />
+                {this.state.errorMsg}
+                <p />
+                {this.state.cols ? (
+                  <ReactTable
+                    data={this.state.invalidRows}
+                    columns={this.state.cols}
+                    defaultPageSize={5}
+                  />
+                ) : null}
               </div>
             ) : null}
           </Col>
