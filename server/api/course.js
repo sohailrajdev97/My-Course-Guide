@@ -12,6 +12,9 @@ let filterByCampus = (courses, campus) =>
     return course.history.length > 0;
   });
 
+let sortHistory = history =>
+  history.sort((a, b) => b.year * 10 + b.semester - (a.year * 10 + a.semester));
+
 router.get("/", async (req, res, next) => {
   try {
     let courses = await Course.find();
@@ -24,12 +27,15 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     let course = await Course.findOne({ id: req.params.id }, { lean: true })
-      .select("id name")
+      .select("id name history.year history.semester")
       .populate("history.professor");
 
     if (!course) return res.status(404).json({});
-
-    let filteredCourse = filterByCampus([course], req.user.campus);
+    course.history = sortHistory(course.history);
+    let filteredCourse =
+      req.user.role == "admin"
+        ? [course]
+        : filterByCampus([course], req.user.campus);
 
     return res
       .status(filteredCourse.length ? 200 : 404)
@@ -54,7 +60,11 @@ router.get("/name/:name", async (req, res, next) => {
     )
       .select("id name")
       .populate("history.professor");
-    return res.json(filterByCampus(courses, req.user.campus));
+    return res.json(
+      req.user.role == "admin"
+        ? courses
+        : filterByCampus(courses, req.user.campus)
+    );
   } catch (e) {
     console.log(e);
     return res.status(400).json({});
