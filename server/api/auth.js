@@ -51,7 +51,7 @@ router.get(
       } else {
         payload.role = "prof";
       }
-
+      payload.campus = professor.campus;
       let token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 21600 // 6 hours
       });
@@ -63,6 +63,7 @@ router.get(
 
     if (student) {
       payload.role = "student";
+      payload.campus = student.campus;
       let token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 21600 // 6 hours
       });

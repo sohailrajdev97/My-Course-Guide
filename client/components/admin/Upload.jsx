@@ -75,6 +75,9 @@ class Upload extends Component {
           url: "/",
           timeout: 3000000,
           method: "POST",
+          headers: {
+            "x-access-token": sessionStorage.getItem("token")
+          },
           onload: this.clearTable,
           onerror: res => this.handleError(res)
         },

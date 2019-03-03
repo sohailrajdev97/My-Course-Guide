@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("./auth");
 const csv = require("./csv");
 const course = require("./course");
+const checkToken = require("./authMiddleware");
 
 router.all("/", (req, res, next) => {
   console.log(`${req.method} for ${req.url}`);
@@ -11,7 +12,11 @@ router.all("/", (req, res, next) => {
 });
 
 router.use("/auth", auth);
-router.use("/courses", course);
-router.use("/csv", csv);
+router.use(
+  "/courses",
+  checkToken(["admin", "student", "professor", "hod"]),
+  course
+);
+router.use("/csv", checkToken("admin"), csv);
 
 module.exports = router;
