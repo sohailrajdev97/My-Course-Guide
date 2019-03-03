@@ -1,6 +1,5 @@
 const axios = require("axios");
 const qs = require("qs");
-const server = require("./config").server;
 
 let axiosDELETE = url => {
   let options = {
@@ -10,7 +9,7 @@ let axiosDELETE = url => {
         ? sessionStorage.getItem("token")
         : null
     },
-    url: server + url
+    url: url
   };
   return axios(options);
 };
@@ -24,7 +23,7 @@ let axiosGET = (url, resType) => {
         : null
     },
     responseType: resType,
-    url: server + url
+    url: url
   };
   return axios(options);
 };
@@ -38,7 +37,7 @@ let axiosPOST = (url, data) => {
         : null
     },
     data: qs.stringify(data),
-    url: server + url
+    url: url
   };
   return axios(options);
 };
@@ -52,7 +51,7 @@ let axiosPUT = (url, data) => {
         : null
     },
     data: qs.stringify(data),
-    url: server + url
+    url: url
   };
   return axios(options);
 };

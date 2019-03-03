@@ -1,10 +1,9 @@
 const axios = require("axios");
 const jwtDecode = require("jwt-decode");
-const config = require("./config");
 
 let getToken = (token, callback) => {
   axios
-    .get(`${config.server}/api/auth?access_token=${token}`)
+    .get(`/api/auth?access_token=${token}`)
     .then(response => {
       if (response.status === 200) {
         sessionStorage.setItem("token", response.data.token);

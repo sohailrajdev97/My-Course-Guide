@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { server } from "../../utils/config";
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
@@ -70,7 +69,7 @@ class Upload extends Component {
     console.log(this.pond);
     this.pond._pond.setOptions({
       server: {
-        url: `${server}/api/csv`,
+        url: `/api/csv`,
         process: {
           url: "/",
           timeout: 3000000,
