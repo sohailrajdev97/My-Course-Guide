@@ -44,7 +44,7 @@ module.exports = () => {
         // style-loader - injects the css into the browser in a style tag
         {
           test: /\.scss$/,
-          use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"]
+          use: ["style-loader", "css-loader", "postcss-loader"]
         },
 
         {
