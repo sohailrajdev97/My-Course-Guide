@@ -82,9 +82,9 @@
     "node": ">=8.9.3"
   },
   "scripts": {
-    "start": "concurrently \"npm run wds\" \"npm run server\"",
+    "start": "node server/index.js",
+    "dev": "concurrently \"npm run wds\" \"npm run server\"",
     "wds": "./node_modules/.bin/webpack-dev-server --open --hot",
-    "docker": "docker-compose up",
     "server": "nodemon --watch server server/index.js",
     "build:dev": "./node_modules/.bin/webpack",
     "build:prod": "./node_modules/.bin/webpack --mode=production",

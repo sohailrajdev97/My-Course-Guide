@@ -29,6 +29,7 @@ class Login extends Component {
       });
     };
     let googleFailure = data => {
+      console.log(data);
       this.setState({
         failed: true
       });
