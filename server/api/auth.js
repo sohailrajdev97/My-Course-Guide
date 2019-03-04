@@ -71,7 +71,7 @@ router.get(
       return res.json({ token });
     }
 
-    return res.status(401).json();
+    return res.status(401).json({});
   }
 );
 

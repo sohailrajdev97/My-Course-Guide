@@ -85,8 +85,9 @@
     "wds": "./node_modules/.bin/webpack-dev-server --open --hot",
     "server": "nodemon --watch server server/index.js",
     "build:dev": "./node_modules/.bin/webpack",
-    "build:prod": "./node_modules/.bin/webpack --mode=production",
+    "build:prod": "./node_modules/webpack-cli/bin/cli.js -p",
     "build:watch": "./node_modules/.bin/webpack -w",
+    "heroku-postbuild": "npm run build:prod",
     "lint": "npm run lintServer; npm run lintCSS",
     "lintCSS": "node_modules/.bin/stylelint --fix src/**/*"
   }
