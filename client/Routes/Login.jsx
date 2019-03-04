@@ -20,7 +20,7 @@ class Login extends Component {
       console.log(this.props);
       getToken(data.tokenObj.access_token, (err, token) => {
         if (err) {
-          this.setState({
+          return this.setState({
             failed: true
           });
         }
