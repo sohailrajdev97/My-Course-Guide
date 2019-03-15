@@ -14,12 +14,12 @@ import Header from "../components/Header.jsx";
 
 import { loadProgressBar } from "axios-progress-bar";
 import "../styles/progres-bar.css";
-loadProgressBar();
 
 // Import lazy loaded route components
-import { Home, Login, ErrorPage, Upload } from "./LazyLoadRoutes.jsx";
-import Course from "../components/Course.jsx";
+import { Home, Login, ErrorPage, Upload, Course } from "./LazyLoadRoutes.jsx";
 import Logout from "./Logout.jsx";
+
+loadProgressBar();
 
 const CommonRoute = ({ component: Component, ...rest }) => {
   return (
@@ -37,7 +37,7 @@ const AdminRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        checkToken() && getDecodedToken().role == "admin" ? (
+        checkToken() && getDecodedToken().role === "admin" ? (
           <Component {...props} />
         ) : (
           <Redirect to="/login" />

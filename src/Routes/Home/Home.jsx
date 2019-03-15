@@ -11,10 +11,10 @@ class Home extends Component {
 
   render() {
     let role = getDecodedToken().role;
-    if (role == "admin") {
+    if (role === "admin") {
       return <AdminDashboard />;
     }
-    if (role == "student") {
+    if (role === "student") {
       return <StudentDashboard />;
     }
   }
