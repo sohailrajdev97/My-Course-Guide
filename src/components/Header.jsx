@@ -121,7 +121,7 @@ class Header extends Component {
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          {this.state.role == "admin" ? this.getAdminJSX() : null}
+          {this.state.role === "admin" ? this.getAdminJSX() : null}
           {this.state.role ? this.getCommonJSX() : null}
         </Navbar.Collapse>
       </Navbar>

@@ -13,7 +13,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require("cors");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 /****************** Server Options ******************/
 const cacheTime = 172800000; // 2 Days in ms - Tells clients to cache static files
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 /****************** Serve Static Files --> JS, CSS, IMAGES ETC ******************/
 app.use(
-  express.static(path.join(__dirname, "../public"), { maxAge: cacheTime })
+  express.static(path.join(__dirname, "../build"), { maxAge: cacheTime })
 );
 
 /****************** Log Requests ******************/
@@ -70,7 +70,7 @@ if (process.env.DB_URI && process.env.DB_URI !== "") {
 
 /****************** Route Handling ******************/
 app.use("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(__dirname, "../build/index.html"));
 });
 
 // Return a 404 page for all other requests - This should be the last get/put/post/delete/all/use call for app
