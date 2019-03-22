@@ -5,6 +5,7 @@ const auth = require("./auth");
 const csv = require("./csv");
 const course = require("./course");
 const checkToken = require("./authMiddleware");
+const reviews = require("./reviews");
 
 router.all("/", (req, res, next) => {
   console.log(`${req.method} for ${req.url}`);
@@ -18,5 +19,6 @@ router.use(
   course
 );
 router.use("/csv", checkToken("admin"), csv);
+router.use("/reviews", reviews);
 
 module.exports = router;
