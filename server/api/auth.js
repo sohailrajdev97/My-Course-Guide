@@ -35,6 +35,7 @@ router.get(
     let admin = await Admin.findOne({ email: payload.email });
 
     if (admin) {
+      payload.id = admin._id;
       payload.role = "admin";
       let token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 21600 // 6 hours
@@ -46,6 +47,7 @@ router.get(
     let professor = await Professor.findOne({ email: payload.email });
 
     if (professor) {
+      payload.id = professor._id;
       if (professor.hod) {
         payload.role = "hod";
       } else {
@@ -62,6 +64,7 @@ router.get(
     let student = await Student.findOne({ email: payload.email });
 
     if (student) {
+      payload.id = student._id;
       payload.role = "student";
       payload.campus = student.campus;
       let token = jwt.sign(payload, process.env.JWT_SECRET, {
