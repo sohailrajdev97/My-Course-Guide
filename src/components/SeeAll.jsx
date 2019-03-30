@@ -14,21 +14,12 @@ class SeeAll extends Component {
     });
   }
   render() {
-    if (this.state.exapnded) {
-      return (
-        <div>
-          {this.props.items}
-          <Link to="#" onClick={this.toggleState.bind(this)}>See Less</Link>
-        </div>
-      )
-    } else {
-      return (
-        <div>
-          {this.props.items.slice(0, this.props.count)}
-          <Link to="#" onClick={this.toggleState.bind(this)}>See All</Link>
-        </div>
-      )
-    }
+    return (
+      <div>
+        {this.state.exapnded ? this.props.items : this.props.items.slice(0, this.props.count)}
+        {this.props.items.length <= this.props.count ? null : this.state.exapnded ? <Link to="#" onClick={this.toggleState.bind(this)}>See Less</Link> : <Link to="#" onClick={this.toggleState.bind(this)}>See All</Link>}
+      </div>
+    );
   }
 }
 
