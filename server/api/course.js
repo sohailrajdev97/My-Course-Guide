@@ -17,9 +17,16 @@ let sortHistory = history =>
 
 router.get("/", async (req, res, next) => {
   try {
-    let courses = await Course.find();
-    res.json(courses);
+    let courses = await Course.find({})
+      .select("id name")
+      .populate("history.professor");
+    return res.json(
+      req.user.role == "admin"
+        ? courses
+        : filterByCampus(courses, req.user.campus)
+    );
   } catch (e) {
+    console.log(e);
     res.status(500).json({});
   }
 });
