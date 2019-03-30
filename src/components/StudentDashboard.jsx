@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import SeeAll from "./SeeAll";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -31,10 +32,12 @@ class StudentDashboard extends Component {
     this.state.departments.forEach(department => {
       let id = Array.join(department.split(" "));
       departments.push(
-        <Form.Check type="checkbox" label={department} key={`dept-${department}`} id={id}/>
+        <Form.Check type="checkbox" label={department} key={`dept-${department}`} id={id} />
       );
     });
-    return departments;
+    return (
+      <SeeAll items={departments} count={5} />
+    );
   }
   generateProfessorForm() {
     let professors = [];
@@ -43,11 +46,14 @@ class StudentDashboard extends Component {
         <Form.Check type="checkbox" label={professor.name} key={`prof-${professor.email}`} id={`prof-${professor.email}`} value={`prof-${professor.email}`} />
       );
     });
-    return professors;
+    return (
+      <SeeAll items={professors} count={5} />
+    );
   }
   render() {
     return (
       <Container>
+        <br />
         <Row>
           <Col lg="2">
             <Row><Col>
@@ -75,11 +81,11 @@ class StudentDashboard extends Component {
             <Row><Col>
               <h6>Department</h6>
               <Form>
-              <Form.Group>
-                {
-                  this.generateDepartmentForm()
-                }
-              </Form.Group>
+                <Form.Group>
+                  {
+                    this.generateDepartmentForm()
+                  }
+                </Form.Group>
               </Form>
               <hr />
             </Col></Row>
