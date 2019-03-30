@@ -18,7 +18,8 @@ let sortHistory = history =>
 router.get("/", async (req, res, next) => {
   try {
     let courses = await Course.find({})
-      .select("id name")
+      .sort("id")
+      .select("id name history.year history.semester")
       .populate("history.professor");
     return res.json(
       req.user.role == "admin"

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import { axiosGET } from "../utils/axiosClient";
 import Collapse from "rc-collapse";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import SeeAll from "./SeeAll";
 
@@ -16,7 +18,7 @@ class StudentDashboard extends Component {
     this.state = {
       departments: new Set(),
       professors: [],
-      course: [],
+      courses: [],
       filter: {
         activeKeys: ["filter-time", "filter-type", "filter-dept"]
       }
@@ -24,27 +26,30 @@ class StudentDashboard extends Component {
   }
   componentDidMount() {
     axiosGET("/api/courses")
-    .then(res => {
-      let departments = new Set();
-      let professorEmail = new Set();
-      let professors = [];
-      res.data.forEach(course => {        
-        course.history.forEach(history => {
-          if(!professorEmail.has(history.professor.email)) {
-            departments.add(history.professor.department);
-            professorEmail.add(history.professor.email);
-            professors.push(history.professor);
-          }
+      .then(res => {
+        let departments = new Set();
+        let professorEmail = new Set();
+        let professors = [];
+        let courses = [];
+        res.data.forEach(course => {
+          courses.push(course);
+          course.history.forEach(history => {
+            if (!professorEmail.has(history.professor.email)) {
+              departments.add(history.professor.department);
+              professorEmail.add(history.professor.email);
+              professors.push(history.professor);
+            }
+          });
         });
+        professors.sort((left, right) => {
+          return right.name < left.name;
+        });
+        this.setState({
+          courses,
+          departments,
+          professors
+        })
       });
-      professors.sort((left, right) => {
-        return right.name < left.name;
-      });
-      this.setState({
-        departments,
-        professors
-      })
-    });
   }
   generateDepartmentForm() {
     let departments = [];
@@ -69,13 +74,45 @@ class StudentDashboard extends Component {
       <SeeAll items={professors} count={5} />
     );
   }
+  generateCourseList() {
+    let courses = [];
+    this.state.courses.forEach(course => {
+      let semester = course.history[0].year * 10 + course.history[0].semester;
+      let professor = course.history[0].professor.name;
+      course.history.forEach(history => {
+        let currentSemester = history.year * 10 + history.semester;
+        if(currentSemester > semester) {
+          semester = currentSemester;
+          professor = history.professor.name;
+        }
+      });
+      courses.push(
+        <Row key={`course-${course.id}`}>
+          <Col>
+            <Card>
+              <Card.Header>
+              <h7>{course.id}</h7>
+              <h5>
+              <Link to={`/courses/${course.id}`}>
+              {course.name}
+              </Link>
+              </h5>
+              <h6>{professor}</h6>
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+      );
+    });
+    return <SeeAll items={courses} count={10} />;
+  }
   changeActiveKeys(newKeys) {
     this.setState({
       filter: {
         activeKeys: newKeys
       }
     });
-   }
+  }
   render() {
     return (
       <Container>
@@ -113,7 +150,9 @@ class StudentDashboard extends Component {
               </Collapse>
             </Col></Row>
           </Col>
-          <Col>2</Col>
+          <Col>
+            {this.generateCourseList()}
+          </Col>
           <Col lg="3">3</Col>
         </Row>
       </Container>
