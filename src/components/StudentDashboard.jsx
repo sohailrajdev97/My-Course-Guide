@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 
-import SeeAll from "./SeeAll";
+import Collapse from "rc-collapse";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import SeeAll from "./SeeAll";
+
+import "rc-collapse/assets/index.css";
 
 class StudentDashboard extends Component {
   constructor(props) {
@@ -24,7 +27,10 @@ class StudentDashboard extends Component {
           name: "Professor 3",
           email: "email3"
         }
-      ]
+      ],
+      filter: {
+        activeKeys: ["filter-time", "filter-type", "filter-dept"]
+      }
     };
   }
   generateDepartmentForm() {
@@ -50,57 +56,52 @@ class StudentDashboard extends Component {
       <SeeAll items={professors} count={5} />
     );
   }
+  changeActiveKeys(newKeys) {
+    this.setState({
+      filter: {
+        activeKeys: newKeys
+      }
+    });
+   }
   render() {
     return (
       <Container>
         <br />
         <Row>
-          <Col lg="2">
+          <Col lg="3">
             <Row><Col>
               <h5>Filter Courses</h5>
               <hr />
             </Col></Row>
             <Row><Col>
-              <h6>Time</h6>
-              <Form.Group>
-                <Form.Check type="checkbox" id="time-upcoming" label="Upcoming" />
-                <Form.Check type="checkbox" id="time-current" label="Current" />
-                <Form.Check type="checkbox" id="time-previous" label="Previous" />
-              </Form.Group>
-              <hr />
-            </Col></Row>
-            <Row><Col>
-              <h6>Type</h6>
-              <Form.Group>
-                <Form.Check type="radio" name="course-type" id="type-all" label="All" />
-                <Form.Check type="radio" name="course-type" id="type-cdc" label="CDCs" />
-                <Form.Check type="radio" name="course-type" id="type-humanities" label="Humanities" />
-              </Form.Group>
-              <hr />
-            </Col></Row>
-            <Row><Col>
-              <h6>Department</h6>
-              <Form>
-                <Form.Group>
+              <Collapse activeKey={this.state.filter.activeKeys} onChange={this.changeActiveKeys.bind(this)}>
+                <Collapse.Panel header="Time" key="filter-time"><Form.Group>
+                  <Form.Check type="checkbox" id="time-upcoming" label="Upcoming" />
+                  <Form.Check type="checkbox" id="time-current" label="Current" />
+                  <Form.Check type="checkbox" id="time-previous" label="Previous" />
+                </Form.Group></Collapse.Panel>
+                <Collapse.Panel header="Type" key="filter-type">
+                  <Form.Group>
+                    <Form.Check type="radio" name="course-type" id="type-all" label="All" />
+                    <Form.Check type="radio" name="course-type" id="type-cdc" label="CDCs" />
+                    <Form.Check type="radio" name="course-type" id="type-humanities" label="Humanities" />
+                  </Form.Group>
+                </Collapse.Panel>
+                <Collapse.Panel header="Department" key="filter-dept"><Form.Group>
                   {
                     this.generateDepartmentForm()
                   }
-                </Form.Group>
-              </Form>
-              <hr />
-            </Col></Row>
-            <Row><Col>
-              <h6>Professor</h6>
-              <Form.Group>
-                {
-                  this.generateProfessorForm()
-                }
-              </Form.Group>
-              <hr />
+                </Form.Group></Collapse.Panel>
+                <Collapse.Panel header="Professor" key="filter-prof"><Form.Group>
+                  {
+                    this.generateProfessorForm()
+                  }
+                </Form.Group></Collapse.Panel>
+              </Collapse>
             </Col></Row>
           </Col>
           <Col>2</Col>
-          <Col lg="2">3</Col>
+          <Col lg="3">3</Col>
         </Row>
       </Container>
     );
