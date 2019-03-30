@@ -14,11 +14,7 @@ router.all("/", (req, res, next) => {
 });
 
 router.use("/auth", auth);
-router.use(
-  "/courses",
-  checkToken(["admin", "student", "professor", "hod"]),
-  course
-);
+router.use("/courses", course);
 router.use("/csv", checkToken("admin"), csv);
 router.use("/reviews", reviews);
 router.use("/professors", checkToken(["admin", "student", "professor", "hod"]), professors);
