@@ -62,12 +62,42 @@ class StudentDashboard extends Component {
     }
 
     let filter = { ...this.state.filter };
+
+    if(type === "department") {
+      filter.selectedProfs = [];
+    }
+
     let index = filter[filterHash[type]].indexOf(event.target.value);
 
     if (index >= 0) filter[filterHash[type]].splice(index, 1);
     else filter[filterHash[type]].push(event.target.value);
 
     this.setState({ filter });
+  }
+  checkFilters(course) {
+
+    let departments = course.history.map(history => history.professor.department);
+    let profs = course.history.map(history => history.professor.email);
+    let deptFilter = false, profFilter = false;
+
+    if (this.state.filter.selectedDepartments.length === 0) {
+      deptFilter = true;
+    } else {
+      this.state.filter.selectedDepartments.forEach(selectedDepartment => {
+        if (departments.indexOf(selectedDepartment) >= 0) deptFilter = true;
+      });
+    }
+
+    if (this.state.filter.selectedProfs.length === 0) {
+      profFilter = true;
+    } else {
+      this.state.filter.selectedProfs.forEach(selectedProf => {
+        if (profs.indexOf(selectedProf) >= 0) profFilter = true;
+      });
+    }
+
+    return deptFilter && profFilter;
+
   }
   generateDepartmentForm() {
     let departments = [];
@@ -113,33 +143,35 @@ class StudentDashboard extends Component {
   generateCourseList() {
     let courses = [];
     this.state.courses.forEach(course => {
-      let semester = course.history[0].year * 10 + course.history[0].semester;
-      let professor = course.history[0].professor.name;
-      course.history.forEach(history => {
-        let currentSemester = history.year * 10 + history.semester;
-        if (currentSemester > semester) {
-          semester = currentSemester;
-          professor = history.professor.name;
-        }
-      });
-      courses.push(
-        <Row key={`course-${course.id}`}>
-          <Col>
-            <Card>
-              <Card.Header>
-                <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
-                <h6>{course.id}</h6>
-                <h5>
-                  <Link to={`/courses/${course.id}`}>
-                    {course.name}
-                  </Link>
-                </h5>
-                <h6>{professor}</h6>
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
-      );
+      if (this.checkFilters(course)) {
+        let semester = course.history[0].year * 10 + course.history[0].semester;
+        let professor = course.history[0].professor.name;
+        course.history.forEach(history => {
+          let currentSemester = history.year * 10 + history.semester;
+          if (currentSemester > semester) {
+            semester = currentSemester;
+            professor = history.professor.name;
+          }
+        });
+        courses.push(
+          <Row key={`course-${course.id}`}>
+            <Col>
+              <Card>
+                <Card.Header>
+                  <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
+                  <h6>{course.id}</h6>
+                  <h5>
+                    <Link to={`/courses/${course.id}`}>
+                      {course.name}
+                    </Link>
+                  </h5>
+                  <h6>{professor}</h6>
+                </Card.Header>
+              </Card>
+            </Col>
+          </Row>
+        );
+      }
     });
     return <SeeAll items={courses} count={10} />;
   }
