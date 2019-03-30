@@ -29,6 +29,7 @@
     "react": "^16.8.4",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-typeahead": "^4.0.0-alpha.2",
+    "react-collapsible": "^2.6.0",
     "react-dom": "^16.8.4",
     "react-filepond": "^7.0.1",
     "react-google-login": "^5.0.2",
