@@ -21,7 +21,9 @@ class StudentDashboard extends Component {
       professors: [],
       courses: [],
       filter: {
-        activeKeys: ["filter-time", "filter-type", "filter-dept"]
+        activeKeys: ["filter-time", "filter-type", "filter-dept"],
+        selectedDepartments: [],
+        selectedProfs: []
       }
     };
   }
@@ -52,12 +54,35 @@ class StudentDashboard extends Component {
         })
       });
   }
+  selectFilterItem(type, event) {
+
+    let filterHash = {
+      department: "selectedDepartments",
+      professor: "selectedProfs"
+    }
+
+    let filter = { ...this.state.filter };
+    let index = filter[filterHash[type]].indexOf(event.target.value);
+
+    if (index >= 0) filter[filterHash[type]].splice(index, 1);
+    else filter[filterHash[type]].push(event.target.value);
+
+    this.setState({ filter });
+  }
   generateDepartmentForm() {
     let departments = [];
     this.state.departments.forEach(department => {
       let id = Array.join(department.split(" "));
       departments.push(
-        <Form.Check type="checkbox" label={department} key={`dept-${department}`} id={id} />
+        <Form.Check
+          type="checkbox"
+          label={department}
+          key={`dept-${department}`}
+          id={id}
+          checked={this.state.filter.selectedDepartments.indexOf(department) >= 0 ? true : false}
+          onChange={(event => { this.selectFilterItem("department", event) })}
+          value={department}
+        />
       );
     });
     return (
@@ -67,9 +92,19 @@ class StudentDashboard extends Component {
   generateProfessorForm() {
     let professors = [];
     this.state.professors.forEach(professor => {
-      professors.push(
-        <Form.Check type="checkbox" label={professor.name} key={`prof-${professor.email}`} id={`prof-${professor.email}`} value={`prof-${professor.email}`} />
-      );
+      if (this.state.filter.selectedDepartments.indexOf(professor.department) >= 0 || this.state.filter.selectedDepartments.length === 0) {
+        professors.push(
+          <Form.Check
+            type="checkbox"
+            label={professor.name}
+            key={`prof-${professor.email}`}
+            id={`prof-${professor.email}`}
+            checked={this.state.filter.selectedProfs.indexOf(professor.email) >= 0 ? true : false}
+            onChange={(event => { this.selectFilterItem("professor", event) })}
+            value={professor.email}
+          />
+        );
+      }
     });
     return (
       <SeeAll items={professors} count={5} />
@@ -92,14 +127,14 @@ class StudentDashboard extends Component {
           <Col>
             <Card>
               <Card.Header>
-                <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "margin-right": "5px" }} />
-                  <h7>{course.id}</h7>
-                  <h5>
-                    <Link to={`/courses/${course.id}`}>
-                      {course.name}
-                    </Link>
-                  </h5>
-                  <h6>{professor}</h6>
+                <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
+                <h6>{course.id}</h6>
+                <h5>
+                  <Link to={`/courses/${course.id}`}>
+                    {course.name}
+                  </Link>
+                </h5>
+                <h6>{professor}</h6>
               </Card.Header>
             </Card>
           </Col>
@@ -109,11 +144,9 @@ class StudentDashboard extends Component {
     return <SeeAll items={courses} count={10} />;
   }
   changeActiveKeys(newKeys) {
-    this.setState({
-      filter: {
-        activeKeys: newKeys
-      }
-    });
+    let filter = { ...this.state.filter }
+    filter.activeKeys = newKeys;
+    this.setState({ filter });
   }
   render() {
     return (
