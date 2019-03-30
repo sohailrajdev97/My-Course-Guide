@@ -16,21 +16,33 @@ class StudentDashboard extends Component {
     this.state = {
       departments: new Set(),
       professors: [],
+      course: [],
       filter: {
         activeKeys: ["filter-time", "filter-type", "filter-dept"]
       }
     };
   }
   componentDidMount() {
-    axiosGET("/api/professors")
+    axiosGET("/api/courses")
     .then(res => {
       let departments = new Set();
-      res.data.forEach(prof => {
-        departments.add(prof.department);
+      let professorEmail = new Set();
+      let professors = [];
+      res.data.forEach(course => {        
+        course.history.forEach(history => {
+          if(!professorEmail.has(history.professor.email)) {
+            departments.add(history.professor.department);
+            professorEmail.add(history.professor.email);
+            professors.push(history.professor);
+          }
+        });
+      });
+      professors.sort((left, right) => {
+        return right.name < left.name;
       });
       this.setState({
         departments,
-        professors: res.data
+        professors
       })
     });
   }
