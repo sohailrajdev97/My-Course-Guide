@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import { axiosGET } from "../utils/axiosClient";
 import Collapse from "rc-collapse";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -13,25 +14,25 @@ class StudentDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      departments: ["Department 1", "Department 2", "Department 3"],
-      professors: [
-        {
-          name: "Professor 1",
-          email: "email1"
-        },
-        {
-          name: "Professor 2",
-          email: "email2"
-        },
-        {
-          name: "Professor 3",
-          email: "email3"
-        }
-      ],
+      departments: new Set(),
+      professors: [],
       filter: {
         activeKeys: ["filter-time", "filter-type", "filter-dept"]
       }
     };
+  }
+  componentDidMount() {
+    axiosGET("/api/professors")
+    .then(res => {
+      let departments = new Set();
+      res.data.forEach(prof => {
+        departments.add(prof.department);
+      });
+      this.setState({
+        departments,
+        professors: res.data
+      })
+    });
   }
   generateDepartmentForm() {
     let departments = [];
