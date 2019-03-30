@@ -8,6 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image";
 import SeeAll from "./SeeAll";
 
 import "rc-collapse/assets/index.css";
@@ -81,7 +82,7 @@ class StudentDashboard extends Component {
       let professor = course.history[0].professor.name;
       course.history.forEach(history => {
         let currentSemester = history.year * 10 + history.semester;
-        if(currentSemester > semester) {
+        if (currentSemester > semester) {
           semester = currentSemester;
           professor = history.professor.name;
         }
@@ -91,13 +92,14 @@ class StudentDashboard extends Component {
           <Col>
             <Card>
               <Card.Header>
-              <h7>{course.id}</h7>
-              <h5>
-              <Link to={`/courses/${course.id}`}>
-              {course.name}
-              </Link>
-              </h5>
-              <h6>{professor}</h6>
+                <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "margin-right": "5px" }} />
+                  <h7>{course.id}</h7>
+                  <h5>
+                    <Link to={`/courses/${course.id}`}>
+                      {course.name}
+                    </Link>
+                  </h5>
+                  <h6>{professor}</h6>
               </Card.Header>
             </Card>
           </Col>
