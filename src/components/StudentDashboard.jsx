@@ -28,42 +28,40 @@ class StudentDashboard extends Component {
     };
   }
   componentDidMount() {
-    axiosGET("/api/courses")
-      .then(res => {
-        let departments = new Set();
-        let professorEmail = new Set();
-        let professors = [];
-        let courses = [];
-        res.data.forEach(course => {
-          courses.push(course);
-          course.history.forEach(history => {
-            if (!professorEmail.has(history.professor.email)) {
-              departments.add(history.professor.department);
-              professorEmail.add(history.professor.email);
-              professors.push(history.professor);
-            }
-          });
+    axiosGET("/api/courses").then(res => {
+      let departments = new Set();
+      let professorEmail = new Set();
+      let professors = [];
+      let courses = [];
+      res.data.forEach(course => {
+        courses.push(course);
+        course.history.forEach(history => {
+          if (!professorEmail.has(history.professor.email)) {
+            departments.add(history.professor.department);
+            professorEmail.add(history.professor.email);
+            professors.push(history.professor);
+          }
         });
-        professors.sort((left, right) => {
-          return right.name < left.name;
-        });
-        this.setState({
-          courses,
-          departments,
-          professors
-        })
       });
+      professors.sort((left, right) => {
+        return right.name < left.name;
+      });
+      this.setState({
+        courses,
+        departments,
+        professors
+      });
+    });
   }
   selectFilterItem(type, event) {
-
     let filterHash = {
       department: "selectedDepartments",
       professor: "selectedProfs"
-    }
+    };
 
     let filter = { ...this.state.filter };
 
-    if(type === "department") {
+    if (type === "department") {
       filter.selectedProfs = [];
     }
 
@@ -75,10 +73,12 @@ class StudentDashboard extends Component {
     this.setState({ filter });
   }
   checkFilters(course) {
-
-    let departments = course.history.map(history => history.professor.department);
+    let departments = course.history.map(
+      history => history.professor.department
+    );
     let profs = course.history.map(history => history.professor.email);
-    let deptFilter = false, profFilter = false;
+    let deptFilter = false,
+      profFilter = false;
 
     if (this.state.filter.selectedDepartments.length === 0) {
       deptFilter = true;
@@ -97,7 +97,6 @@ class StudentDashboard extends Component {
     }
 
     return deptFilter && profFilter;
-
   }
   generateDepartmentForm() {
     let departments = [];
@@ -109,36 +108,48 @@ class StudentDashboard extends Component {
           label={department}
           key={`dept-${department}`}
           id={id}
-          checked={this.state.filter.selectedDepartments.indexOf(department) >= 0 ? true : false}
-          onChange={(event => { this.selectFilterItem("department", event) })}
+          checked={
+            this.state.filter.selectedDepartments.indexOf(department) >= 0
+              ? true
+              : false
+          }
+          onChange={event => {
+            this.selectFilterItem("department", event);
+          }}
           value={department}
         />
       );
     });
-    return (
-      <SeeAll items={departments} count={5} />
-    );
+    return <SeeAll items={departments} count={5} />;
   }
   generateProfessorForm() {
     let professors = [];
     this.state.professors.forEach(professor => {
-      if (this.state.filter.selectedDepartments.indexOf(professor.department) >= 0 || this.state.filter.selectedDepartments.length === 0) {
+      if (
+        this.state.filter.selectedDepartments.indexOf(professor.department) >=
+          0 ||
+        this.state.filter.selectedDepartments.length === 0
+      ) {
         professors.push(
           <Form.Check
             type="checkbox"
             label={professor.name}
             key={`prof-${professor.email}`}
             id={`prof-${professor.email}`}
-            checked={this.state.filter.selectedProfs.indexOf(professor.email) >= 0 ? true : false}
-            onChange={(event => { this.selectFilterItem("professor", event) })}
+            checked={
+              this.state.filter.selectedProfs.indexOf(professor.email) >= 0
+                ? true
+                : false
+            }
+            onChange={event => {
+              this.selectFilterItem("professor", event);
+            }}
             value={professor.email}
           />
         );
       }
     });
-    return (
-      <SeeAll items={professors} count={5} />
-    );
+    return <SeeAll items={professors} count={5} />;
   }
   generateCourseList() {
     let courses = [];
@@ -149,12 +160,14 @@ class StudentDashboard extends Component {
             <Col>
               <Card>
                 <Card.Header>
-                  <Image src={`/image-generator/courses/${course.id}`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
+                  <Image
+                    src={`/image-generator/courses/${course.id}`}
+                    roundedCircle
+                    style={{ float: "left", marginRight: "5px" }}
+                  />
                   <h6>{course.id}</h6>
                   <h5>
-                    <Link to={`/courses/${course.id}`}>
-                      {course.name}
-                    </Link>
+                    <Link to={`/courses/${course.id}`}>{course.name}</Link>
                   </h5>
                   <h6>{course.history[0].professor.name}</h6>
                 </Card.Header>
@@ -167,7 +180,7 @@ class StudentDashboard extends Component {
     return <SeeAll items={courses} count={10} />;
   }
   changeActiveKeys(newKeys) {
-    let filter = { ...this.state.filter }
+    let filter = { ...this.state.filter };
     filter.activeKeys = newKeys;
     this.setState({ filter });
   }
@@ -177,40 +190,70 @@ class StudentDashboard extends Component {
         <br />
         <Row>
           <Col lg="3">
-            <Row><Col>
-              <h5>Filter Courses</h5>
-              <hr />
-            </Col></Row>
-            <Row><Col>
-              <Collapse activeKey={this.state.filter.activeKeys} onChange={this.changeActiveKeys.bind(this)}>
-                <Collapse.Panel header="Time" key="filter-time"><Form.Group>
-                  <Form.Check type="checkbox" id="time-upcoming" label="Upcoming" />
-                  <Form.Check type="checkbox" id="time-current" label="Current" />
-                  <Form.Check type="checkbox" id="time-previous" label="Previous" />
-                </Form.Group></Collapse.Panel>
-                <Collapse.Panel header="Type" key="filter-type">
-                  <Form.Group>
-                    <Form.Check type="radio" name="course-type" id="type-all" label="All" />
-                    <Form.Check type="radio" name="course-type" id="type-cdc" label="CDCs" />
-                    <Form.Check type="radio" name="course-type" id="type-humanities" label="Humanities" />
-                  </Form.Group>
-                </Collapse.Panel>
-                <Collapse.Panel header="Department" key="filter-dept"><Form.Group>
-                  {
-                    this.generateDepartmentForm()
-                  }
-                </Form.Group></Collapse.Panel>
-                <Collapse.Panel header="Professor" key="filter-prof"><Form.Group>
-                  {
-                    this.generateProfessorForm()
-                  }
-                </Form.Group></Collapse.Panel>
-              </Collapse>
-            </Col></Row>
+            <Row>
+              <Col>
+                <h5>Filter Courses</h5>
+                <hr />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Collapse
+                  activeKey={this.state.filter.activeKeys}
+                  onChange={this.changeActiveKeys.bind(this)}
+                >
+                  <Collapse.Panel header="Time" key="filter-time">
+                    <Form.Group>
+                      <Form.Check
+                        type="checkbox"
+                        id="time-upcoming"
+                        label="Upcoming"
+                      />
+                      <Form.Check
+                        type="checkbox"
+                        id="time-current"
+                        label="Current"
+                      />
+                      <Form.Check
+                        type="checkbox"
+                        id="time-previous"
+                        label="Previous"
+                      />
+                    </Form.Group>
+                  </Collapse.Panel>
+                  <Collapse.Panel header="Type" key="filter-type">
+                    <Form.Group>
+                      <Form.Check
+                        type="radio"
+                        name="course-type"
+                        id="type-all"
+                        label="All"
+                      />
+                      <Form.Check
+                        type="radio"
+                        name="course-type"
+                        id="type-cdc"
+                        label="CDCs"
+                      />
+                      <Form.Check
+                        type="radio"
+                        name="course-type"
+                        id="type-humanities"
+                        label="Humanities"
+                      />
+                    </Form.Group>
+                  </Collapse.Panel>
+                  <Collapse.Panel header="Department" key="filter-dept">
+                    <Form.Group>{this.generateDepartmentForm()}</Form.Group>
+                  </Collapse.Panel>
+                  <Collapse.Panel header="Professor" key="filter-prof">
+                    <Form.Group>{this.generateProfessorForm()}</Form.Group>
+                  </Collapse.Panel>
+                </Collapse>
+              </Col>
+            </Row>
           </Col>
-          <Col>
-            {this.generateCourseList()}
-          </Col>
+          <Col>{this.generateCourseList()}</Col>
           <Col lg="3">3</Col>
         </Row>
       </Container>

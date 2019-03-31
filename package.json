@@ -55,6 +55,7 @@
     "build": "react-scripts build",
     "heroku-postbuild": "npm run build",
     "test": "eslint src/**/*.jsx src/**/*.js server/**/*.js",
+    "fix": "eslint --fix src/**/*.jsx src/**/*.js server/**/*.js",
     "eject": "react-scripts eject"
   },
   "engines": {

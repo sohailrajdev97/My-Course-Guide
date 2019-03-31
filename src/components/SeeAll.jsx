@@ -16,8 +16,19 @@ class SeeAll extends Component {
   render() {
     return (
       <div>
-        {this.state.exapnded ? this.props.items : this.props.items.slice(0, this.props.count)}
-        {this.props.items.length <= this.props.count ? null : this.state.exapnded ? <Link to="#" onClick={this.toggleState.bind(this)}>See Less</Link> : <Link to="#" onClick={this.toggleState.bind(this)}>See All</Link>}
+        {this.state.exapnded
+          ? this.props.items
+          : this.props.items.slice(0, this.props.count)}
+        {this.props.items.length <= this.props.count ? null : this.state
+            .exapnded ? (
+          <Link to="#" onClick={this.toggleState.bind(this)}>
+            See Less
+          </Link>
+        ) : (
+          <Link to="#" onClick={this.toggleState.bind(this)}>
+            See All
+          </Link>
+        )}
       </div>
     );
   }

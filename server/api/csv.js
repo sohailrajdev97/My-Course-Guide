@@ -76,7 +76,11 @@ let validator = async data => {
             professor: prof._id
           });
           course.history.sort((left, right) => {
-            return ((right.year * 10) + right.semester) - ((left.year * 10) + left.semester);
+            return (
+              right.year * 10 +
+              right.semester -
+              (left.year * 10 + left.semester)
+            );
           });
         }
         await course.save();
@@ -154,7 +158,7 @@ let validator = async data => {
 };
 
 router.post("/", upload.single("csv"), (req, res, next) => {
-  if (req.file.mimetype != "text/csv") {
+  if (req.file.mimetype !== "text/csv") {
     return res.status(400).json({
       msg: "Only CSV files are allowed"
     });

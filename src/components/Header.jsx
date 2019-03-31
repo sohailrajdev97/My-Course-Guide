@@ -95,7 +95,14 @@ class Header extends Component {
         renderMenu={(results, menuProps) => (
           <Menu {...menuProps}>
             {results.map((result, index) => (
-              <LinkContainer to={this.state.role === "admin"? `/courses/${result.id}/${result.campus}` : `/courses/${result.id}`} key={result.id + " " + result.campus}>
+              <LinkContainer
+                to={
+                  this.state.role === "admin"
+                    ? `/courses/${result.id}/${result.campus}`
+                    : `/courses/${result.id}`
+                }
+                key={result.id + " " + result.campus}
+              >
                 <Nav.Link>
                   <div className="searchItem">{result.label}</div>
                 </Nav.Link>

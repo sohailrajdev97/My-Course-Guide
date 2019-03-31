@@ -10,7 +10,7 @@ let checkToken = role => {
       });
     }
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err || role.indexOf(decoded.role) == -1) {
+      if (err || role.indexOf(decoded.role) === -1) {
         return res.status(403).json({
           message: "Invalid Access Token",
           success: false
