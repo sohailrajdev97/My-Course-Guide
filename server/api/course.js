@@ -3,11 +3,22 @@ const router = express.Router();
 
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
+const Prof = mongoose.model("Professor");
 
 router.get("/", async (req, res, next) => {
   try {
-    let courses = await Course.find(req.campusFilter);
-    return res.json(courses);
+    let courses;
+    if (req.query.prof) {
+      let prof = await Prof.find({ email: req.query.prof });
+      if (!prof) return res.status(404).json([]);
+      courses = await Course.find({
+        ...req.campusFilter,
+        "history.professor": prof
+      }).select("id name");
+    } else {
+      courses = await Course.find(req.campusFilter);
+    }
+    res.json(courses);
   } catch (e) {
     console.log(e);
     res.status(500).json({});
