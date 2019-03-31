@@ -14,7 +14,7 @@ const Course = mongoose.model("Course");
 const Student = mongoose.model("Student");
 
 const profHeaders = ["name", "email", "campus", "department", "hod"];
-const courseHeaders = ["id", "name", "year", "semester", "professor"];
+const courseHeaders = ["id", "name", "year", "semester", "professor", "campus"];
 const studentHeaders = [
   "id",
   "name",
@@ -30,7 +30,7 @@ let validator = async data => {
   if (_.isEqual(Object.keys(data), profHeaders)) {
     data.hod = data.hod == "YES" ? true : false;
     try {
-      let doc = await Professor.findOneAndUpdate(
+      await Professor.findOneAndUpdate(
         {
           email: data.email
         },
@@ -48,7 +48,8 @@ let validator = async data => {
   if (_.isEqual(Object.keys(data), courseHeaders)) {
     try {
       let course = await Course.findOne({
-        id: data.id
+        id: data.id,
+        campus: data.campus
       });
       let prof = await Professor.findOne({
         email: data.professor
@@ -74,12 +75,16 @@ let validator = async data => {
             semester: data.semester,
             professor: prof._id
           });
+          course.history.sort((left, right) => {
+            return ((right.year * 10) + right.semester) - ((left.year * 10) + left.semester);
+          });
         }
         await course.save();
       } else {
         await Course.create({
           id: data.id,
           name: data.name,
+          campus: data.campus,
           history: [
             {
               year: data.year,
