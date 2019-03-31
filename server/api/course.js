@@ -14,9 +14,6 @@ let filterByCampus = (courses, campus) =>
     return course.history.length > 0;
   });
 
-let sortHistory = history =>
-  history.sort((a, b) => b.year * 10 + b.semester - (a.year * 10 + a.semester));
-
 router.get("/", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
   try {
     let courses = await Course.find({});
@@ -35,7 +32,6 @@ router.get("/:id", checkToken(["admin", "student", "professor", "hod"]), async (
   try {
     let course = await Course.findOne({ id: req.params.id }, { lean: true });
     if (!course) return res.status(404).json({ msg: "Course not found" });
-    course.history = sortHistory(course.history);
     let filteredCourse =
       req.user.role == "admin"
         ? [course]
