@@ -1,44 +1,27 @@
 const express = require("express");
 const router = express.Router();
 
+const checkToken = require("./authMiddleware");
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 
-let filterByCampus = (courses, campus) =>
-  courses.filter(course => {
-    course.history = course.history.filter(
-      history => history.professor.campus == campus
-    );
-    return course.history.length > 0;
-  });
+router.use((req, res, next) => {
+  let filter = {};
+
+  if(req.user.role !== "admin") {
+    filter.campus = req.user.campus;
+  }
+
+  req.campusFilter = filter;
+  next();
+});
 
 router.get("/", async (req, res, next) => {
   try {
-    let courses = await Course.find({});
-    return res.json(
-      req.user.role == "admin"
-        ? courses
-        : filterByCampus(courses, req.user.campus)
-    );
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({});
-  }
-});
-
-router.get("/:id", async (req, res, next) => {
-  try {
-    let course = await Course.findOne({ id: req.params.id }, { lean: true });
-    if (!course) return res.status(404).json({ msg: "Course not found" });
-    let filteredCourse =
-      req.user.role == "admin"
-        ? [course]
-        : filterByCampus([course], req.user.campus);
-
-    return res
-      .status(filteredCourse.length ? 200 : 404)
-      .json(filteredCourse[0]);
-  } catch (e) {
+    let courses = await Course.find(req.campusFilter);
+    return res.json(courses);
+  } 
+  catch (e) {
     console.log(e);
     res.status(500).json({});
   }
@@ -49,21 +32,42 @@ router.get("/name/:name", async (req, res, next) => {
   try {
     let courses = await Course.find(
       {
+        ...req.campusFilter,
         $or: [
           { id: { $regex: regex, $options: "i" } },
           { name: { $regex: regex, $options: "i" } }
         ]
-      },
-      { lean: true }
+      }
     )
-    return res.json(
-      req.user.role == "admin"
-        ? courses
-        : filterByCampus(courses, req.user.campus)
-    );
-  } catch (e) {
+    return res.json(courses);
+  } 
+  catch (e) {
     console.log(e);
-    return res.status(400).json({});
+    return res.status(500).json({});
+  }
+});
+
+router.get("/:id/:campus", checkToken("admin"), async (req, res, next) => {
+  try {
+    let course = await Course.findOne({ id: req.params.id, campus: req.params.campus });
+    if (!course) return res.status(404).json({ msg: "Course not found" });
+    return res.json(course);
+  } 
+  catch (e) {
+    console.log(e);
+    res.status(500).json({});
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    let course = await Course.findOne({ id: req.params.id, ...req.campusFilter });
+    if (!course) return res.status(404).json({ msg: "Course not found" });
+    return res.json(course);
+  } 
+  catch (e) {
+    console.log(e);
+    res.status(500).json({});
   }
 });
 
