@@ -11,6 +11,10 @@ const courseSchema = new Schema({
   name: {
     type: String
   },
+  campus: {
+    type: String,
+    required: true
+  },
   history: [
     {
       _id: false,
@@ -25,9 +29,22 @@ const courseSchema = new Schema({
   ]
 });
 
+courseSchema.pre("find", function(next) {
+  this.populate("history.professor");
+  this.select("id name history.year history.semester");
+  this.sort("id");
+  next();
+});
+
+courseSchema.pre("findOne", function(next) {
+  this.populate("history.professor");
+  this.select("id name history.year history.semester");
+  next();
+});
+
 // This registers the model into mongoose so that anywhere else in your server you can do
 /*
-`const User = mongoose.model('Course');`
-`User.update(...)`
+`const Course = mongoose.model('Course');`
+`Course.update(...)`
 */
 mongoose.model("Course", courseSchema);

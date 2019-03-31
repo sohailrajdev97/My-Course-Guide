@@ -19,10 +19,7 @@ let sortHistory = history =>
 
 router.get("/", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
   try {
-    let courses = await Course.find({})
-      .sort("id")
-      .select("id name history.year history.semester")
-      .populate("history.professor");
+    let courses = await Course.find({});
     return res.json(
       req.user.role == "admin"
         ? courses
@@ -36,11 +33,8 @@ router.get("/", checkToken(["admin", "student", "professor", "hod"]), async (req
 
 router.get("/:id", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
   try {
-    let course = await Course.findOne({ id: req.params.id }, { lean: true })
-      .select("id name history.year history.semester")
-      .populate("history.professor");
-
-    if (!course) return res.status(404).json({});
+    let course = await Course.findOne({ id: req.params.id }, { lean: true });
+    if (!course) return res.status(404).json({ msg: "Course not found" });
     course.history = sortHistory(course.history);
     let filteredCourse =
       req.user.role == "admin"
@@ -76,8 +70,6 @@ router.get("/name/:name", checkToken(["admin", "student", "professor", "hod"]), 
       },
       { lean: true }
     )
-      .select("id name")
-      .populate("history.professor");
     return res.json(
       req.user.role == "admin"
         ? courses
