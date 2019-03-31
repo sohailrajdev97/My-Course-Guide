@@ -149,7 +149,7 @@ class StudentDashboard extends Component {
             <Col>
               <Card>
                 <Card.Header>
-                  <Image src={`/api/courses/${course.id}/icon`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
+                  <Image src={`/image-generator/courses/${course.id}`} roundedCircle style={{ "float": "left", "marginRight": "5px" }} />
                   <h6>{course.id}</h6>
                   <h5>
                     <Link to={`/courses/${course.id}`}>

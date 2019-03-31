@@ -48,6 +48,8 @@ app.use("*", (req, res, next) => {
   next();
 });
 
+app.use("/image-generator", require("./imageGenerator"));
+
 /****************** Start the Server and DB (if DB_URI env var is set) ******************/
 if (process.env.DB_URI && process.env.DB_URI !== "") {
   require("./db");
