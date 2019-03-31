@@ -41,8 +41,10 @@
   },
   "devDependencies": {
     "concurrently": "^4.0.1",
-    "grunt": "^1.0.3",
+    "eslint-plugin-prettier": "^3.0.1",
     "nodemon": "^1.12.5",
+    "prettier": "^1.16.4",
+    "prettier-check": "^2.0.0",
     "react-loadable": "^5.5.0"
   },
   "scripts": {
@@ -52,14 +54,11 @@
     "dev": "concurrently \"npm run client\" \"npm run server\"",
     "build": "react-scripts build",
     "heroku-postbuild": "npm run build",
-    "test": "react-scripts test",
+    "test": "eslint src/**/*.jsx src/**/*.js server/**/*.js",
     "eject": "react-scripts eject"
   },
   "engines": {
     "node": "10.4.1"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "proxy": "http://localhost:4000",
   "browserslist": [
