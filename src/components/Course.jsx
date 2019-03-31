@@ -15,16 +15,20 @@ class Course extends Component {
     };
   }
   getCourse(id) {
-    axiosGET(`/api/courses/${id}`).then(res => {
-      this.setState({ course: res.data });
-    });
+    if (this.props.match.params.campus) {
+      axiosGET(`/api/courses/${id}/${this.props.match.params.campus}`).then(res => {
+        this.setState({ course: res.data });
+      });
+    } else {
+      axiosGET(`/api/courses/${id}`).then(res => {
+        this.setState({ course: res.data });
+      });
+    }
   }
   componentDidMount() {
-    console.log("mounted");
     this.getCourse(this.props.match.params.id);
   }
   componentWillReceiveProps(nextProps) {
-    console.log("props");
     this.getCourse(nextProps.match.params.id);
   }
   generateHistory() {
@@ -68,6 +72,7 @@ class Course extends Component {
           <Row>
             <Col lg={8}>
               <h5>{this.state.course.history[0].professor.name}</h5>
+              <p>{this.props.match.params.campus}</p>
             </Col>
           </Row>
           <br />

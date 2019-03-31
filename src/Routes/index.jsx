@@ -65,7 +65,8 @@ class Routes extends Component {
         <Header decodedToken={getDecodedToken()} />
         <Switch className="main">
           <AdminRoute exact path="/upload" component={Upload} />
-          <Route exact path="/courses/:id" component={Course} />
+          <CommonRoute exact path="/courses/:id" component={Course} />
+          <AdminRoute exact path="/courses/:id/:campus" component={Course} />
           <Route
             path="/login"
             render={props => (

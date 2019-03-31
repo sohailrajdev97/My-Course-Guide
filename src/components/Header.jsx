@@ -69,9 +69,6 @@ class Header extends Component {
       </Nav>
     );
   }
-  // redirect(courses) {
-  //   console.log("as", courses);
-  // }
   getSearchBarJSX() {
     return (
       <AsyncTypeahead
@@ -85,7 +82,11 @@ class Header extends Component {
             this.setState({ isSearchLoading: true });
             axiosGET(`/api/courses/name/${query}`).then(res => {
               let courses = res.data.map(({ name, id, ...rest }) => {
-                return { label: id + " " + name, ...rest, id };
+                let label = id + " " + name;
+                if (this.state.role === "admin") {
+                  label = rest.campus + ": " + label;
+                }
+                return { label, ...rest, id };
               });
               this.setState({ isSearchLoading: false, courses });
             });
@@ -94,7 +95,7 @@ class Header extends Component {
         renderMenu={(results, menuProps) => (
           <Menu {...menuProps}>
             {results.map((result, index) => (
-              <LinkContainer to={`/courses/${result.id}`} key={result.id}>
+              <LinkContainer to={this.state.role === "admin"? `/courses/${result.id}/${result.campus}` : `/courses/${result.id}`} key={result.id + " " + result.campus}>
                 <Nav.Link>
                   <div className="searchItem">{result.label}</div>
                 </Nav.Link>

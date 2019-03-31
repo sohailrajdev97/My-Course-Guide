@@ -29,14 +29,14 @@ const courseSchema = new Schema({
 
 courseSchema.pre("find", function(next) {
   this.populate("history.professor");
-  this.select("id name history.year history.semester");
+  this.select("id name campus history.year history.semester");
   this.sort("id");
   next();
 });
 
 courseSchema.pre("findOne", function(next) {
   this.populate("history.professor");
-  this.select("id name history.year history.semester");
+  this.select("id name campus history.year history.semester");
   next();
 });
 
