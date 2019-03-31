@@ -28,7 +28,7 @@ const studentHeaders = [
 let validator = async data => {
   if (!data) return false;
   if (_.isEqual(Object.keys(data), profHeaders)) {
-    data.hod = data.hod == "YES" ? true : false;
+    data.hod = data.hod === "YES" ? true : false;
     try {
       await Professor.findOneAndUpdate(
         {
@@ -54,7 +54,7 @@ let validator = async data => {
       let prof = await Professor.findOne({
         email: data.professor
       });
-      if (prof == null) {
+      if (prof === null) {
         return false;
       }
       if (course) {
@@ -62,8 +62,8 @@ let validator = async data => {
         let historyUpdated = false;
         course.history.forEach(item => {
           if (
-            item.year == parseInt(data.year) &&
-            item.semester == parseInt(data.semester)
+            item.year === parseInt(data.year) &&
+            item.semester === parseInt(data.semester)
           ) {
             item.professor = prof._id;
             historyUpdated = true;
@@ -103,7 +103,8 @@ let validator = async data => {
   if (_.isEqual(Object.keys(data), studentHeaders)) {
     try {
       let course = await Course.findOne({
-        id: data.course
+        id: data.course,
+        campus: data.campus
       });
       if (!course) return false;
 
@@ -111,8 +112,8 @@ let validator = async data => {
 
       course.history.forEach(item => {
         if (
-          item.year == parseInt(data.year) &&
-          item.semester == parseInt(data.semester)
+          item.year === parseInt(data.year) &&
+          item.semester === parseInt(data.semester)
         ) {
           offeredInGivenSemester = true;
         }
@@ -120,7 +121,7 @@ let validator = async data => {
 
       if (!offeredInGivenSemester) return false;
 
-      let student = await Student.findOneAndUpdate(
+      await Student.findOneAndUpdate(
         {
           id: data.id
         },
@@ -173,7 +174,7 @@ router.post("/", upload.single("csv"), (req, res, next) => {
     })
     .on("data", data => {})
     .on("end", () => {
-      if (invalidRows.length == 0) {
+      if (invalidRows.length === 0) {
         res.status(200).json({});
       } else {
         res.status(400).json({
