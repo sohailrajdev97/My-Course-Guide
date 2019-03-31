@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { getDecodedToken } from "../../utils/jwt";
 import AdminDashboard from "../../components/AdminDashboard.jsx";
 import StudentDashboard from "../../components/StudentDashboard.jsx";
+import ProfDashboard from "../../components/ProfDashboard.jsx";
 
 class Home extends Component {
   constructor(props) {
@@ -16,6 +17,9 @@ class Home extends Component {
     }
     if (role === "student") {
       return <StudentDashboard />;
+    }
+    else {
+      return <ProfDashboard />;
     }
   }
 }
