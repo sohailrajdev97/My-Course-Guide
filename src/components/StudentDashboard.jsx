@@ -144,15 +144,6 @@ class StudentDashboard extends Component {
     let courses = [];
     this.state.courses.forEach(course => {
       if (this.checkFilters(course)) {
-        let semester = course.history[0].year * 10 + course.history[0].semester;
-        let professor = course.history[0].professor.name;
-        course.history.forEach(history => {
-          let currentSemester = history.year * 10 + history.semester;
-          if (currentSemester > semester) {
-            semester = currentSemester;
-            professor = history.professor.name;
-          }
-        });
         courses.push(
           <Row key={`course-${course.id}`}>
             <Col>
@@ -165,7 +156,7 @@ class StudentDashboard extends Component {
                       {course.name}
                     </Link>
                   </h5>
-                  <h6>{professor}</h6>
+                  <h6>{course.history[0].professor.name}</h6>
                 </Card.Header>
               </Card>
             </Col>
