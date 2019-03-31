@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const checkToken = require("./authMiddleware");
-const jdenticon = require("jdenticon")
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 
@@ -14,7 +12,7 @@ let filterByCampus = (courses, campus) =>
     return course.history.length > 0;
   });
 
-router.get("/", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     let courses = await Course.find({});
     return res.json(
@@ -28,7 +26,7 @@ router.get("/", checkToken(["admin", "student", "professor", "hod"]), async (req
   }
 });
 
-router.get("/:id", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     let course = await Course.findOne({ id: req.params.id }, { lean: true });
     if (!course) return res.status(404).json({ msg: "Course not found" });
@@ -46,15 +44,7 @@ router.get("/:id", checkToken(["admin", "student", "professor", "hod"]), async (
   }
 });
 
-router.get("/:id/icon", (req, res, next) => {
-  let png = jdenticon.toPng(req.params.id, 100);
-  res.writeHead(200, {
-    "Content-Type": "image/png"
-  });
-  res.end(png);
-});
-
-router.get("/name/:name", checkToken(["admin", "student", "professor", "hod"]), async (req, res, next) => {
+router.get("/name/:name", async (req, res, next) => {
   let regex = ".*" + req.params.name.split(" ").join(".*") + ".*";
   try {
     let courses = await Course.find(
