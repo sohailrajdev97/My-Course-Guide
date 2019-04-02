@@ -3,9 +3,9 @@
 // anywhere the User model needs to be used.
 
 require("./admin.js");
-require("./answer.js");
 require("./course.js");
 require("./professor.js");
 require("./record.js");
+require("./reply.js");
 require("./student.js");
 require("./vote.js");
