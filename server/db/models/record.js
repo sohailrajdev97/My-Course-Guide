@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const reviewSchema = new Schema({
+const recordSchema = new Schema({
   course: {
     _id: false,
     type: Schema.Types.ObjectId,
     ref: "Course",
     index: true,
+    required: true
+  },
+  type: {
+    type: String, // "Review" or "Question"
     required: true
   },
   content: {
@@ -29,4 +33,4 @@ const reviewSchema = new Schema({
   }
 });
 
-mongoose.model("Review", reviewSchema);
+mongoose.model("Record", recordSchema);

@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const voteSchema = new Schema({
-  review: {
+  record: {
     type: Schema.Types.ObjectId,
-    ref: "Review"
+    ref: "Record"
   },
   upvotes: [
     {
