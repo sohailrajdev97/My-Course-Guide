@@ -10,6 +10,7 @@ const voteSchema = new Schema({
     {
       _id: false,
       type: Schema.Types.ObjectId,
+      default: [],
       ref: "Student"
     }
   ],
@@ -17,6 +18,7 @@ const voteSchema = new Schema({
     {
       _id: false,
       type: Schema.Types.ObjectId,
+      default: [],
       ref: "Student"
     }
   ]

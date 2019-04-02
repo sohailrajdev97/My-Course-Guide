@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 const Review = mongoose.model("Review");
 const Student = mongoose.model("Student");
+const Vote = mongoose.model("Vote");
 
 router.post("/", checkToken(["student"]), async (req, res, next) => {
   if (!req.body.course)
@@ -32,13 +33,14 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
 
     if (!course) return res.status(404).json({ msg: "Course not found" });
 
-    await Review.create({
+    let review = await Review.create({
       course: courseId,
       content: req.body.content,
       student: req.user.id,
       isAnonymous: req.body.isAnonymous ? true : false
     });
 
+    await Vote.create({ review: review._id });
     return res.json({ msg: "Review Created" });
   } catch (e) {
     console.log(e);
@@ -58,27 +60,27 @@ router.post("/vote/:type", checkToken("student"), async (req, res, next) => {
 
     if (!review) return res.status(404).json({ msg: "Review not found" });
 
-    if (review.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
+    let vote = await Vote.findOne({ review: req.body.review });
+    console.log(vote)
+
+    if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
       return res
         .status(400)
         .json({ msg: "You have already upvoted this review" });
 
-    if (
-      review.downvotes.indexOf(req.user.id) >= 0 &&
-      req.params.type === "down"
-    )
+    if (vote.downvotes.indexOf(req.user.id) >= 0 && req.params.type === "down")
       return res
         .status(400)
         .json({ msg: "You have already downvoted this review" });
 
     if (req.params.type === "up") {
-      await Review.updateOne(
-        { _id: req.body.review },
+      await Vote.updateOne(
+        { review: req.body.review },
         { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } }
       );
     } else {
-      await Review.updateOne(
-        { _id: req.body.review },
+      await Vote.updateOne(
+        { review: req.body.review },
         { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } }
       );
     }

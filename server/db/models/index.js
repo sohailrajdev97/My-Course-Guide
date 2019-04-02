@@ -7,3 +7,4 @@ require("./course.js");
 require("./professor.js");
 require("./review.js");
 require("./student.js");
+require("./vote.js");
