@@ -22,17 +22,7 @@ const reviewSchema = new Schema({
   isAnonymous: {
     type: Boolean,
     default: false
-  },
-  upvotes: [{
-    _id: false,
-    type: Schema.Types.ObjectId,
-    ref: "Student"
-  }],
-  downvotes: [{
-    _id: false,
-    type: Schema.Types.ObjectId,
-    ref: "Student"
-  }]
+  }
 });
 
 mongoose.model("Review", reviewSchema);
