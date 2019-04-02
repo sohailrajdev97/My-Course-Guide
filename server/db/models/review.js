@@ -22,6 +22,10 @@ const reviewSchema = new Schema({
   isAnonymous: {
     type: Boolean,
     default: false
+  },
+  voteCount: {
+    type: Number,
+    default: 0
   }
 });
 
