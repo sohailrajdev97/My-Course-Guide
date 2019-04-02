@@ -61,7 +61,6 @@ router.post("/vote/:type", checkToken("student"), async (req, res, next) => {
     if (!review) return res.status(404).json({ msg: "Review not found" });
 
     let vote = await Vote.findOne({ review: req.body.review });
-    console.log(vote)
 
     if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
       return res
@@ -74,16 +73,24 @@ router.post("/vote/:type", checkToken("student"), async (req, res, next) => {
         .json({ msg: "You have already downvoted this review" });
 
     if (req.params.type === "up") {
-      await Vote.updateOne(
+      vote = await Vote.findOneAndUpdate(
         { review: req.body.review },
-        { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } }
+        { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } },
+        { new: true }
       );
     } else {
-      await Vote.updateOne(
+      vote = await Vote.findOneAndUpdate(
         { review: req.body.review },
-        { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } }
+        { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } },
+        { new: true }
       );
     }
+
+    // TODO: Update the count after acquiring a lock / use mongoose versioning middleware
+    await Review.updateOne(
+      { _id: req.body.review },
+      { $set: { voteCount: vote.upvotes.length - vote.downvotes.length } }
+    );
 
     return res.json({ msg: "Vote added" });
   } catch (e) {
