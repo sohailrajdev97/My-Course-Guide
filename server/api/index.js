@@ -5,9 +5,10 @@ const auth = require("./auth");
 const csv = require("./csv");
 const course = require("./course");
 const checkToken = require("./authMiddleware");
+const professors = require("./professors");
 const records = require("./records");
 const replies = require("./replies");
-const professors = require("./professors");
+const votes = require("./votes");
 
 router.all("/", (req, res, next) => {
   console.log(`${req.method} for ${req.url}`);
@@ -23,6 +24,7 @@ router.use(
 router.use("/csv", checkToken("admin"), csv);
 router.use("/records", records);
 router.use("/replies", replies);
+router.use("/votes", votes);
 router.use(
   "/professors",
   checkToken(["admin", "student", "professor", "hod"]),

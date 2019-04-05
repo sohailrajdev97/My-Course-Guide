@@ -2,15 +2,22 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const voteSchema = new Schema({
-  record: {
+  forModel: {
+    type: String,
+    required: true,
+    enum: ["Record", "Reply"]
+  },
+  for: {
     type: Schema.Types.ObjectId,
-    ref: "Record"
+    index: true,
+    refPath: "onModel"
   },
   upvotes: [
     {
       _id: false,
       type: Schema.Types.ObjectId,
       default: [],
+      index: true,
       ref: "Student"
     }
   ],
@@ -19,6 +26,7 @@ const voteSchema = new Schema({
       _id: false,
       type: Schema.Types.ObjectId,
       default: [],
+      index: true,
       ref: "Student"
     }
   ]

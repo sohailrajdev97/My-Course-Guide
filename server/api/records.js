@@ -90,61 +90,8 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       isAnonymous: req.body.isAnonymous ? true : false
     });
 
-    await Vote.create({ record: record._id });
+    await Vote.create({ for: record._id, forModel: "Record" });
     return res.json({ msg: "Record Created" });
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({ msg: "Request Failed" });
-  }
-});
-
-router.post("/vote/:type", checkToken("student"), async (req, res, next) => {
-  if (req.params.type !== "up" && req.params.type !== "down")
-    return res.status(404).send();
-
-  if (!req.body.record)
-    return res.status(400).json({ msg: "Supply a record id in request body" });
-
-  try {
-    let record = await Record.findOne({ _id: req.body.record });
-
-    if (!record) return res.status(404).json({ msg: "Record not found" });
-
-    let vote = await Vote.findOne({ record: req.body.record });
-
-    if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
-      return res
-        .status(400)
-        .json({ msg: "You have already upvoted this record" });
-
-    if (vote.downvotes.indexOf(req.user.id) >= 0 && req.params.type === "down")
-      return res
-        .status(400)
-        .json({ msg: "You have already downvoted this record" });
-
-    if (req.params.type === "up") {
-      vote = await Vote.findOneAndUpdate(
-        { record: req.body.record },
-        { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } },
-        { new: true }
-      );
-    } else {
-      vote = await Vote.findOneAndUpdate(
-        { record: req.body.record },
-        { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } },
-        { new: true }
-      );
-    }
-
-    // TODO: Update the count after acquiring a lock / use mongoose versioning middleware
-    await Record.updateOne(
-      { _id: req.body.record },
-      {
-        $set: { upvotes: vote.upvotes.length, downvotes: vote.downvotes.length }
-      }
-    );
-
-    return res.json({ msg: "Vote added" });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ msg: "Request Failed" });

@@ -23,6 +23,14 @@ const replySchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
       refPath: "replierType"
+    },
+    upvotes: {
+      type: Number,
+      default: 0
+    },
+    downvotes: {
+      type: Number,
+      default: 0
     }
   },
   {
