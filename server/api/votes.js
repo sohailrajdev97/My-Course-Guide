@@ -41,28 +41,37 @@ router.post("/:type", checkToken("student"), async (req, res, next) => {
 
     let vote = await Vote.findOne({ for: parentId });
 
-    if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
-      return res.status(400).json({
-        msg: `You have already upvoted this ${parentType.toLowerCase()}`
-      });
-
-    if (vote.downvotes.indexOf(req.user.id) >= 0 && req.params.type === "down")
-      return res.status(400).json({
-        msg: `You have already downvoted this ${parentType.toLowerCase()}`
-      });
-
-    if (req.params.type === "up") {
+    if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up") {
+      vote = await Vote.findOneAndUpdate(
+        { for: parentId },
+        { $pull: { upvotes: req.user.id } },
+        { new: true }
+      );
+      res.json({ msg: "Removed upvote" });
+    } else if (
+      vote.downvotes.indexOf(req.user.id) >= 0 &&
+      req.params.type === "down"
+    ) {
+      vote = await Vote.findOneAndUpdate(
+        { for: parentId },
+        { $pull: { downvotes: req.user.id } },
+        { new: true }
+      );
+      res.json({ msg: "Removed downvote" });
+    } else if (req.params.type === "up") {
       vote = await Vote.findOneAndUpdate(
         { for: parentId },
         { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } },
         { new: true }
       );
+      res.json({ msg: "Upvote added" });
     } else {
       vote = await Vote.findOneAndUpdate(
         { for: parentId },
         { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } },
         { new: true }
       );
+      res.json({ msg: "Downvote added" });
     }
 
     // TODO: Update the count after acquiring a lock / use mongoose versioning middleware
@@ -72,8 +81,6 @@ router.post("/:type", checkToken("student"), async (req, res, next) => {
         $set: { upvotes: vote.upvotes.length, downvotes: vote.downvotes.length }
       }
     );
-
-    return res.json({ msg: "Vote added" });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ msg: "Request Failed" });
