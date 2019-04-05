@@ -29,4 +29,9 @@ const replySchema = new Schema({
   }
 });
 
+replySchema.pre("find", function(next) {
+  this.populate({ path: "by", select: { _id: 0, name: 1, id: 1 } });
+  next();
+});
+
 mongoose.model("Reply", replySchema);
