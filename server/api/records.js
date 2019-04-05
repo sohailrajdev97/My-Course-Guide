@@ -139,7 +139,9 @@ router.post("/vote/:type", checkToken("student"), async (req, res, next) => {
     // TODO: Update the count after acquiring a lock / use mongoose versioning middleware
     await Record.updateOne(
       { _id: req.body.record },
-      { $set: { voteCount: vote.upvotes.length - vote.downvotes.length } }
+      {
+        $set: { upvotes: vote.upvotes.length, downvotes: vote.downvotes.length }
+      }
     );
 
     return res.json({ msg: "Vote added" });

@@ -28,7 +28,11 @@ const recordSchema = new Schema(
       type: Boolean,
       default: false
     },
-    voteCount: {
+    upvotes: {
+      type: Number,
+      default: 0
+    },
+    downvotes: {
       type: Number,
       default: 0
     },
