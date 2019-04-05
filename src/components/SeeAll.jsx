@@ -20,7 +20,7 @@ class SeeAll extends Component {
           ? this.state.exapnded
             ? this.props.items
             : this.props.items.slice(0, this.props.count)
-          : `No ${this.props.name} match current filter criteria.`}
+          : `No ${this.props.name} found.`}
         {this.props.items.length <= this.props.count ? null : this.state
             .exapnded ? (
           <Link to="#" onClick={this.toggleState.bind(this)}>
