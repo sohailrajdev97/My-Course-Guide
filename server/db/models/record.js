@@ -31,6 +31,33 @@ const recordSchema = new Schema({
     type: Number,
     default: 0
   },
+  rating: {
+    difficulty: {
+      type: Number,
+      max: 5,
+      min: 0
+    },
+    attendance: {
+      type: Number,
+      max: 5,
+      min: 0
+    },
+    grading: {
+      type: Number,
+      max: 5,
+      min: 0
+    },
+    textbook: {
+      type: Number,
+      max: 5,
+      min: 0
+    },
+    overall: {
+      type: Number,
+      max: 5,
+      min: 0
+    }
+  },
   timestamp: {
     type: Date,
     default: new Date()
