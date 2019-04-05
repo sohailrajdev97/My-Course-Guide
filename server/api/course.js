@@ -5,17 +5,6 @@ const checkToken = require("./authMiddleware");
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 
-router.use((req, res, next) => {
-  let filter = {};
-
-  if (req.user.role !== "admin") {
-    filter.campus = req.user.campus;
-  }
-
-  req.campusFilter = filter;
-  next();
-});
-
 router.get("/", async (req, res, next) => {
   try {
     let courses = await Course.find(req.campusFilter);

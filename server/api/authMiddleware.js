@@ -17,6 +17,15 @@ let checkToken = role => {
         });
       }
       req.user = decoded;
+
+      let filter = {};
+
+      if (req.user.role !== "admin") {
+        filter.campus = req.user.campus;
+      }
+
+      req.campusFilter = filter;
+
       next();
     });
   };
