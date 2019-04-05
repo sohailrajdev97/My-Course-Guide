@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+const as = require("async");
 const checkToken = require("./authMiddleware");
+
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 const Record = mongoose.model("Record");
@@ -24,17 +26,26 @@ router.get(
         course: course._id,
         type: "Review"
       });
-      let questions = await Record.find(
-        {
-          course: course._id,
-          type: "Question"
+      let questions = await Record.find({
+        course: course._id,
+        type: "Question"
+      }).lean();
+      as.each(
+        questions,
+        async question => {
+          question.answers = await Reply.find({ record: question._id })
+            .select({
+              _id: 0,
+              time: 1,
+              content: 1,
+              replierType: 1
+            })
+            .lean();
         },
-        { lean: true }
+        () => {
+          return res.json({ questions, reviews });
+        }
       );
-      questions.forEach(async question => {
-        question.answers = await Reply.find({ record: question._id });
-      });
-      return res.json({ questions, reviews });
     } catch (e) {
       console.log(e);
       return res.status(500).json({ msg: "Request failed" });
