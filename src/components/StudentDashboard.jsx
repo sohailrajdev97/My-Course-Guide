@@ -161,7 +161,7 @@ class StudentDashboard extends Component {
       );
 >>>>>>> stud-dash: Fix invalid id
     });
-    return <SeeAll items={departments} count={5} />;
+    return <SeeAll items={departments} count={5} name="departments" />;
   }
 
   generateProfessorForm() {
@@ -194,7 +194,7 @@ class StudentDashboard extends Component {
         );
       }
     });
-    return <SeeAll items={professors} count={5} />;
+    return <SeeAll items={professors} count={5} name="professors" />;
   }
   generateCourseList() {
     let courses = [];
@@ -222,7 +222,7 @@ class StudentDashboard extends Component {
         );
       }
     });
-    return <SeeAll items={courses} count={10} />;
+    return <SeeAll items={courses} count={10} name="courses" />;
   }
   changeActiveKeys(newKeys) {
     let filter = { ...this.state.filter };
