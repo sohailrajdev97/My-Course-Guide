@@ -30,7 +30,17 @@ const recordSchema = new Schema({
   voteCount: {
     type: Number,
     default: 0
+  },
+  timestamp: {
+    type: Date,
+    default: new Date()
   }
+});
+
+recordSchema.pre("find", function(next) {
+  this.populate({ path: "student", select: "name" });
+  this.select("type content voteCount isAnonymous timestamp");
+  next();
 });
 
 mongoose.model("Record", recordSchema);

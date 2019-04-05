@@ -5,8 +5,42 @@ const checkToken = require("./authMiddleware");
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 const Record = mongoose.model("Record");
+const Reply = mongoose.model("Reply");
 const Student = mongoose.model("Student");
 const Vote = mongoose.model("Vote");
+
+router.get(
+  "/:course",
+  checkToken(["admin", "student", "professor", "hod"]),
+  async (req, res, next) => {
+    try {
+      let course = await Course.findOne({
+        id: req.params.course,
+        ...req.campusFilter
+      });
+      if (!course) return res.status(404).json({ msg: "Course not found" });
+
+      let reviews = await Record.find({
+        course: course._id,
+        type: "Review"
+      });
+      let questions = await Record.find(
+        {
+          course: course._id,
+          type: "Question"
+        },
+        { lean: true }
+      );
+      questions.forEach(async question => {
+        question.answers = await Reply.find({ record: question._id });
+      });
+      return res.json({ questions, reviews });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ msg: "Request failed" });
+    }
+  }
+);
 
 router.post("/", checkToken(["student"]), async (req, res, next) => {
   if (!req.body.course)
