@@ -16,9 +16,11 @@ class SeeAll extends Component {
   render() {
     return (
       <div>
-        {this.state.exapnded
-          ? this.props.items
-          : this.props.items.slice(0, this.props.count)}
+        {this.props.items.length > 0
+          ? this.state.exapnded
+            ? this.props.items
+            : this.props.items.slice(0, this.props.count)
+          : `No ${this.props.name} match current filter criteria.`}
         {this.props.items.length <= this.props.count ? null : this.state
             .exapnded ? (
           <Link to="#" onClick={this.toggleState.bind(this)}>

@@ -81,7 +81,7 @@ class ProfDashboard extends Component {
         />
       );
     });
-    return <SeeAll items={courses} count={5} />;
+    return <SeeAll items={courses} count={5} name="courses" />;
   }
   generateReviewsList() {
     let reviews = [];
@@ -108,7 +108,7 @@ class ProfDashboard extends Component {
         );
       }
     });
-    return <SeeAll items={reviews} count={10} />;
+    return <SeeAll items={reviews} count={10} name="reviews" />;
   }
   changeActiveKeys(newKeys) {
     let filter = { ...this.state.filter };
