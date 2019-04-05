@@ -86,6 +86,7 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       type: req.body.type,
       content: req.body.content,
       student: req.user.id,
+      rating: req.body.rating,
       isAnonymous: req.body.isAnonymous ? true : false
     });
 
