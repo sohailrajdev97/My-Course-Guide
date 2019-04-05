@@ -23,6 +23,8 @@ class StudentDashboard extends Component {
       filter: {
         activeKeys: ["filter-time", "filter-type", "filter-dept"],
         selectedDepartments: [],
+        departmentSearchField: "",
+        profSearchField: "",
         selectedProfs: []
       }
     };
@@ -98,37 +100,60 @@ class StudentDashboard extends Component {
 
     return deptFilter && profFilter;
   }
+  departmentSearchFieldChange(e) {
+    let filter = { ...this.state.filter };
+    filter.departmentSearchField = e.target.value;
+    this.setState({ filter });
+  }
+
+  profSearchFieldChange(e) {
+    let filter = { ...this.state.filter };
+    filter.profSearchField = e.target.value;
+    this.setState({ filter });
+  }
+
   generateDepartmentForm() {
     let departments = [];
     this.state.departments.forEach(department => {
-      let id = Array.join(department.split(" "));
-      departments.push(
-        <Form.Check
-          type="checkbox"
-          label={department}
-          key={`dept-${department}`}
-          id={id}
-          checked={
-            this.state.filter.selectedDepartments.indexOf(department) >= 0
-              ? true
-              : false
-          }
-          onChange={event => {
-            this.selectFilterItem("department", event);
-          }}
-          value={department}
-        />
-      );
+      // let id = Array.join(department.split(" "));
+      if (
+        department
+          .toLowerCase()
+          .indexOf(this.state.filter.departmentSearchField.toLowerCase()) >= 0
+      ) {
+        let id = department;
+        departments.push(
+          <Form.Check
+            type="checkbox"
+            label={department}
+            key={`dept-${department}`}
+            id={id}
+            checked={
+              this.state.filter.selectedDepartments.indexOf(department) >= 0
+                ? true
+                : false
+            }
+            onChange={event => {
+              this.selectFilterItem("department", event);
+            }}
+            value={department}
+          />
+        );
+      }
     });
     return <SeeAll items={departments} count={5} />;
   }
+
   generateProfessorForm() {
     let professors = [];
     this.state.professors.forEach(professor => {
       if (
-        this.state.filter.selectedDepartments.indexOf(professor.department) >=
+        (this.state.filter.selectedDepartments.indexOf(professor.department) >=
           0 ||
-        this.state.filter.selectedDepartments.length === 0
+          this.state.filter.selectedDepartments.length === 0) &&
+        professor.name
+          .toLowerCase()
+          .indexOf(this.state.filter.profSearchField.toLowerCase()) >= 0
       ) {
         professors.push(
           <Form.Check
@@ -244,10 +269,28 @@ class StudentDashboard extends Component {
                     </Form.Group>
                   </Collapse.Panel>
                   <Collapse.Panel header="Department" key="filter-dept">
-                    <Form.Group>{this.generateDepartmentForm()}</Form.Group>
+                    <Form.Control
+                      type="text"
+                      style={{ marginBottom: "5px" }}
+                      placeholder="Search Department"
+                      onChange={this.departmentSearchFieldChange.bind(this)}
+                      value={this.state.filter.departmentSearchField}
+                    />
+                    <Form.Group style={{ marginLeft: "10px" }}>
+                      {this.generateDepartmentForm()}
+                    </Form.Group>
                   </Collapse.Panel>
                   <Collapse.Panel header="Professor" key="filter-prof">
-                    <Form.Group>{this.generateProfessorForm()}</Form.Group>
+                    <Form.Control
+                      type="text"
+                      style={{ marginBottom: "5px" }}
+                      placeholder="Search Professor"
+                      onChange={this.profSearchFieldChange.bind(this)}
+                      value={this.state.filter.profSearchField}
+                    />
+                    <Form.Group style={{ marginLeft: "10px" }}>
+                      {this.generateProfessorForm()}
+                    </Form.Group>
                   </Collapse.Panel>
                 </Collapse>
               </Col>
