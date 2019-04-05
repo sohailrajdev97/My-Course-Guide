@@ -1,0 +1,83 @@
+const express = require("express");
+const router = express.Router();
+
+const mongoose = require("mongoose");
+const Record = mongoose.model("Record");
+const Vote = mongoose.model("Vote");
+const checkToken = require("./authMiddleware");
+
+router.get("/", checkToken("student"), async (req, res, next) => {
+  try {
+    let upvotes = await Vote.find({ upvotes: req.user.id }).select({
+      _id: 0,
+      record: 1
+    });
+    let downvotes = await Vote.find({ downvotes: req.user.id }).select({
+      _id: 0,
+      record: 1
+    });
+    return res.json({ upvotes, downvotes });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ msg: "Request Failed" });
+  }
+});
+
+router.post("/:type", checkToken("student"), async (req, res, next) => {
+  if (req.params.type !== "up" && req.params.type !== "down")
+    return res.status(404).send();
+
+  if (!req.body.record && !req.body.reply)
+    return res.json(400, { msg: "Supply a record / reply id in request body" });
+
+  let parentType = req.body.reply ? "Reply" : "Record";
+  let parentModel = mongoose.model(parentType);
+  let parentId = req.body.reply || req.body.record;
+
+  try {
+    let parent = await parentModel.findOne({ _id: parentId });
+
+    if (!parent) return res.status(404).json({ msg: "Parent not found" });
+
+    let vote = await Vote.findOne({ for: parentId });
+
+    if (vote.upvotes.indexOf(req.user.id) >= 0 && req.params.type === "up")
+      return res.status(400).json({
+        msg: `You have already upvoted this ${parentType.toLowerCase()}`
+      });
+
+    if (vote.downvotes.indexOf(req.user.id) >= 0 && req.params.type === "down")
+      return res.status(400).json({
+        msg: `You have already downvoted this ${parentType.toLowerCase()}`
+      });
+
+    if (req.params.type === "up") {
+      vote = await Vote.findOneAndUpdate(
+        { for: parentId },
+        { $push: { upvotes: req.user.id }, $pull: { downvotes: req.user.id } },
+        { new: true }
+      );
+    } else {
+      vote = await Vote.findOneAndUpdate(
+        { for: parentId },
+        { $push: { downvotes: req.user.id }, $pull: { upvotes: req.user.id } },
+        { new: true }
+      );
+    }
+
+    // TODO: Update the count after acquiring a lock / use mongoose versioning middleware
+    await parentModel.updateOne(
+      { _id: parentId },
+      {
+        $set: { upvotes: vote.upvotes.length, downvotes: vote.downvotes.length }
+      }
+    );
+
+    return res.json({ msg: "Vote added" });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ msg: "Request Failed" });
+  }
+});
+
+module.exports = router;

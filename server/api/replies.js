@@ -5,6 +5,7 @@ const checkToken = require("./authMiddleware");
 const mongoose = require("mongoose");
 const Record = mongoose.model("Record");
 const Reply = mongoose.model("Reply");
+const Vote = mongoose.model("Vote");
 
 router.post("/", checkToken("student"), async (req, res, next) => {
   if (!req.body.record)
@@ -26,13 +27,13 @@ router.post("/", checkToken("student"), async (req, res, next) => {
     admin: "Admin"
   };
 
-  await Reply.create({
+  let reply = await Reply.create({
     record: req.body.record,
     content: req.body.content,
     replierType: typeHash[req.user.role],
     by: req.user.id
   });
-
+  await Vote.create({ for: reply._id, forModel: "Reply" });
   return res.json({ msg: "Reply posted" });
 });
 
