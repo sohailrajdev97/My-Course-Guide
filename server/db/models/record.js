@@ -1,72 +1,74 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const recordSchema = new Schema({
-  course: {
-    _id: false,
-    type: Schema.Types.ObjectId,
-    ref: "Course",
-    index: true,
-    required: true
-  },
-  type: {
-    type: String, // "Review" or "Question"
-    required: true
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  student: {
-    _id: false,
-    type: Schema.Types.ObjectId,
-    index: true,
-    ref: "Student"
-  },
-  isAnonymous: {
-    type: Boolean,
-    default: false
-  },
-  voteCount: {
-    type: Number,
-    default: 0
-  },
-  rating: {
-    difficulty: {
-      type: Number,
-      max: 5,
-      min: 0
+const recordSchema = new Schema(
+  {
+    course: {
+      _id: false,
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      index: true,
+      required: true
     },
-    attendance: {
-      type: Number,
-      max: 5,
-      min: 0
+    type: {
+      type: String, // "Review" or "Question"
+      required: true
     },
-    grading: {
-      type: Number,
-      max: 5,
-      min: 0
+    content: {
+      type: String,
+      required: true
     },
-    textbook: {
-      type: Number,
-      max: 5,
-      min: 0
+    student: {
+      _id: false,
+      type: Schema.Types.ObjectId,
+      index: true,
+      ref: "Student"
     },
-    overall: {
+    isAnonymous: {
+      type: Boolean,
+      default: false
+    },
+    voteCount: {
       type: Number,
-      max: 5,
-      min: 0
+      default: 0
+    },
+    rating: {
+      difficulty: {
+        type: Number,
+        max: 5,
+        min: 0
+      },
+      attendance: {
+        type: Number,
+        max: 5,
+        min: 0
+      },
+      grading: {
+        type: Number,
+        max: 5,
+        min: 0
+      },
+      textbook: {
+        type: Number,
+        max: 5,
+        min: 0
+      },
+      overall: {
+        type: Number,
+        max: 5,
+        min: 0
+      }
     }
   },
-  timestamp: {
-    type: Date,
-    default: new Date()
+  {
+    timestamps: true
   }
-});
+);
 
 recordSchema.pre("find", function(next) {
   this.populate({ path: "student", select: "name" });
-  this.select("type content voteCount isAnonymous timestamp");
+  this.select("type content voteCount isAnonymous createdAt");
+  this.sort("-createdAt");
   next();
 });
 
