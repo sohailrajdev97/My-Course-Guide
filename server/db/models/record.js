@@ -72,4 +72,11 @@ recordSchema.pre("find", function(next) {
   next();
 });
 
+recordSchema.post("find", function(records, next) {
+  records.forEach(record => {
+    if (record.isAnonymous) delete record.student;
+  });
+  next();
+});
+
 mongoose.model("Record", recordSchema);
