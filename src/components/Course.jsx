@@ -7,31 +7,43 @@ import Col from "react-bootstrap/Col";
 import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
 
+import QuestionSection from "./QuestionSection";
+
 class Course extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      course: null
+      course: null,
+      questions: null,
+      reviews: null
     };
   }
-  getCourse(id) {
-    if (this.props.match.params.campus) {
-      axiosGET(
-        `/api/courses/${id}?campus=${this.props.match.params.campus}`
-      ).then(res => {
-        this.setState({ course: res.data });
-      });
-    } else {
-      axiosGET(`/api/courses/${id}`).then(res => {
-        this.setState({ course: res.data });
-      });
+  async getCourse(id) {
+    const params = this.props.match.params;
+    const url =
+      `/api/courses/${id}` + (params.campus ? `?campus=${params.campus}` : "");
+    try {
+      let res = await axiosGET(url);
+      this.setState({ course: res.data });
+      this.getRecords();
+    } catch (e) {
+      console.log(e);
     }
+  }
+  getRecords() {
+    if (!this.state.course) {
+      return;
+    }
+    axiosGET(`/api/records/${this.state.course.id}`).then(res => {
+      this.setState({ ...res.data });
+    });
   }
   componentDidMount() {
     this.getCourse(this.props.match.params.id);
   }
   componentWillReceiveProps(nextProps) {
     this.getCourse(nextProps.match.params.id);
+    this.getRecords();
   }
   generateHistory() {
     let history = [];
@@ -45,7 +57,7 @@ class Course extends Component {
     }
     let getCards = () => {
       return this.state.course.history.map(item => (
-        <Card key={item.year * 10 + item.sem}>
+        <Card key={item.year * 10 + item.semester}>
           <Card.Body
             style={{
               minWidth: "7rem",
@@ -85,6 +97,9 @@ class Course extends Component {
               {getCards()}
             </CardDeck>
           </Row>
+          <br />
+          <h3>Questions</h3>
+          <QuestionSection questions={this.state.questions} />
         </Container>
       </div>
     );
