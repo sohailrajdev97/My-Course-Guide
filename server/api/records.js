@@ -94,6 +94,9 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
   if (req.body.rating && req.body.type === "Question")
     return res.json(400, { msg: "Rating is only allowed for the type Review" });
 
+  if (req.body.type === "Review" && !req.body.rating)
+    return res.json(400, { msg: "Rating is required for Review" });
+
   if (req.body.type === "Review") {
     let params = ["overall", "difficulty", "attendance", "textbook", "grading"];
     let msg = null;

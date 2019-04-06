@@ -25,11 +25,11 @@ class ProfDashboard extends Component {
     };
   }
   componentDidMount() {
-    axiosGET("/api/reviews").then(res => {
+    axiosGET("/api/records").then(res => {
       let courseIDs = new Set();
       let courses = [];
       let reviews = [];
-      res.data.forEach(review => {
+      res.data.reviews.forEach(review => {
         reviews.push(review);
         if (!courseIDs.has(review.course.id)) {
           courseIDs.add(review.course.id);
