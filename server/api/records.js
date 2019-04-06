@@ -25,7 +25,8 @@ let fetchRecords = async params => {
         _id: 0,
         time: 1,
         content: 1,
-        replierType: 1
+        replierType: 1,
+        createdAt: 1
       })
       .lean();
   }
