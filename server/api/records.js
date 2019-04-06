@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const as = require("async");
 const checkToken = require("./authMiddleware");
 
 const mongoose = require("mongoose");
@@ -11,9 +10,59 @@ const Reply = mongoose.model("Reply");
 const Student = mongoose.model("Student");
 const Vote = mongoose.model("Vote");
 
+let fetchRecords = async params => {
+  let reviews = await Record.find({
+    ...params,
+    type: "Review"
+  });
+  let questions = await Record.find({
+    ...params,
+    type: "Question"
+  }).lean();
+  for (let question of questions) {
+    question.answers = await Reply.find({ record: question._id })
+      .select({
+        _id: 0,
+        time: 1,
+        content: 1,
+        replierType: 1
+      })
+      .lean();
+  }
+  return { reviews, questions };
+};
+
+router.get(
+  "/",
+  checkToken(["student", "prof", "hod"]),
+  async (req, res, next) => {
+    try {
+      if (req.user.role === "student") {
+        let records = await fetchRecords({ student: req.user.id });
+        return res.status(200).json(records);
+      } else {
+        let courses = await Course.find({
+          "history.professor": req.user.id
+        });
+        let records = { reviews: [], questions: [] };
+        for (let course of courses) {
+          let courseRecords = await fetchRecords({ course });
+          Object.keys(courseRecords).forEach(key => {
+            records[key].push(...courseRecords[key]);
+          });
+        }
+        return res.status(200).json(records);
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ msg: "Request failed" });
+    }
+  }
+);
+
 router.get(
   "/:course",
-  checkToken(["admin", "student", "professor", "hod"]),
+  checkToken(["admin", "student", "prof", "hod"]),
   async (req, res, next) => {
     try {
       let course = await Course.findOne({
@@ -21,31 +70,8 @@ router.get(
         ...req.campusFilter
       });
       if (!course) return res.status(404).json({ msg: "Course not found" });
-
-      let reviews = await Record.find({
-        course: course._id,
-        type: "Review"
-      });
-      let questions = await Record.find({
-        course: course._id,
-        type: "Question"
-      }).lean();
-      as.each(
-        questions,
-        async question => {
-          question.answers = await Reply.find({ record: question._id })
-            .select({
-              _id: 0,
-              time: 1,
-              content: 1,
-              replierType: 1
-            })
-            .lean();
-        },
-        () => {
-          return res.json({ questions, reviews });
-        }
-      );
+      let records = await fetchRecords({ course });
+      return res.json(records);
     } catch (e) {
       console.log(e);
       return res.status(500).json({ msg: "Request failed" });

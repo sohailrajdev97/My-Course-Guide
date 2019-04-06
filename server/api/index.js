@@ -16,18 +16,14 @@ router.all("/", (req, res, next) => {
 });
 
 router.use("/auth", auth);
-router.use(
-  "/courses",
-  checkToken(["admin", "student", "professor", "hod"]),
-  course
-);
+router.use("/courses", checkToken(["admin", "student", "prof", "hod"]), course);
 router.use("/csv", checkToken("admin"), csv);
 router.use("/records", records);
 router.use("/replies", replies);
 router.use("/votes", votes);
 router.use(
   "/professors",
-  checkToken(["admin", "student", "professor", "hod"]),
+  checkToken(["admin", "student", "prof", "hod"]),
   professors
 );
 
