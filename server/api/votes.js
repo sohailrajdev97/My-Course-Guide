@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const mongoose = require("mongoose");
-const Record = mongoose.model("Record");
 const Vote = mongoose.model("Vote");
 const checkToken = require("./authMiddleware");
 
@@ -10,13 +9,25 @@ router.get("/", checkToken("student"), async (req, res, next) => {
   try {
     let upvotes = await Vote.find({ upvotes: req.user.id }).select({
       _id: 0,
-      record: 1
+      for: 1,
+      forModel: 1
     });
     let downvotes = await Vote.find({ downvotes: req.user.id }).select({
       _id: 0,
-      record: 1
+      for: 1,
+      forModel: 1
     });
-    return res.json({ upvotes, downvotes });
+    let response = {
+      Record: {},
+      Reply: {}
+    };
+    upvotes.forEach(vote => {
+      response[vote.forModel][vote.for] = "up";
+    });
+    downvotes.forEach(vote => {
+      response[vote.forModel][vote.for] = "down";
+    });
+    return res.json(response);
   } catch (e) {
     console.log(e);
     return res.status(500).json({ msg: "Request Failed" });
