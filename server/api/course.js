@@ -14,7 +14,7 @@ router.get("/", async (req, res, next) => {
       courses = await Course.find({
         ...req.campusFilter,
         "history.professor": prof
-      }).select("id name");
+      }).select({ id: 1, name: 1, history: 1, campus: 0 });
     } else {
       courses = await Course.find(req.campusFilter);
     }
