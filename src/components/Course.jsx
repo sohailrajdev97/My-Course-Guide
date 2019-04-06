@@ -16,11 +16,11 @@ class Course extends Component {
   }
   getCourse(id) {
     if (this.props.match.params.campus) {
-      axiosGET(`/api/courses/${id}/${this.props.match.params.campus}`).then(
-        res => {
-          this.setState({ course: res.data });
-        }
-      );
+      axiosGET(
+        `/api/courses/${id}?campus=${this.props.match.params.campus}`
+      ).then(res => {
+        this.setState({ course: res.data });
+      });
     } else {
       axiosGET(`/api/courses/${id}`).then(res => {
         this.setState({ course: res.data });

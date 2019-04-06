@@ -24,6 +24,10 @@ let checkToken = role => {
         filter.campus = req.user.campus;
       }
 
+      if (req.user.role === "admin" && req.query.campus) {
+        filter.campus = req.query.campus;
+      }
+
       req.campusFilter = filter;
 
       next();
