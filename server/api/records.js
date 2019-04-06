@@ -65,6 +65,32 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       .status(400)
       .json({ msg: "Supply a record content in request body" });
 
+  if (req.body.rating && req.body.type === "Question")
+    return res.json(400, { msg: "Rating is only allowed for the type Review" });
+
+  if (req.body.type === "Review") {
+    let params = ["overall", "difficulty", "attendance", "textbook", "grading"];
+    let msg = null;
+
+    params.forEach(param => {
+      if (!req.body.rating[param]) {
+        msg = `Supply rating[${param}] in request body`;
+        return;
+      }
+
+      if (
+        parseFloat(req.body.rating[param]) < 0 ||
+        parseFloat(req.body.rating[param]) > 5
+      ) {
+        msg = `Invalid value for rating[${param}]`;
+        return;
+      }
+      req.body.rating[param] = parseInt(req.body.rating[param]);
+    });
+
+    if (msg) return res.json(400, { msg });
+  }
+
   let courseId = req.body.course;
   let user = await Student.findOne({ _id: req.user.id });
   let userCourses = user.courses.map(course => course.id.toString());
