@@ -90,6 +90,34 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       isAnonymous: req.body.isAnonymous ? true : false
     });
 
+    let numQuestions = await Record.count({ type: "Question", course });
+    let numReviews = await Record.count({ type: "Review", course });
+    let averages = await Record.aggregate([
+      {
+        $group: {
+          _id: "$course",
+          overall: { $avg: "$rating.overall" },
+          difficulty: { $avg: "$rating.difficulty" },
+          grading: { $avg: "$rating.grading" },
+          textbook: { $avg: "$rating.textbook" },
+          attendance: { $avg: "$rating.attendance" }
+        }
+      },
+      {
+        $match: {
+          _id: course._id
+        }
+      }
+    ]);
+
+    await Course.updateOne(course, {
+      $set: {
+        numQuestions,
+        numReviews,
+        averages: averages[0]
+      }
+    });
+
     await Vote.create({ for: record._id, forModel: "Record" });
     return res.json({ msg: "Record Created" });
   } catch (e) {
