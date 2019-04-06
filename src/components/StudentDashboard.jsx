@@ -116,19 +116,17 @@ class StudentDashboard extends Component {
     let departments = [];
     this.state.departments.forEach(department => {
       // let id = Array.join(department.split(" "));
-<<<<<<< HEAD
       if (
         department
           .toLowerCase()
           .indexOf(this.state.filter.departmentSearchField.toLowerCase()) >= 0
       ) {
-        let id = department;
         departments.push(
           <Form.Check
             type="checkbox"
             label={department}
             key={`dept-${department}`}
-            id={id}
+            id={department}
             checked={
               this.state.filter.selectedDepartments.indexOf(department) >= 0
                 ? true
@@ -141,25 +139,6 @@ class StudentDashboard extends Component {
           />
         );
       }
-=======
-      departments.push(
-        <Form.Check
-          type="checkbox"
-          label={department}
-          key={`dept-${department}`}
-          id={department}
-          checked={
-            this.state.filter.selectedDepartments.indexOf(department) >= 0
-              ? true
-              : false
-          }
-          onChange={event => {
-            this.selectFilterItem("department", event);
-          }}
-          value={department}
-        />
-      );
->>>>>>> stud-dash: Fix invalid id
     });
     return <SeeAll items={departments} count={5} name="departments" />;
   }
