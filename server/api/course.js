@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const checkToken = require("./authMiddleware");
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
 
@@ -29,20 +28,6 @@ router.get("/name/:name", async (req, res, next) => {
   } catch (e) {
     console.log(e);
     return res.status(500).json({});
-  }
-});
-
-router.get("/:id/:campus", checkToken("admin"), async (req, res, next) => {
-  try {
-    let course = await Course.findOne({
-      id: req.params.id,
-      campus: req.params.campus
-    });
-    if (!course) return res.status(404).json({ msg: "Course not found" });
-    return res.json(course);
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({});
   }
 });
 
