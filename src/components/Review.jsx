@@ -21,9 +21,6 @@ class Review extends Component {
   componentDidMount() {
     this.setState({ review: this.props.review, vote: this.props.vote });
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-  }
 
   render() {
     let isStudent = getDecodedToken().role === "student";
