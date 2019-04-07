@@ -10,6 +10,8 @@ import Review from "./Review";
 
 import SeeAll from "./SeeAll";
 import QuestionSection from "./QuestionSection";
+import Collapse from "rc-collapse";
+require("rc-collapse/assets/index.css");
 
 class Course extends Component {
   constructor(props) {
@@ -77,13 +79,11 @@ class Course extends Component {
     }
     let getCards = () => {
       return this.state.course.history.map(item => (
-        <Card key={item.year * 10 + item.semester}>
-          <Card.Body
-            style={{
-              minWidth: "7rem",
-              minHeight: "10rem"
-            }}
-          >
+        <Card
+          key={item.year * 10 + item.semester}
+          style={{ minWidth: "7rem", maxWidth: "12rem" }}
+        >
+          <Card.Body style={{ minHeight: "10rem" }}>
             <Card.Title>
               <h5>{item.year}</h5>
               <h6>Sem {item.semester}</h6>
@@ -111,12 +111,18 @@ class Course extends Component {
           </Row>
           <br />
           <br />
-          <p>Download Previous Year Handouts</p>
-          <Row style={{ overflowX: "auto" }}>
-            <CardDeck className="d-flex flex-row flex-nowrap">
-              {getCards()}
-            </CardDeck>
-          </Row>
+          <Collapse>
+            <Collapse.Panel header="Download Previous Year Handouts">
+              <Row style={{ overflowX: "auto" }}>
+                <CardDeck
+                  className="d-flex flex-row flex-nowrap"
+                  style={{ marginLeft: "0.125rem" }}
+                >
+                  {getCards()}
+                </CardDeck>
+              </Row>
+            </Collapse.Panel>
+          </Collapse>
           <br />
           <h3>Questions</h3>
           <QuestionSection
