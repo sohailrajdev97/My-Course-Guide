@@ -3,10 +3,8 @@ import Collapse from "rc-collapse";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
-import TimeAgo from "react-timeago";
-import Review from './Review';
+import Review from "./Review";
 
 import SeeAll from "./SeeAll";
 import { axiosGET } from "../utils/axiosClient";
@@ -88,9 +86,7 @@ class ProfDashboard extends Component {
     let reviews = [];
     this.state.reviews.forEach(review => {
       if (this.checkFilters(review)) {
-        reviews.push(
-          <Review key={`${review._id}`} review={review}/>
-        );
+        reviews.push(<Review key={`${review._id}`} review={review} />);
       }
     });
     return <SeeAll items={reviews} count={10} name="reviews" />;
