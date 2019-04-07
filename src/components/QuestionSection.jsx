@@ -39,30 +39,39 @@ class QuestionSection extends Component {
                       ? `${answer.by.id}`
                       : "Professor")}
                 </small>
-                {isStudent && (
-                  <ToggleButtonGroup
-                    type="checkbox"
-                    onChange={value => {
-                      axiosPOST("/api/votes/up", {
-                        reply: answer._id
-                      }).then(() => {
-                        let votes = this.state.votes.Reply;
-                        if (votes[answer._id]) {
-                          delete votes[answer._id];
-                        } else {
-                          votes[answer._id] = "up";
-                        }
-                        this.setState({ "votes.Reply": votes });
-                      });
-                    }}
-                    defaultValue={this.state.votes.Reply[answer._id] ? [1] : []}
+                <ToggleButtonGroup
+                  type="checkbox"
+                  onChange={value => {
+                    axiosPOST("/api/votes/up", {
+                      reply: answer._id
+                    }).then(() => {
+                      let votes = this.state.votes.Reply;
+                      if (votes[answer._id]) {
+                        delete votes[answer._id];
+                        answer.upvotes--;
+                      } else {
+                        votes[answer._id] = "up";
+                        answer.upvotes++;
+                      }
+                      this.setState({ "votes.Reply": votes });
+                    });
+                  }}
+                  defaultValue={
+                    isStudent && this.state.votes.Reply[answer._id] ? [1] : []
+                  }
+                >
+                  <ToggleButton
+                    value={1}
+                    variant="outline-success"
+                    size="sm"
+                    disabled={!isStudent}
                   >
-                    <ToggleButton value={1} variant="outline-success" size="sm">
-                      {this.state.votes.Reply[answer._id] ? "Marked" : "Mark"}{" "}
-                      as helpful
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                )}
+                    {isStudent && this.state.votes.Reply[answer._id]
+                      ? "Marked"
+                      : "Mark"}{" "}
+                    as helpful ({answer.upvotes})
+                  </ToggleButton>
+                </ToggleButtonGroup>
               </div>
             </Card.Body>
           </Card>
@@ -87,34 +96,37 @@ class QuestionSection extends Component {
                     ? "Anonymous"
                     : `${ques.student.name} - ${ques.student.id}`}
                 </small>
-                {isStudent && (
-                  <ToggleButtonGroup
-                    type="checkbox"
-                    onChange={value => {
-                      axiosPOST("/api/votes/up", {
-                        record: ques._id
-                      }).then(() => {
-                        let votes = this.state.votes.Record;
-                        if (votes[ques._id]) {
-                          delete votes[ques._id];
-                        } else {
-                          votes[ques._id] = "up";
-                        }
-                        this.setState({ "votes.Record": votes });
-                      });
-                    }}
-                    defaultValue={this.state.votes.Record[ques._id] ? [1] : []}
+                <ToggleButtonGroup
+                  type="checkbox"
+                  onChange={value => {
+                    axiosPOST("/api/votes/up", {
+                      record: ques._id
+                    }).then(() => {
+                      let votes = this.state.votes.Record;
+                      if (votes[ques._id]) {
+                        delete votes[ques._id];
+                        ques.upvotes--;
+                      } else {
+                        votes[ques._id] = "up";
+                        ques.upvotes++;
+                      }
+                      this.setState({ "votes.Record": votes });
+                    });
+                  }}
+                  defaultValue={
+                    isStudent && this.state.votes.Record[ques._id] ? [1] : []
+                  }
+                >
+                  <ToggleButton
+                    disabled={!isStudent}
+                    value={1}
+                    variant="outline-secondary"
+                    size="sm"
+                    style={{ marginRight: "5px" }}
                   >
-                    <ToggleButton
-                      value={1}
-                      variant="outline-secondary"
-                      size="sm"
-                      style={{ marginRight: "5px" }}
-                    >
-                      I also had this question
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                )}
+                    I also had this question ({ques.upvotes})
+                  </ToggleButton>
+                </ToggleButtonGroup>
               </div>
               {genAnswers(ques)}
             </Card.Body>

@@ -9,7 +9,6 @@ const Record = mongoose.model("Record");
 const Reply = mongoose.model("Reply");
 const Student = mongoose.model("Student");
 const Vote = mongoose.model("Vote");
-const _ = require("lodash");
 
 let fetchRecords = async params => {
   let reviews = await Record.find({
@@ -22,18 +21,20 @@ let fetchRecords = async params => {
   }).lean();
 
   reviews.forEach(review => {
-    review.course = _.pick(review.course, ["_id", "name", "id"]);
+    delete review.course.history;
   });
 
   for (let question of questions) {
-    question.course = _.pick(question.course, ["_id", "name", "id"]);
+    delete question.course.history;
     question.answers = await Reply.find({ record: question._id })
       .select({
         _id: 1,
         time: 1,
         content: 1,
         replierType: 1,
-        createdAt: 1
+        createdAt: 1,
+        upvotes: 1,
+        downvotes: 1
       })
       .lean();
   }
