@@ -28,6 +28,7 @@
     "path": "^0.12.7",
     "qs": "^6.6.0",
     "rc-collapse": "^1.11.1",
+    "rc-slider": "^8.6.9",
     "react": "^16.8.4",
     "react-bootstrap": "^1.0.0-beta.5",
     "react-bootstrap-typeahead": "^4.0.0-alpha.2",

@@ -12,7 +12,9 @@ import ButtonToolbar from "react-bootstrap/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import SeeAll from "./SeeAll";
 import QuestionSection from "./QuestionSection";
+import Composer from "./Composer";
 import Collapse from "rc-collapse";
+import Button from "react-bootstrap/Button";
 require("rc-collapse/assets/index.css");
 const _ = require("lodash");
 
@@ -23,7 +25,8 @@ class Course extends Component {
       course: null,
       questions: [],
       reviews: [],
-      votes: { Record: null, Reply: null }
+      votes: { Record: null, Reply: null },
+      showComposer: false
     };
   }
   async getCourse(id) {
@@ -133,7 +136,17 @@ class Course extends Component {
             votes={this.state.votes}
           />
           <br />
-          <h3>Reviews</h3>
+          <h3>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                this.setState({ showComposer: true });
+              }}
+            >
+              +
+            </Button>{" "}
+            Reviews
+          </h3>
           <Form.Label>Sort By: </Form.Label>
           <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
             <ToggleButtonGroup
@@ -185,8 +198,15 @@ class Course extends Component {
               </ToggleButton>
             </ToggleButtonGroup>
           </ButtonToolbar>
-          {this.generateReviewsList()}
+          <Col>{this.generateReviewsList()}</Col>
         </Container>
+        <Composer
+          show={this.state.showComposer}
+          onHide={() => {
+            this.setState({ showComposer: false });
+          }}
+          course={this.state.course}
+        />
       </div>
     );
   }
