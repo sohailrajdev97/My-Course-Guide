@@ -34,7 +34,10 @@ class QuestionSection extends Component {
               <div className="d-flex justify-content-between">
                 <small className="text-muted">
                   Submitted <TimeAgo date={answer.createdAt} /> by{" "}
-                  {`${answer.by.name} - ${answer.by.id}`}
+                  {`${answer.by.name} - ` +
+                    (answer.replierType === "Student"
+                      ? `${answer.by.id}`
+                      : "Professor")}
                 </small>
                 {isStudent && (
                   <ToggleButtonGroup
@@ -68,9 +71,11 @@ class QuestionSection extends Component {
 
       return <SeeAll items={answers} count={1} name="answers" />;
     };
-    return (
-      <Container>
-        {this.state.questions.map(ques => (
+
+    let genQuestions = questions => {
+      let items = [];
+      questions.forEach(ques => {
+        items.push(
           <Card key={ques._id}>
             <Card.Body>
               {ques.content}
@@ -86,17 +91,17 @@ class QuestionSection extends Component {
                   <ToggleButtonGroup
                     type="checkbox"
                     onChange={value => {
-                      axiosPOST("/api/votes/up", { record: ques._id }).then(
-                        () => {
-                          let votes = this.state.votes.Record;
-                          if (votes[ques._id]) {
-                            delete votes[ques._id];
-                          } else {
-                            votes[ques._id] = "up";
-                          }
-                          this.setState({ "votes.Record": votes });
+                      axiosPOST("/api/votes/up", {
+                        record: ques._id
+                      }).then(() => {
+                        let votes = this.state.votes.Record;
+                        if (votes[ques._id]) {
+                          delete votes[ques._id];
+                        } else {
+                          votes[ques._id] = "up";
                         }
-                      );
+                        this.setState({ "votes.Record": votes });
+                      });
                     }}
                     defaultValue={this.state.votes.Record[ques._id] ? [1] : []}
                   >
@@ -114,9 +119,11 @@ class QuestionSection extends Component {
               {genAnswers(ques)}
             </Card.Body>
           </Card>
-        ))}
-      </Container>
-    );
+        );
+      });
+      return <SeeAll items={items} name="questions" count={3} />;
+    };
+    return <Container>{genQuestions(this.state.questions)}</Container>;
   }
 }
 
