@@ -72,7 +72,7 @@ const recordSchema = new Schema(
 recordSchema.pre("find", function(next) {
   this.populate({ path: "student", select: "name id" });
   this.populate({ path: "course", select: "name id" });
-  this.select("type content voteCount isAnonymous createdAt");
+  this.select("type content upvotes downvotes isAnonymous createdAt");
   this.sort("-createdAt");
   next();
 });
