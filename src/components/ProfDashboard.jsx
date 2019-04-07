@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import TimeAgo from "react-timeago";
+import Review from './Review';
 
 import SeeAll from "./SeeAll";
 import { axiosGET } from "../utils/axiosClient";
@@ -88,23 +89,7 @@ class ProfDashboard extends Component {
     this.state.reviews.forEach(review => {
       if (this.checkFilters(review)) {
         reviews.push(
-          <Row key={`review-${review._id}`}>
-            <Col>
-              <Card>
-                <Card.Header>
-                  {`${review.course.id} - ${review.course.name}`}
-                </Card.Header>
-                <Card.Body>{review.content}</Card.Body>
-                <Card.Footer>
-                  Submitted <TimeAgo date={review.createdAt} /> by{" "}
-                  {review.isAnonymous
-                    ? "Anonymous"
-                    : `${review.student.name} - ${review.student.id}`}
-                </Card.Footer>
-              </Card>
-              <br />
-            </Col>
-          </Row>
+          <Review key={`${review._id}`} review={review}/>
         );
       }
     });
