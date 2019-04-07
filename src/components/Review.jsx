@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
+
 import TimeAgo from "react-timeago";
-import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Badge from "react-bootstrap/Badge";
 import ToggleButton from "react-bootstrap/ToggleButton";
@@ -30,9 +31,11 @@ class Review extends Component {
     return (
       <div>
         {!this.props.hideCourse ? (
-          <h5>{`${this.state.review.course.id} - ${
-            this.state.review.course.name
-          }`}</h5>
+          <h5>
+            <Link to={`/courses/${this.state.review.course.id}`}>{`${
+              this.state.review.course.id
+            } - ${this.state.review.course.name}`}</Link>
+          </h5>
         ) : (
           ""
         )}

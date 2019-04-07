@@ -60,7 +60,14 @@ class Course extends Component {
   generateReviewsList() {
     let reviews = [];
     this.state.reviews.forEach(review => {
-      reviews.push(<Review key={`${review._id}`} review={review} vote={this.state.votes.Record[review._id]} hideCourse/>);
+      reviews.push(
+        <Review
+          key={`${review._id}`}
+          review={review}
+          vote={this.state.votes.Record && this.state.votes.Record[review._id]}
+          hideCourse
+        />
+      );
     });
     return <SeeAll items={reviews} count={5} name="reviews" />;
   }
