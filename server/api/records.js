@@ -14,7 +14,9 @@ let fetchRecords = async params => {
   let reviews = await Record.find({
     ...params,
     type: "Review"
-  }).select("rating").lean();
+  })
+    .select("rating")
+    .lean();
   let questions = await Record.find({
     ...params,
     type: "Question"

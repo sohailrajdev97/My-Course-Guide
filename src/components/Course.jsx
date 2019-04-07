@@ -6,7 +6,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
+import Review from "./Review";
 
+import SeeAll from "./SeeAll";
 import QuestionSection from "./QuestionSection";
 
 class Course extends Component {
@@ -54,6 +56,13 @@ class Course extends Component {
     this.state.course.history.forEach(item => {
       history.push(<p key={item.year * 10 + item.sem}>{item.semester}</p>);
     });
+  }
+  generateReviewsList() {
+    let reviews = [];
+    this.state.reviews.forEach(review => {
+      reviews.push(<Review key={`${review._id}`} review={review} />);
+    });
+    return <SeeAll items={reviews} count={5} name="reviews" />;
   }
   render() {
     if (!this.state.course) {
@@ -107,6 +116,9 @@ class Course extends Component {
             questions={this.state.questions}
             votes={this.state.votes}
           />
+          <br />
+          <h3>Reviews</h3>
+          <Col>{this.generateReviewsList()}</Col>
         </Container>
       </div>
     );
