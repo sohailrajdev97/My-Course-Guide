@@ -14,8 +14,9 @@ class Course extends Component {
     super(props);
     this.state = {
       course: null,
-      questions: null,
-      reviews: null
+      questions: [],
+      reviews: [],
+      votes: { Record: null, Reply: null }
     };
   }
   async getCourse(id) {
@@ -40,6 +41,9 @@ class Course extends Component {
   }
   componentDidMount() {
     this.getCourse(this.props.match.params.id);
+    axiosGET("/api/votes").then(res => {
+      this.setState({ votes: { ...res.data } });
+    });
   }
   componentWillReceiveProps(nextProps) {
     this.getCourse(nextProps.match.params.id);
@@ -99,7 +103,10 @@ class Course extends Component {
           </Row>
           <br />
           <h3>Questions</h3>
-          <QuestionSection questions={this.state.questions} />
+          <QuestionSection
+            questions={this.state.questions}
+            votes={this.state.votes}
+          />
         </Container>
       </div>
     );

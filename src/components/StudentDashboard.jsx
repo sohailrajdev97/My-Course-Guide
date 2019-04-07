@@ -20,6 +20,7 @@ class StudentDashboard extends Component {
       departments: new Set(),
       professors: [],
       courses: [],
+      votes: null,
       filter: {
         activeKeys: ["filter-time", "filter-type", "filter-dept"],
         selectedDepartments: [],
