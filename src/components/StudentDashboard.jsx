@@ -10,8 +10,11 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import SeeAll from "./SeeAll";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
 import "rc-collapse/assets/index.css";
+import ButtonToolbar from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 
 class StudentDashboard extends Component {
   constructor(props) {
@@ -194,7 +197,27 @@ class StudentDashboard extends Component {
                   <h5>
                     <Link to={`/courses/${course.id}`}>{course.name}</Link>
                   </h5>
-                  <h6>{course.history[0].professor.name}</h6>
+                  <div style={{ lineHeight: "1px", padding: "4px" }}>
+                    <h6>{course.history[0].professor.name}</h6>
+                    <div className="d-flex justify-content-end">
+                      <div class="p-2">
+                        <Link
+                          to={`/courses/${course.id}/#questions`}
+                          style={{ fontSize: "small" }}
+                        >
+                          {course.numQuestions} Questions
+                        </Link>
+                      </div>
+                      <div class="p-2">
+                        <Link
+                          to={`/courses/${course.id}/#reviews`}
+                          style={{ fontSize: "small" }}
+                        >
+                          {course.numReviews} Reviews
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </Card.Header>
               </Card>
             </Col>
@@ -296,7 +319,59 @@ class StudentDashboard extends Component {
               </Col>
             </Row>
           </Col>
-          <Col>{this.generateCourseList()}</Col>
+          <Col>
+            <Form.Label>Sort By </Form.Label>
+            <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
+              <ToggleButtonGroup
+                type="radio"
+                name="options"
+                size="sm"
+                defaultValue={1}
+                onChange={value => {
+                  let courses = [...this.state.courses];
+                  switch (value) {
+                    case 1: {
+                      courses.sort(function(a, b) {
+                        if (a.id === b.id) return 0;
+                        return a.id > b.id ? 1 : -1;
+                      });
+                      break;
+                    }
+                    case 2: {
+                      courses.sort(function(a, b) {
+                        if (a.numQuestions === b.numQuestions) return 0;
+                        return a.numQuestions > b.numQuestions ? -1 : 1;
+                      });
+                      break;
+                    }
+                    case 3: {
+                      courses.sort(function(a, b) {
+                        if (a.numReviews === b.numReviews) return 0;
+                        return a.numReviews > b.numReviews ? -1 : 1;
+                      });
+                      break;
+                    }
+                    default: {
+                      break;
+                    }
+                  }
+                  this.setState({ courses: courses });
+                }}
+              >
+                <ToggleButton variant="outline-primary" value={1}>
+                  A-Z
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={2}>
+                  Number of Questions
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={3}>
+                  Number of Reviews
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </ButtonToolbar>
+            <br />
+            {this.generateCourseList()}
+          </Col>
           <Col lg="3">3</Col>
         </Row>
       </Container>
