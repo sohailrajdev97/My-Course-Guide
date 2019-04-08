@@ -10,7 +10,7 @@ import "rc-slider/assets/index.css";
 class Composer extends Component {
   constructor(props) {
     super(props);
-    this.fields = [
+    this.ratingFields = [
       "difficulty",
       "textbook",
       "grading",
@@ -20,8 +20,13 @@ class Composer extends Component {
     this.submitForm = this.submitForm.bind(this);
   }
   clearState() {
-    let state = { isSubmitting: false, submitted: false, rating: "" };
-    this.fields.forEach(field => {
+    let state = {
+      isSubmitting: false,
+      submitted: false,
+      rating: "",
+      isAnonymous: false
+    };
+    this.ratingFields.forEach(field => {
       state[field] = 0;
     });
     this.setState(state);
@@ -30,13 +35,26 @@ class Composer extends Component {
     this.setState({ isSubmitting: true });
     e.preventDefault();
     const review = e.target[0].value;
-    const payload = {
-      course: this.props.course._id,
-      type: "Review",
-      content: review,
-      rating: {}
-    };
-    this.fields.forEach(field => (payload.rating[field] = this.state[field]));
+    var payload;
+    if (this.props.type === "Review") {
+      payload = {
+        course: this.props.course._id,
+        type: this.props.type,
+        content: review,
+        rating: {},
+        isAnonymous: this.state.isAnonymous
+      };
+      this.ratingFields.forEach(
+        field => (payload.rating[field] = this.state[field])
+      );
+    } else if (this.props.type === "Question") {
+      payload = {
+        course: this.props.course._id,
+        type: this.props.type,
+        content: review,
+        isAnonymous: this.state.isAnonymous
+      };
+    }
     try {
       await axiosPOST("/api/records", payload);
       this.setState({ submitted: true });
@@ -61,12 +79,19 @@ class Composer extends Component {
     return (
       <Modal show={this.props.show} onHide={this.props.onHide}>
         <Modal.Header closeButton>
-          <Modal.Title>Add your review for this course</Modal.Title>
+          <Modal.Title>
+            {this.props.type} for {this.props.course.id}
+          </Modal.Title>
         </Modal.Header>
         <Form onSubmit={this.submitForm}>
           <Modal.Body>
             {desc.map((label, index) => (
-              <Form.Group key={this.fields[index]}>
+              <Form.Group
+                key={this.ratingFields[index]}
+                style={{
+                  display: this.props.type === "Review" ? "" : "none"
+                }}
+              >
                 <Form.Label>{label}</Form.Label>
                 <Slider
                   min={0}
@@ -74,25 +99,35 @@ class Composer extends Component {
                   dots
                   onAfterChange={value => {
                     this.setState({
-                      [this.fields[index]]: value
+                      [this.ratingFields[index]]: value
                     });
                   }}
                 />
                 <br />
+                {/* <br /> */}
               </Form.Group>
             ))}
-            <br />
+
             <Form.Group controlId="reviewArea">
               <Form.Label>Please elaborate:</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                placeholder="Your review here"
+                placeholder={`Your ${this.props.type} Here`}
                 required
               />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
+            <Form.Check
+              onClick={() => {
+                this.setState({
+                  isAnonymous: this.state.isAnonymous ? false : true
+                });
+              }}
+              type="checkbox"
+              label="Submit Anonymously"
+            />
             <Button
               variant="secondary"
               size="sm"

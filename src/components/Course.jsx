@@ -26,7 +26,8 @@ class Course extends Component {
       questions: [],
       reviews: [],
       votes: { Record: null, Reply: null },
-      showComposer: false
+      showComposer: false,
+      type: ""
     };
   }
   async getCourse(id) {
@@ -130,7 +131,17 @@ class Course extends Component {
             </Collapse.Panel>
           </Collapse>
           <br />
-          <h3>Questions</h3>
+          <h3>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                this.setState({ showComposer: true, type: "Question" });
+              }}
+            >
+              +
+            </Button>{" "}
+            Questions
+          </h3>
           <QuestionSection
             questions={this.state.questions}
             votes={this.state.votes}
@@ -140,7 +151,7 @@ class Course extends Component {
             <Button
               variant="outline-primary"
               onClick={() => {
-                this.setState({ showComposer: true });
+                this.setState({ showComposer: true, type: "Review" });
               }}
             >
               +
@@ -206,6 +217,7 @@ class Course extends Component {
             this.setState({ showComposer: false });
           }}
           course={this.state.course}
+          type={this.state.type}
         />
       </div>
     );
