@@ -1,17 +1,20 @@
 import React, { Component } from "react";
 import { axiosGET } from "../utils/axiosClient";
-
+import Form from "react-bootstrap/Form";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
 import Review from "./Review";
-
+import ButtonToolbar from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 import SeeAll from "./SeeAll";
 import QuestionSection from "./QuestionSection";
 import Collapse from "rc-collapse";
 require("rc-collapse/assets/index.css");
+const _ = require("lodash");
 
 class Course extends Component {
   constructor(props) {
@@ -131,7 +134,58 @@ class Course extends Component {
           />
           <br />
           <h3>Reviews</h3>
-          <Col>{this.generateReviewsList()}</Col>
+          <Form.Label>Sort By: </Form.Label>
+          <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
+            <ToggleButtonGroup
+              type="radio"
+              name="options"
+              size="sm"
+              defaultValue={1}
+              onChange={value => {
+                let reviews = [...this.state.reviews];
+                let sortFunc = param => (a, b) => {
+                  if (_.get(a, param) === _.get(b, param)) return 0;
+                  return _.get(a, param) > _.get(b, param) ? -1 : 1;
+                };
+                switch (value) {
+                  case 1: {
+                    reviews.sort(sortFunc("createdAt"));
+                    break;
+                  }
+                  case 2: {
+                    reviews.sort(sortFunc("upvotes"));
+                    break;
+                  }
+                  case 3: {
+                    reviews.sort(sortFunc("rating.overall"));
+                    break;
+                  }
+                  case 4: {
+                    reviews.sort(sortFunc("content.length"));
+                    break;
+                  }
+                  default: {
+                    break;
+                  }
+                }
+                this.setState({ reviews: reviews });
+              }}
+            >
+              <ToggleButton variant="outline-primary" value={1}>
+                Most Recent
+              </ToggleButton>
+              <ToggleButton variant="outline-primary" value={2}>
+                Most Helpful
+              </ToggleButton>
+              <ToggleButton variant="outline-primary" value={3}>
+                Overall Rating
+              </ToggleButton>
+              <ToggleButton variant="outline-primary" value={4}>
+                Review Length
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </ButtonToolbar>
+          {this.generateReviewsList()}
         </Container>
       </div>
     );
