@@ -7,11 +7,16 @@ import TimeAgo from "react-timeago";
 import SeeAll from "./SeeAll";
 import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
+import Button from "react-bootstrap/Button";
+import Composer from "./Composer";
 
 class QuestionSection extends Component {
   constructor(props) {
     super(props);
-    this.state = { questions: [], votes: { Record: {}, Reply: {} } };
+    this.state = {
+      questions: [],
+      votes: { Record: {}, Reply: {} }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,7 +88,7 @@ class QuestionSection extends Component {
 
     let genQuestions = questions => {
       let items = [];
-      questions.forEach(ques => {
+      questions.forEach(ques =>
         items.push(
           <Card key={ques._id}>
             <Card.Body>
@@ -128,11 +133,19 @@ class QuestionSection extends Component {
                   </ToggleButton>
                 </ToggleButtonGroup>
               </div>
+              <Button
+                onClick={() => {
+                  this.props.giveAnswer(ques);
+                }}
+                variant="outline-primary"
+              >
+                +
+              </Button>
               {genAnswers(ques)}
             </Card.Body>
           </Card>
-        );
-      });
+        )
+      );
       return <SeeAll items={items} name="questions" count={3} />;
     };
     return <Container>{genQuestions(this.state.questions)}</Container>;
