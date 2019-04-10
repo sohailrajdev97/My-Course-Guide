@@ -27,7 +27,8 @@ class Course extends Component {
       reviews: [],
       votes: { Record: null, Reply: null },
       showComposer: false,
-      type: ""
+      type: "",
+      currQuestion: null
     };
   }
   async getCourse(id) {
@@ -143,6 +144,13 @@ class Course extends Component {
             Questions
           </h3>
           <QuestionSection
+            giveAnswer={qid => {
+              this.setState({
+                showComposer: true,
+                currQuestion: qid,
+                type: "Answer"
+              });
+            }}
             questions={this.state.questions}
             votes={this.state.votes}
           />
@@ -216,6 +224,7 @@ class Course extends Component {
           onHide={() => {
             this.setState({ showComposer: false });
           }}
+          question={this.state.currQuestion}
           course={this.state.course}
           type={this.state.type}
         />

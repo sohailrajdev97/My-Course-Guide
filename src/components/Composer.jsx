@@ -56,15 +56,31 @@ class Composer extends Component {
         content: review,
         isAnonymous: this.state.isAnonymous
       };
+    } else if (this.props.type === "Answer") {
+      payload = {
+        record: this.props.question._id,
+        content: review
+      };
     }
-    try {
-      await axiosPOST("/api/records", payload);
-      this.setState({ submitted: true });
-    } catch (e) {
-      console.log(e);
+    if (this.props.type !== "Answer") {
+      try {
+        await axiosPOST("/api/records", payload);
+        this.setState({ submitted: true });
+      } catch (e) {
+        console.log(e);
+      }
+      this.clearState();
+      this.props.onHide();
+    } else {
+      try {
+        await axiosPOST("/api/replies", payload);
+        this.setState({ submitted: true });
+      } catch (e) {
+        console.log(e);
+      }
+      this.clearState();
+      this.props.onHide();
     }
-    this.clearState();
-    this.props.onHide();
   }
   componentDidMount() {
     this.clearState();
@@ -118,7 +134,7 @@ class Composer extends Component {
       <Modal show={this.props.show} onHide={this.props.onHide}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {this.props.type} for {this.props.course.id}
+            {this.props.type} for {this.props.course && this.props.course.id}
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={this.submitForm}>
@@ -150,27 +166,33 @@ class Composer extends Component {
                 {/* <br /> */}
               </Form.Group>
             ))}
-
+            {this.props.type === "Answer" && (
+              <Form.Label>
+                {this.props.question && this.props.question.content}
+              </Form.Label>
+            )}
             <Form.Group controlId="reviewArea">
-              <Form.Label>Please elaborate:</Form.Label>
+              <Form.Label>Your {this.props.type}:</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                placeholder={`Your ${this.props.type} Here`}
+                placeholder={`Write here`}
                 required
               />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Form.Check
-              onClick={() => {
-                this.setState({
-                  isAnonymous: this.state.isAnonymous ? false : true
-                });
-              }}
-              type="checkbox"
-              label="Submit Anonymously"
-            />
+            {this.props.type !== "Answer" && (
+              <Form.Check
+                onClick={() => {
+                  this.setState({
+                    isAnonymous: this.state.isAnonymous ? false : true
+                  });
+                }}
+                type="checkbox"
+                label="Submit Anonymously"
+              />
+            )}
             <Button
               variant="secondary"
               size="sm"
