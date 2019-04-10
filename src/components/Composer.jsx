@@ -2,11 +2,13 @@ import React, { Component } from "react";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Slider from "rc-slider";
+import Slider, { createSliderWithTooltip } from "rc-slider";
 import Form from "react-bootstrap/Form";
 import { axiosPOST } from "../utils/axiosClient";
 import "rc-slider/assets/index.css";
+import "../styles/tooltip.css";
 
+const SliderWithTooltip = createSliderWithTooltip(Slider);
 class Composer extends Component {
   constructor(props) {
     super(props);
@@ -67,6 +69,7 @@ class Composer extends Component {
   componentDidMount() {
     this.clearState();
   }
+
   render() {
     const isSubmitting = this.state && this.state.isSubmitting;
     const desc = [
@@ -76,6 +79,41 @@ class Composer extends Component {
       "Skippable classes",
       "Overall"
     ];
+    const labels = [
+      ["Really hard", "Heavy", "Manageable", "Easy Peasy", "Litemax"],
+      [
+        "Word to word",
+        "Most chapters",
+        "Few chapters",
+        "Xerox works",
+        "Don't even buy"
+      ],
+      ["CG Killer", "Av pe 6", "Av pe 7", "CG booster", "Everyone CT"],
+      ["0-20%", "30-40%", "50-60%", "70-80%", "Go for first class only"],
+      [
+        "Against",
+        "Not recommended",
+        "Depends on PR",
+        "Enjoyable",
+        "Take it for sure"
+      ]
+    ];
+    let trackColor = index => {
+      if (!this.state) return;
+      let val = this.state[this.ratingFields[index]];
+      switch (val) {
+        case 1:
+        case 2:
+          return "red";
+        case 3:
+          return "yellow";
+        case 4:
+        case 5:
+          return "green";
+        default:
+          return;
+      }
+    };
     return (
       <Modal show={this.props.show} onHide={this.props.onHide}>
         <Modal.Header closeButton>
@@ -93,16 +131,21 @@ class Composer extends Component {
                 }}
               >
                 <Form.Label>{label}</Form.Label>
-                <Slider
-                  min={0}
+                <SliderWithTooltip
+                  min={1}
                   max={5}
                   dots
-                  onAfterChange={value => {
+                  onChange={value => {
                     this.setState({
                       [this.ratingFields[index]]: value
                     });
                   }}
+                  tipFormatter={value => labels[index][value - 1]}
+                  tipProps={{ placement: "bottom" }}
+                  trackStyle={{ backgroundColor: trackColor(index) }}
+                  handleStyle={{ backgroundColor: trackColor(index) }}
                 />
+
                 <br />
                 {/* <br /> */}
               </Form.Group>
