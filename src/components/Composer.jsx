@@ -192,6 +192,8 @@ class Composer extends Component {
                   });
                 }}
                 type="checkbox"
+                name="isAnonymous"
+                id="isAnonymous"
                 label="Submit Anonymously"
               />
             )}
