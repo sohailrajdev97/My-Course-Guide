@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
@@ -35,11 +37,13 @@ class QuestionSection extends Component {
       let answers = [];
       question.answers.forEach(answer =>
         answers.push(
-          <Card key={answer._id} style={{ margin: "5px" }}>
-            <Card.Body>
-              {answer.content}
-              <br />
-              <div className="d-flex justify-content-between">
+          <Container key={answer._id} style={{ paddingLeft: "4%" }}>
+            <hr />
+            <Row>
+              <Col>{answer.content}</Col>
+            </Row>
+            <Row>
+              <Col>
                 <small className="text-muted">
                   Submitted <TimeAgo date={answer.createdAt} /> by{" "}
                   {`${answer.by.name} - ` +
@@ -47,6 +51,8 @@ class QuestionSection extends Component {
                       ? `${answer.by.id}`
                       : "Professor")}
                 </small>
+              </Col>
+              <Col className="text-right">
                 <ToggleButtonGroup
                   type="checkbox"
                   onChange={value => {
@@ -76,13 +82,13 @@ class QuestionSection extends Component {
                   >
                     {isStudent && this.state.votes.Reply[answer._id]
                       ? "Marked"
-                      : "Mark"}{" "}
-                    as helpful ({answer.upvotes})
+                      : "Mark"}
+                    &nbsp;as helpful ({answer.upvotes})
                   </ToggleButton>
                 </ToggleButtonGroup>
-              </div>
-            </Card.Body>
-          </Card>
+              </Col>
+            </Row>
+          </Container>
         )
       );
 
@@ -95,55 +101,66 @@ class QuestionSection extends Component {
         items.push(
           <Card key={ques._id}>
             <Card.Body>
-              {ques.content}
-              <br />
-              <div className="d-flex justify-content-between">
-                <small className="text-muted">
-                  Submitted <TimeAgo date={ques.createdAt} /> by{" "}
-                  {ques.isAnonymous
-                    ? "Anonymous"
-                    : `${ques.student.name} - ${ques.student.id}`}
-                </small>
-                <ToggleButtonGroup
-                  type="checkbox"
-                  onChange={value => {
-                    axiosPOST("/api/votes/up", {
-                      record: ques._id
-                    }).then(() => {
-                      let votes = this.state.votes.Record;
-                      if (votes[ques._id]) {
-                        delete votes[ques._id];
-                        ques.upvotes--;
-                      } else {
-                        votes[ques._id] = "up";
-                        ques.upvotes++;
+              <Container>
+                <Row>
+                  <Col>{ques.content}</Col>
+                </Row>
+                <Row>
+                  <Col>
+                    {" "}
+                    <small className="text-muted">
+                      Submitted <TimeAgo date={ques.createdAt} /> by{" "}
+                      {ques.isAnonymous
+                        ? "Anonymous"
+                        : `${ques.student.name} - ${ques.student.id}`}
+                    </small>
+                  </Col>
+                  <Col className="text-right">
+                    <ToggleButtonGroup
+                      type="checkbox"
+                      onChange={value => {
+                        axiosPOST("/api/votes/up", {
+                          record: ques._id
+                        }).then(() => {
+                          let votes = this.state.votes.Record;
+                          if (votes[ques._id]) {
+                            delete votes[ques._id];
+                            ques.upvotes--;
+                          } else {
+                            votes[ques._id] = "up";
+                            ques.upvotes++;
+                          }
+                          this.setState({ "votes.Record": votes });
+                        });
+                      }}
+                      defaultValue={
+                        isStudent && this.state.votes.Record[ques._id]
+                          ? [1]
+                          : []
                       }
-                      this.setState({ "votes.Record": votes });
-                    });
-                  }}
-                  defaultValue={
-                    isStudent && this.state.votes.Record[ques._id] ? [1] : []
-                  }
-                >
-                  <ToggleButton
-                    disabled={!isStudent}
-                    value={1}
-                    variant="outline-secondary"
-                    size="sm"
-                    style={{ marginRight: "5px" }}
-                  >
-                    I also had this question ({ques.upvotes})
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </div>
-              <Button
-                onClick={() => {
-                  this.props.giveAnswer(ques);
-                }}
-                variant="outline-primary"
-              >
-                +
-              </Button>
+                    >
+                      <ToggleButton
+                        disabled={!isStudent}
+                        value={1}
+                        variant="outline-secondary"
+                        size="sm"
+                        style={{ marginRight: "5px" }}
+                      >
+                        I also had this question ({ques.upvotes})
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                    <Button
+                      onClick={() => {
+                        this.props.giveAnswer(ques);
+                      }}
+                      size="sm"
+                      variant="outline-primary"
+                    >
+                      Add Answer
+                    </Button>
+                  </Col>
+                </Row>
+              </Container>
               {genAnswers(ques)}
             </Card.Body>
           </Card>
@@ -151,7 +168,7 @@ class QuestionSection extends Component {
       );
       return <SeeAll items={items} name="questions" count={3} />;
     };
-    return <Container>{genQuestions(this.state.questions)}</Container>;
+    return <div>{genQuestions(this.state.questions)}</div>;
   }
 }
 

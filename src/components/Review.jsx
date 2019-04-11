@@ -57,7 +57,7 @@ class Review extends Component {
         )}
         <Container>
           <Row>
-            <Col className="scores" lg={4}>
+            <Col lg={4} style={{ marginBottom: "auto", marginTop: "auto" }}>
               <Row>
                 <Col lg={2}>
                   <h2>
@@ -139,7 +139,9 @@ class Review extends Component {
             </Col>
             <Col lg={8}>
               <Row>
-                <Col>{this.state.review.content}</Col>
+                <Col style={{ wordWrap: "break-word" }}>
+                  {this.state.review.content}
+                </Col>
               </Row>
               <Row>
                 <Col lg={7}>
