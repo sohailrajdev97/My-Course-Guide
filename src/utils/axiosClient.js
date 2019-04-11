@@ -36,7 +36,7 @@ let axiosPOST = (url, data) => {
         ? sessionStorage.getItem("token")
         : null
     },
-    data: qs.stringify(data),
+    data: data,
     url: url
   };
   return axios(options);
