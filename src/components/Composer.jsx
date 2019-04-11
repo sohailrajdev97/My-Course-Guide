@@ -31,7 +31,7 @@ class Composer extends Component {
       isAnonymous: false
     };
     this.ratingFields.forEach(field => {
-      state[field] = 0;
+      state[field] = 3;
     });
     this.setState(state);
   }
@@ -148,6 +148,7 @@ class Composer extends Component {
                   max={5}
                   dots
                   defaultValue={3}
+                  value={this.state && this.state[this.ratingFields[index]]}
                   onChange={value => {
                     this.setState({
                       [this.ratingFields[index]]: value

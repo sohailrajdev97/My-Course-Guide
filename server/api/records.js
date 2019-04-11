@@ -119,7 +119,7 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       }
 
       if (
-        parseFloat(req.body.rating[param]) < 0 ||
+        parseFloat(req.body.rating[param]) < 1 ||
         parseFloat(req.body.rating[param]) > 5
       ) {
         msg = `Invalid value for rating[${param}]`;
