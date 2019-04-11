@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Badge from "react-bootstrap/Badge";
-import Table from "react-bootstrap/Table";
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ToggleButton from "react-bootstrap/ToggleButton";
@@ -55,14 +55,28 @@ class Review extends Component {
         ) : (
           ""
         )}
-        <Table bordered responsive="lg" width="100%">
-          <tbody>
-            <tr>
-              <td className="scores" width="30%">
-                <Table responsive="md" width="30%">
-                  <tbody>
-                    <Row>
-                      <Col width="15%">
+        <Container>
+          <Row>
+            <Col className="scores" lg={4}>
+              <Row>
+                <Col lg={2}>
+                  <h2>
+                    <Badge
+                      variant="secondary"
+                      style={{
+                        backgroundColor: badgeColor(
+                          this.state.review.rating.overall
+                        )
+                      }}
+                    >
+                      {this.state.review.rating.overall}
+                    </Badge>
+                  </h2>
+                </Col>
+                <Col>
+                  <Row>
+                    <Col>
+                      <span>
                         <Badge
                           variant="secondary"
                           style={{
@@ -72,10 +86,12 @@ class Review extends Component {
                           }}
                         >
                           {this.state.review.rating.difficulty}
-                        </Badge>{" "}
-                        Difficulty
-                      </Col>
-                      <Col width="15%">
+                        </Badge>
+                        &nbsp;Difficulty
+                      </span>
+                    </Col>
+                    <Col>
+                      <div>
                         <Badge
                           variant="secondary"
                           style={{
@@ -85,66 +101,59 @@ class Review extends Component {
                           }}
                         >
                           {this.state.review.rating.attendance}
-                        </Badge>{" "}
-                        Attendance
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col width="15%">
-                        <Badge
-                          variant="secondary"
-                          style={{
-                            backgroundColor: badgeColor(
-                              this.state.review.rating.grading
-                            )
-                          }}
-                        >
-                          {this.state.review.rating.grading}
-                        </Badge>{" "}
-                        Grading
-                      </Col>
-                      <Col width="15%">
-                        <Badge
-                          variant="secondary"
-                          style={{
-                            backgroundColor: badgeColor(
-                              this.state.review.rating.textbook
-                            )
-                          }}
-                        >
-                          {this.state.review.rating.textbook}
-                        </Badge>{" "}
-                        Textbook
-                      </Col>
-                    </Row>
-                  </tbody>
-                </Table>
-                <center>
-                  <Badge
-                    variant="secondary"
-                    style={{
-                      backgroundColor: badgeColor(
-                        this.state.review.rating.overall
-                      )
-                    }}
-                  >
-                    {this.state.review.rating.overall}
-                  </Badge>{" "}
-                  Overall
-                </center>
-              </td>
-              <td className="comment" width="70%">
-                {this.state.review.content}
-                <br />
-                <div className="d-flex justify-content-between">
+                        </Badge>
+                        &nbsp;Attendance
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Badge
+                        variant="secondary"
+                        style={{
+                          backgroundColor: badgeColor(
+                            this.state.review.rating.grading
+                          )
+                        }}
+                      >
+                        {this.state.review.rating.grading}
+                      </Badge>
+                      &nbsp;Grading
+                    </Col>
+                    <Col>
+                      <Badge
+                        variant="secondary"
+                        style={{
+                          backgroundColor: badgeColor(
+                            this.state.review.rating.textbook
+                          )
+                        }}
+                      >
+                        {this.state.review.rating.textbook}
+                      </Badge>
+                      &nbsp;Textbook
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Col>
+            <Col lg={8}>
+              <Row>
+                <Col>{this.state.review.content}</Col>
+              </Row>
+              <Row>
+                <Col lg={7}>
                   <small className="text-muted">
-                    Submitted <TimeAgo date={this.state.review.createdAt} /> by{" "}
+                    Submitted <TimeAgo date={this.state.review.createdAt} />
+                    &nbsp;by&nbsp;
                     {this.state.review.isAnonymous
                       ? "Anonymous"
                       : `${this.state.review.student.name} - ${
                           this.state.review.student.id
                         }`}
                   </small>
+                </Col>
+                <Col lg={5}>
                   <ToggleButtonGroup
                     type="checkbox"
                     onChange={value => {
@@ -209,11 +218,12 @@ class Review extends Component {
                       Not Helpful ({this.state.review.downvotes})
                     </ToggleButton>
                   </ToggleButtonGroup>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Container>
+        <hr />
       </div>
     );
   }
