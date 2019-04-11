@@ -11,7 +11,6 @@ import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
@@ -145,7 +144,7 @@ class Course extends Component {
               }}
             >
               +
-            </Button>{" "}
+            </Button>
             Questions
           </h3>
           <QuestionSection
@@ -168,60 +167,61 @@ class Course extends Component {
               }}
             >
               +
-            </Button>{" "}
+            </Button>
             Reviews
           </h3>
-          <Form.Label>Sort By: </Form.Label>
-          <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
-            <ToggleButtonGroup
-              type="radio"
-              name="options"
-              size="sm"
-              defaultValue={1}
-              onChange={value => {
-                let reviews = [...this.state.reviews];
-                let sortFunc = param => (a, b) => {
-                  if (getParam(a, param) === getParam(b, param)) return 0;
-                  return getParam(a, param) > getParam(b, param) ? -1 : 1;
-                };
-                switch (value) {
-                  case 1: {
-                    reviews.sort(sortFunc("createdAt"));
-                    break;
+          {this.state.reviews.length > 0 ? (
+            <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
+              <ToggleButtonGroup
+                type="radio"
+                name="options"
+                size="sm"
+                defaultValue={1}
+                onChange={value => {
+                  let reviews = [...this.state.reviews];
+                  let sortFunc = param => (a, b) => {
+                    if (getParam(a, param) === getParam(b, param)) return 0;
+                    return getParam(a, param) > getParam(b, param) ? -1 : 1;
+                  };
+                  switch (value) {
+                    case 1: {
+                      reviews.sort(sortFunc("createdAt"));
+                      break;
+                    }
+                    case 2: {
+                      reviews.sort(sortFunc("upvotes"));
+                      break;
+                    }
+                    case 3: {
+                      reviews.sort(sortFunc("rating.overall"));
+                      break;
+                    }
+                    case 4: {
+                      reviews.sort(sortFunc("content.length"));
+                      break;
+                    }
+                    default: {
+                      break;
+                    }
                   }
-                  case 2: {
-                    reviews.sort(sortFunc("upvotes"));
-                    break;
-                  }
-                  case 3: {
-                    reviews.sort(sortFunc("rating.overall"));
-                    break;
-                  }
-                  case 4: {
-                    reviews.sort(sortFunc("content.length"));
-                    break;
-                  }
-                  default: {
-                    break;
-                  }
-                }
-                this.setState({ reviews: reviews });
-              }}
-            >
-              <ToggleButton variant="outline-primary" value={1}>
-                Most Recent
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={2}>
-                Most Helpful
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={3}>
-                Overall Rating
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={4}>
-                Review Length
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </ButtonToolbar>
+                  this.setState({ reviews: reviews });
+                }}
+              >
+                <ToggleButton variant="outline-primary" value={1}>
+                  Most Recent
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={2}>
+                  Most Helpful
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={3}>
+                  Overall Rating
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={4}>
+                  Review Length
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </ButtonToolbar>
+          ) : null}
           <Col>{this.generateReviewsList()}</Col>
         </Container>
         <Composer
