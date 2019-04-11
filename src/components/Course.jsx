@@ -21,10 +21,12 @@ import Review from "./Review";
 import SeeAll from "./SeeAll";
 
 import { axiosGET } from "../utils/axiosClient";
+import { getDecodedToken } from "../utils/jwt";
 
 class Course extends Component {
   constructor(props) {
     super(props);
+    this.user = getDecodedToken();
     this.state = {
       course: null,
       questions: [],
@@ -122,54 +124,74 @@ class Course extends Component {
             </Col>
           </Row>
           <br />
+          <Row>
+            <Col>
+              <Collapse>
+                <Collapse.Panel header="Download Previous Year Handouts">
+                  <Row style={{ overflowX: "auto" }}>
+                    <CardDeck
+                      className="d-flex flex-row flex-nowrap"
+                      style={{ marginLeft: "0.125rem" }}
+                    >
+                      {getCards()}
+                    </CardDeck>
+                  </Row>
+                </Collapse.Panel>
+              </Collapse>
+            </Col>
+          </Row>
           <br />
-          <Collapse>
-            <Collapse.Panel header="Download Previous Year Handouts">
-              <Row style={{ overflowX: "auto" }}>
-                <CardDeck
-                  className="d-flex flex-row flex-nowrap"
-                  style={{ marginLeft: "0.125rem" }}
+          <Row>
+            <Col>
+              <h3 id="questions">Questions</h3>
+            </Col>
+            <Col className="text-right">
+              {this.user.role === "student" ? (
+                <Button
+                  variant="outline-primary"
+                  onClick={() => {
+                    this.setState({ showComposer: true, type: "Question" });
+                  }}
                 >
-                  {getCards()}
-                </CardDeck>
-              </Row>
-            </Collapse.Panel>
-          </Collapse>
+                  Ask a question
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <QuestionSection
+                giveAnswer={qid => {
+                  this.setState({
+                    showComposer: true,
+                    currQuestion: qid,
+                    type: "Answer"
+                  });
+                }}
+                questions={this.state.questions}
+                votes={this.state.votes}
+              />
+            </Col>
+          </Row>
           <br />
-          <h3>
-            <Button
-              variant="outline-primary"
-              onClick={() => {
-                this.setState({ showComposer: true, type: "Question" });
-              }}
-            >
-              +
-            </Button>
-            Questions
-          </h3>
-          <QuestionSection
-            giveAnswer={qid => {
-              this.setState({
-                showComposer: true,
-                currQuestion: qid,
-                type: "Answer"
-              });
-            }}
-            questions={this.state.questions}
-            votes={this.state.votes}
-          />
-          <br />
-          <h3>
-            <Button
-              variant="outline-primary"
-              onClick={() => {
-                this.setState({ showComposer: true, type: "Review" });
-              }}
-            >
-              +
-            </Button>
-            Reviews
-          </h3>
+          <Row>
+            <Col>
+              <h3 id="reviews">Reviews</h3>
+            </Col>
+            <Col className="text-right">
+              {this.user.role === "student" &&
+              this.user.courses.indexOf(this.state.course._id) >= 0 ? (
+                <Button
+                  variant="outline-primary"
+                  onClick={() => {
+                    this.setState({ showComposer: true, type: "Review" });
+                  }}
+                >
+                  Add your review
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
           {this.state.reviews.length > 0 ? (
             <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
               <ToggleButtonGroup
