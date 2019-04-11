@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import Badge from "react-bootstrap/Badge";
 import Table from "react-bootstrap/Table";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
@@ -59,8 +61,8 @@ class Review extends Component {
               <td className="scores" width="30%">
                 <Table responsive="md" width="30%">
                   <tbody>
-                    <tr>
-                      <td width="15%">
+                    <Row>
+                      <Col width="15%">
                         <Badge
                           variant="secondary"
                           style={{
@@ -72,8 +74,8 @@ class Review extends Component {
                           {this.state.review.rating.difficulty}
                         </Badge>{" "}
                         Difficulty
-                      </td>
-                      <td width="15%">
+                      </Col>
+                      <Col width="15%">
                         <Badge
                           variant="secondary"
                           style={{
@@ -85,10 +87,10 @@ class Review extends Component {
                           {this.state.review.rating.attendance}
                         </Badge>{" "}
                         Attendance
-                      </td>
-                    </tr>
-                    <tr>
-                      <td width="15%">
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col width="15%">
                         <Badge
                           variant="secondary"
                           style={{
@@ -100,8 +102,8 @@ class Review extends Component {
                           {this.state.review.rating.grading}
                         </Badge>{" "}
                         Grading
-                      </td>
-                      <td width="15%">
+                      </Col>
+                      <Col width="15%">
                         <Badge
                           variant="secondary"
                           style={{
@@ -113,8 +115,8 @@ class Review extends Component {
                           {this.state.review.rating.textbook}
                         </Badge>{" "}
                         Textbook
-                      </td>
-                    </tr>
+                      </Col>
+                    </Row>
                   </tbody>
                 </Table>
                 <center>
