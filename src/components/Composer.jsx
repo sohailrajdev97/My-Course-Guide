@@ -106,15 +106,9 @@ class Composer extends Component {
         "Xerox works",
         "Don't even buy"
       ],
-      ["CG Killer", "Av pe 6", "Av pe 7", "CG booster", "Everyone CT"],
+      ["CG Killer", "Harsh", "Moderate", "Fair", "CG booster"],
       ["0-20%", "30-40%", "50-60%", "70-80%", "Go for first class only"],
-      [
-        "Against",
-        "Not recommended",
-        "Depends on PR",
-        "Enjoyable",
-        "Take it for sure"
-      ]
+      ["Against", "Not recommended", "Decent", "Enjoyable", "Take it for sure"]
     ];
     let trackColor = index => {
       if (!this.state) return;
@@ -122,14 +116,14 @@ class Composer extends Component {
       switch (val) {
         case 1:
         case 2:
-          return "red";
+          return "#CC0000";
         case 3:
-          return "yellow";
+          return "#E1AD01";
         case 4:
         case 5:
-          return "green";
+          return "#009900";
         default:
-          return;
+          return "#E1AD01";
       }
     };
     return (
@@ -153,6 +147,7 @@ class Composer extends Component {
                   min={1}
                   max={5}
                   dots
+                  defaultValue={3}
                   onChange={value => {
                     this.setState({
                       [this.ratingFields[index]]: value
@@ -160,8 +155,13 @@ class Composer extends Component {
                   }}
                   tipFormatter={value => labels[index][value - 1]}
                   tipProps={{ placement: "bottom" }}
-                  trackStyle={{ backgroundColor: trackColor(index) }}
+                  trackStyle={{
+                    backgroundColor: trackColor(index),
+                    width: "7px",
+                    height: "7px"
+                  }}
                   handleStyle={{ backgroundColor: trackColor(index) }}
+                  activeDotStyle={{ width: "10px", height: "10px" }}
                 />
 
                 <br />
