@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import TimeAgo from "react-timeago";
-import Table from "react-bootstrap/Table";
 import Badge from "react-bootstrap/Badge";
+import Table from "react-bootstrap/Table";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+
+import TimeAgo from "react-timeago";
+
 import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
 

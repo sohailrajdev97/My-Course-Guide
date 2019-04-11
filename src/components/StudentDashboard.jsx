@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import { axiosGET } from "../utils/axiosClient";
 import Collapse from "rc-collapse";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import "rc-collapse/assets/index.css";
+
+import ButtonToolbar from "react-bootstrap/ButtonGroup";
 import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
-import SeeAll from "./SeeAll";
+import Row from "react-bootstrap/Row";
+import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
-import "rc-collapse/assets/index.css";
-import ButtonToolbar from "react-bootstrap/ButtonGroup";
-import ToggleButton from "react-bootstrap/ToggleButton";
+import SeeAll from "./SeeAll";
+import { axiosGET } from "../utils/axiosClient";
 
 class StudentDashboard extends Component {
   constructor(props) {
@@ -200,7 +201,7 @@ class StudentDashboard extends Component {
                   <div style={{ lineHeight: "1px", padding: "4px" }}>
                     <h6>{course.history[0].professor.name}</h6>
                     <div className="d-flex justify-content-end">
-                      <div class="p-2">
+                      <div className="p-2">
                         <Link
                           to={`/courses/${course.id}/#questions`}
                           style={{ fontSize: "small" }}
@@ -208,7 +209,7 @@ class StudentDashboard extends Component {
                           {course.numQuestions} Questions
                         </Link>
                       </div>
-                      <div class="p-2">
+                      <div className="p-2">
                         <Link
                           to={`/courses/${course.id}/#reviews`}
                           style={{ fontSize: "small" }}
@@ -250,7 +251,7 @@ class StudentDashboard extends Component {
                   activeKey={this.state.filter.activeKeys}
                   onChange={this.changeActiveKeys.bind(this)}
                 >
-                  <Collapse.Panel header="Time" key="filter-time">
+                  {/* <Collapse.Panel header="Time" key="filter-time">
                     <Form.Group>
                       <Form.Check
                         type="checkbox"
@@ -290,7 +291,7 @@ class StudentDashboard extends Component {
                         label="Humanities"
                       />
                     </Form.Group>
-                  </Collapse.Panel>
+                  </Collapse.Panel> */}
                   <Collapse.Panel header="Department" key="filter-dept">
                     <Form.Control
                       type="text"
@@ -372,7 +373,6 @@ class StudentDashboard extends Component {
             <br />
             {this.generateCourseList()}
           </Col>
-          <Col lg="3">3</Col>
         </Row>
       </Container>
     );

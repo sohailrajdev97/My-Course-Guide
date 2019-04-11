@@ -1,22 +1,27 @@
 import React, { Component } from "react";
-import { axiosGET } from "../utils/axiosClient";
-import Form from "react-bootstrap/Form";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import CardDeck from "react-bootstrap/CardDeck";
-import Card from "react-bootstrap/Card";
-import Review from "./Review";
-import ButtonToolbar from "react-bootstrap/ButtonGroup";
-import ToggleButton from "react-bootstrap/ToggleButton";
-import SeeAll from "./SeeAll";
-import QuestionSection from "./QuestionSection";
-import Composer from "./Composer";
+
 import Collapse from "rc-collapse";
+import "rc-collapse/assets/index.css";
+
+import getParam from "lodash/get";
+
 import Button from "react-bootstrap/Button";
-require("rc-collapse/assets/index.css");
-const _ = require("lodash");
+import ButtonToolbar from "react-bootstrap/ButtonGroup";
+import Card from "react-bootstrap/Card";
+import CardDeck from "react-bootstrap/CardDeck";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+
+import Composer from "./Composer";
+import QuestionSection from "./QuestionSection";
+import Review from "./Review";
+import SeeAll from "./SeeAll";
+
+import { axiosGET } from "../utils/axiosClient";
 
 class Course extends Component {
   constructor(props) {
@@ -176,8 +181,8 @@ class Course extends Component {
               onChange={value => {
                 let reviews = [...this.state.reviews];
                 let sortFunc = param => (a, b) => {
-                  if (_.get(a, param) === _.get(b, param)) return 0;
-                  return _.get(a, param) > _.get(b, param) ? -1 : 1;
+                  if (getParam(a, param) === getParam(b, param)) return 0;
+                  return getParam(a, param) > getParam(b, param) ? -1 : 1;
                 };
                 switch (value) {
                   case 1: {

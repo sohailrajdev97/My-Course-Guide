@@ -17,7 +17,6 @@ class Login extends Component {
 
   render() {
     let googleSuccess = data => {
-      console.log(this.props);
       getToken(data.tokenObj.access_token, (err, token) => {
         if (err) {
           return this.setState({
@@ -29,7 +28,6 @@ class Login extends Component {
       });
     };
     let googleFailure = data => {
-      console.log(data);
       this.setState({
         failed: true
       });
@@ -41,7 +39,7 @@ class Login extends Component {
         <div className="home">
           <Jumbotron>
             <h1>My Course Guide</h1>
-            <p>Login to access course material, reviews and lots more !</p>
+            <p>Login to access course material, reviews and lots more!</p>
             <p>
               <GoogleLogin
                 clientId="780021042626-li4g2v5l3pr2s4kdmssdsdtcuc0v2e6m.apps.googleusercontent.com"

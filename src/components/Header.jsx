@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import { axiosGET } from "../utils/axiosClient";
-
-import Navbar from "react-bootstrap/Navbar";
 import { LinkContainer } from "react-router-bootstrap";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Image from "react-bootstrap/Image";
-import logo from "../assets/logo.png";
 
 import { AsyncTypeahead, Menu } from "react-bootstrap-typeahead";
-import "react-bootstrap-typeahead/css/Typeahead.css";
 import "react-bootstrap-typeahead/css/Typeahead-bs4.css";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
+import Image from "react-bootstrap/Image";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+
+import logo from "../assets/logo.png";
 import "../styles/header.css";
+import { axiosGET } from "../utils/axiosClient";
 
 class Header extends Component {
   constructor(props) {

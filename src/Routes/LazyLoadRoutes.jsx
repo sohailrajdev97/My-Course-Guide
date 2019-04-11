@@ -10,7 +10,7 @@ import React from "react";
 import Loadable from "react-loadable";
 
 export const Home = Loadable({
-  loader: () => import("./Home/Home.jsx"),
+  loader: () => import("./Home.jsx"),
   loading: () => <div>Loading...</div>
 });
 

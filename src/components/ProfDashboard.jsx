@@ -1,15 +1,16 @@
 import React, { Component } from "react";
+
 import Collapse from "rc-collapse";
+import "rc-collapse/assets/index.css";
+
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import Review from "./Review";
 
+import Review from "./Review";
 import SeeAll from "./SeeAll";
 import { axiosGET } from "../utils/axiosClient";
-
-import "rc-collapse/assets/index.css";
 
 class ProfDashboard extends Component {
   constructor(props) {

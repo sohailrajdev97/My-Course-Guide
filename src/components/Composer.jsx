@@ -2,10 +2,12 @@ import React, { Component } from "react";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Slider, { createSliderWithTooltip } from "rc-slider";
 import Form from "react-bootstrap/Form";
-import { axiosPOST } from "../utils/axiosClient";
+
+import Slider, { createSliderWithTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
+
+import { axiosPOST } from "../utils/axiosClient";
 import "../styles/tooltip.css";
 
 const SliderWithTooltip = createSliderWithTooltip(Slider);
