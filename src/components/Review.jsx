@@ -27,6 +27,21 @@ class Review extends Component {
   render() {
     let isStudent = getDecodedToken().role === "student";
     if (!this.state.review) return <div />;
+    let badgeColor = val => {
+      if (!this.state) return;
+      switch (val) {
+        case 1:
+        case 2:
+          return "#CC0000";
+        case 3:
+          return "#E1AD01";
+        case 4:
+        case 5:
+          return "#009900";
+        default:
+          return "#E1AD01";
+      }
+    };
     return (
       <div>
         {!this.props.hideCourse ? (
@@ -46,13 +61,27 @@ class Review extends Component {
                   <tbody>
                     <tr>
                       <td width="15%">
-                        <Badge variant="secondary">
+                        <Badge
+                          variant="secondary"
+                          style={{
+                            backgroundColor: badgeColor(
+                              this.state.review.rating.difficulty
+                            )
+                          }}
+                        >
                           {this.state.review.rating.difficulty}
                         </Badge>{" "}
                         Difficulty
                       </td>
                       <td width="15%">
-                        <Badge variant="secondary">
+                        <Badge
+                          variant="secondary"
+                          style={{
+                            backgroundColor: badgeColor(
+                              this.state.review.rating.attendance
+                            )
+                          }}
+                        >
                           {this.state.review.rating.attendance}
                         </Badge>{" "}
                         Attendance
@@ -60,13 +89,27 @@ class Review extends Component {
                     </tr>
                     <tr>
                       <td width="15%">
-                        <Badge variant="secondary">
+                        <Badge
+                          variant="secondary"
+                          style={{
+                            backgroundColor: badgeColor(
+                              this.state.review.rating.grading
+                            )
+                          }}
+                        >
                           {this.state.review.rating.grading}
                         </Badge>{" "}
                         Grading
                       </td>
                       <td width="15%">
-                        <Badge variant="secondary">
+                        <Badge
+                          variant="secondary"
+                          style={{
+                            backgroundColor: badgeColor(
+                              this.state.review.rating.textbook
+                            )
+                          }}
+                        >
                           {this.state.review.rating.textbook}
                         </Badge>{" "}
                         Textbook
@@ -75,7 +118,14 @@ class Review extends Component {
                   </tbody>
                 </Table>
                 <center>
-                  <Badge variant="secondary">
+                  <Badge
+                    variant="secondary"
+                    style={{
+                      backgroundColor: badgeColor(
+                        this.state.review.rating.overall
+                      )
+                    }}
+                  >
                     {this.state.review.rating.overall}
                   </Badge>{" "}
                   Overall
