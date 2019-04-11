@@ -165,7 +165,6 @@ class Composer extends Component {
                 />
 
                 <br />
-                {/* <br /> */}
               </Form.Group>
             ))}
             {this.props.type === "Answer" && (
