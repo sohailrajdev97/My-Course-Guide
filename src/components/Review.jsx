@@ -8,12 +8,19 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Button from "react-bootstrap/Button";
+import Tooltip from "react-bootstrap/Tooltip";
 
 import TimeAgo from "react-timeago";
 
 import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
+<<<<<<< HEAD
 import Button from "react-bootstrap/Button";
+=======
+import { labels } from "../assets/labels";
+>>>>>>> ui: Add labels to review component
 
 class Review extends Component {
   constructor(props) {
@@ -54,19 +61,19 @@ class Review extends Component {
   render() {
     let isStudent = getDecodedToken().role === "student";
     if (!this.state.review) return <div />;
-    let badgeColor = val => {
+    let badgeVariant = val => {
       if (!this.state) return;
       switch (val) {
         case 1:
         case 2:
-          return "#CC0000";
+          return "danger";
         case 3:
-          return "#E1AD01";
+          return "warning";
         case 4:
         case 5:
-          return "#009900";
+          return "success";
         default:
-          return "#E1AD01";
+          return "warning";
       }
     };
     return (
@@ -86,76 +93,71 @@ class Review extends Component {
               <Row>
                 <Col lg={2}>
                   <h2>
-                    <Badge
-                      variant="secondary"
-                      style={{
-                        backgroundColor: badgeColor(
-                          this.state.review.rating.overall
-                        )
-                      }}
-                    >
-                      {this.state.review.rating.overall}
-                    </Badge>
+                  <OverlayTrigger
+                          key={"top"}
+                          placement={"top"}
+                          overlay={<Tooltip id={`tooltip-top`}>{labels[4][this.state.review.rating.overall-1]}</Tooltip>}
+                        >
+                          <Button variant={badgeVariant(this.state.review.rating.overall)}>
+                            {this.state.review.rating.overall}
+                          </Button>
+                        </OverlayTrigger>
                   </h2>
                 </Col>
                 <Col>
                   <Row>
                     <Col>
                       <span>
-                        <Badge
-                          variant="secondary"
-                          style={{
-                            backgroundColor: badgeColor(
-                              this.state.review.rating.difficulty
-                            )
-                          }}
+                      <OverlayTrigger
+                          key={"top"}
+                          placement={"top"}
+                          overlay={<Tooltip id={`tooltip-top`}>{labels[0][this.state.review.rating.difficulty-1]}</Tooltip>}
                         >
-                          {this.state.review.rating.difficulty}
-                        </Badge>
+                          <Button variant= {badgeVariant(this.state.review.rating.difficulty)} size="sm">
+                            {this.state.review.rating.difficulty}
+                          </Button>
+                        </OverlayTrigger>
                         &nbsp;Difficulty
                       </span>
                     </Col>
                     <Col>
                       <div>
-                        <Badge
-                          variant="secondary"
-                          style={{
-                            backgroundColor: badgeColor(
-                              this.state.review.rating.attendance
-                            )
-                          }}
+                      <OverlayTrigger
+                          key={"top"}
+                          placement={"top"}
+                          overlay={<Tooltip id={`tooltip-top`}>{labels[3][this.state.review.rating.attendance-1]}</Tooltip>}
                         >
-                          {this.state.review.rating.attendance}
-                        </Badge>
+                          <Button variant={badgeVariant(this.state.review.rating.attendance)} size="sm">
+                            {this.state.review.rating.attendance}
+                          </Button>
+                        </OverlayTrigger>
                         &nbsp;Attendance
                       </div>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <Badge
-                        variant="secondary"
-                        style={{
-                          backgroundColor: badgeColor(
-                            this.state.review.rating.grading
-                          )
-                        }}
-                      >
-                        {this.state.review.rating.grading}
-                      </Badge>
+                    <OverlayTrigger
+                          key={"top"}
+                          placement={"top"}
+                          overlay={<Tooltip id={`tooltip-top`}>{labels[2][this.state.review.rating.grading-1]}</Tooltip>}
+                        >
+                          <Button variant={badgeVariant(this.state.review.rating.grading)} size="sm">
+                            {this.state.review.rating.grading}
+                          </Button>
+                        </OverlayTrigger>
                       &nbsp;Grading
                     </Col>
                     <Col>
-                      <Badge
-                        variant="secondary"
-                        style={{
-                          backgroundColor: badgeColor(
-                            this.state.review.rating.textbook
-                          )
-                        }}
-                      >
-                        {this.state.review.rating.textbook}
-                      </Badge>
+                    <OverlayTrigger
+                          key={"top"}
+                          placement={"top"}
+                          overlay={<Tooltip id={`tooltip-top`}>{labels[1][this.state.review.rating.textbook-1]}</Tooltip>}
+                        >
+                          <Button variant={badgeVariant(this.state.review.rating.textbook)} size="sm">
+                            {this.state.review.rating.textbook}
+                          </Button>
+                        </OverlayTrigger>
                       &nbsp;Textbook
                     </Col>
                   </Row>
