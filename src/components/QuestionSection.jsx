@@ -18,6 +18,7 @@ import { getDecodedToken } from "../utils/jwt";
 class QuestionSection extends Component {
   constructor(props) {
     super(props);
+    this.user = getDecodedToken();
     this.state = {
       questions: [],
       votes: { Record: {}, Reply: {} }
@@ -149,15 +150,17 @@ class QuestionSection extends Component {
                         I also had this question ({ques.upvotes})
                       </ToggleButton>
                     </ToggleButtonGroup>
-                    <Button
-                      onClick={() => {
-                        this.props.giveAnswer(ques);
-                      }}
-                      size="sm"
-                      variant="outline-primary"
-                    >
-                      Add Answer
-                    </Button>
+                    {this.user.role !== "admin" ? (
+                      <Button
+                        onClick={() => {
+                          this.props.giveAnswer(ques);
+                        }}
+                        size="sm"
+                        variant="outline-primary"
+                      >
+                        Add Answer
+                      </Button>
+                    ) : null}
                   </Col>
                 </Row>
               </Container>
