@@ -68,6 +68,7 @@ class Composer extends Component {
       try {
         await axiosPOST("/api/records", payload);
         this.setState({ submitted: true });
+        this.props.refreshRecords();
       } catch (e) {
         console.log(e);
       }
@@ -77,6 +78,7 @@ class Composer extends Component {
       try {
         await axiosPOST("/api/replies", payload);
         this.setState({ submitted: true });
+        this.props.refreshRecords();
       } catch (e) {
         console.log(e);
       }

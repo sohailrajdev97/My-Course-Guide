@@ -251,6 +251,7 @@ class Course extends Component {
           onHide={() => {
             this.setState({ showComposer: false });
           }}
+          refreshRecords={this.getRecords.bind(this)}
           question={this.state.currQuestion}
           course={this.state.course}
           type={this.state.type}
