@@ -11,7 +11,6 @@ import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
@@ -22,10 +21,12 @@ import Review from "./Review";
 import SeeAll from "./SeeAll";
 
 import { axiosGET } from "../utils/axiosClient";
+import { getDecodedToken } from "../utils/jwt";
 
 class Course extends Component {
   constructor(props) {
     super(props);
+    this.user = getDecodedToken();
     this.state = {
       course: null,
       questions: [],
@@ -123,105 +124,126 @@ class Course extends Component {
             </Col>
           </Row>
           <br />
+          <Row>
+            <Col>
+              <Collapse>
+                <Collapse.Panel header="Download Previous Year Handouts">
+                  <Row style={{ overflowX: "auto" }}>
+                    <CardDeck
+                      className="d-flex flex-row flex-nowrap"
+                      style={{ marginLeft: "0.125rem" }}
+                    >
+                      {getCards()}
+                    </CardDeck>
+                  </Row>
+                </Collapse.Panel>
+              </Collapse>
+            </Col>
+          </Row>
           <br />
-          <Collapse>
-            <Collapse.Panel header="Download Previous Year Handouts">
-              <Row style={{ overflowX: "auto" }}>
-                <CardDeck
-                  className="d-flex flex-row flex-nowrap"
-                  style={{ marginLeft: "0.125rem" }}
+          <Row>
+            <Col>
+              <h3 id="questions">Questions</h3>
+            </Col>
+            <Col className="text-right">
+              {this.user.role === "student" ? (
+                <Button
+                  variant="outline-primary"
+                  onClick={() => {
+                    this.setState({ showComposer: true, type: "Question" });
+                  }}
                 >
-                  {getCards()}
-                </CardDeck>
-              </Row>
-            </Collapse.Panel>
-          </Collapse>
+                  Ask a question
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <QuestionSection
+                giveAnswer={qid => {
+                  this.setState({
+                    showComposer: true,
+                    currQuestion: qid,
+                    type: "Answer"
+                  });
+                }}
+                questions={this.state.questions}
+                votes={this.state.votes}
+              />
+            </Col>
+          </Row>
           <br />
-          <h3>
-            <Button
-              variant="outline-primary"
-              onClick={() => {
-                this.setState({ showComposer: true, type: "Question" });
-              }}
-            >
-              +
-            </Button>{" "}
-            Questions
-          </h3>
-          <QuestionSection
-            giveAnswer={qid => {
-              this.setState({
-                showComposer: true,
-                currQuestion: qid,
-                type: "Answer"
-              });
-            }}
-            questions={this.state.questions}
-            votes={this.state.votes}
-          />
-          <br />
-          <h3>
-            <Button
-              variant="outline-primary"
-              onClick={() => {
-                this.setState({ showComposer: true, type: "Review" });
-              }}
-            >
-              +
-            </Button>{" "}
-            Reviews
-          </h3>
-          <Form.Label>Sort By: </Form.Label>
-          <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
-            <ToggleButtonGroup
-              type="radio"
-              name="options"
-              size="sm"
-              defaultValue={1}
-              onChange={value => {
-                let reviews = [...this.state.reviews];
-                let sortFunc = param => (a, b) => {
-                  if (getParam(a, param) === getParam(b, param)) return 0;
-                  return getParam(a, param) > getParam(b, param) ? -1 : 1;
-                };
-                switch (value) {
-                  case 1: {
-                    reviews.sort(sortFunc("createdAt"));
-                    break;
+          <Row>
+            <Col>
+              <h3 id="reviews">Reviews</h3>
+            </Col>
+            <Col className="text-right">
+              {this.user.role === "student" &&
+              this.user.courses.indexOf(this.state.course._id) >= 0 ? (
+                <Button
+                  variant="outline-primary"
+                  onClick={() => {
+                    this.setState({ showComposer: true, type: "Review" });
+                  }}
+                >
+                  Add your review
+                </Button>
+              ) : null}
+            </Col>
+          </Row>
+          {this.state.reviews.length > 0 ? (
+            <ButtonToolbar style={{ marginBottom: "5px", marginLeft: "10px" }}>
+              <ToggleButtonGroup
+                type="radio"
+                name="options"
+                size="sm"
+                defaultValue={1}
+                onChange={value => {
+                  let reviews = [...this.state.reviews];
+                  let sortFunc = param => (a, b) => {
+                    if (getParam(a, param) === getParam(b, param)) return 0;
+                    return getParam(a, param) > getParam(b, param) ? -1 : 1;
+                  };
+                  switch (value) {
+                    case 1: {
+                      reviews.sort(sortFunc("createdAt"));
+                      break;
+                    }
+                    case 2: {
+                      reviews.sort(sortFunc("upvotes"));
+                      break;
+                    }
+                    case 3: {
+                      reviews.sort(sortFunc("rating.overall"));
+                      break;
+                    }
+                    case 4: {
+                      reviews.sort(sortFunc("content.length"));
+                      break;
+                    }
+                    default: {
+                      break;
+                    }
                   }
-                  case 2: {
-                    reviews.sort(sortFunc("upvotes"));
-                    break;
-                  }
-                  case 3: {
-                    reviews.sort(sortFunc("rating.overall"));
-                    break;
-                  }
-                  case 4: {
-                    reviews.sort(sortFunc("content.length"));
-                    break;
-                  }
-                  default: {
-                    break;
-                  }
-                }
-                this.setState({ reviews: reviews });
-              }}
-            >
-              <ToggleButton variant="outline-primary" value={1}>
-                Most Recent
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={2}>
-                Most Helpful
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={3}>
-                Overall Rating
-              </ToggleButton>
-              <ToggleButton variant="outline-primary" value={4}>
-                Review Length
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </ButtonToolbar>
+                  this.setState({ reviews: reviews });
+                }}
+              >
+                <ToggleButton variant="outline-primary" value={1}>
+                  Most Recent
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={2}>
+                  Most Helpful
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={3}>
+                  Overall Rating
+                </ToggleButton>
+                <ToggleButton variant="outline-primary" value={4}>
+                  Review Length
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </ButtonToolbar>
+          ) : null}
           <Col>{this.generateReviewsList()}</Col>
         </Container>
         <Composer
@@ -229,6 +251,7 @@ class Course extends Component {
           onHide={() => {
             this.setState({ showComposer: false });
           }}
+          refreshRecords={this.getRecords.bind(this)}
           question={this.state.currQuestion}
           course={this.state.course}
           type={this.state.type}

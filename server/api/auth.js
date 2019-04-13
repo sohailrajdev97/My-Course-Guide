@@ -67,6 +67,7 @@ router.get(
       payload.id = student._id;
       payload.role = "student";
       payload.campus = student.campus;
+      payload.courses = student.courses.map(course => course.id);
       let token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 21600 // 6 hours
       });
