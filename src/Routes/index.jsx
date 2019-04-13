@@ -60,9 +60,10 @@ class Routes extends Component {
     });
   }
   render() {
+    const decodedToken = getDecodedToken();
     return (
       <div>
-        <Header decodedToken={getDecodedToken()} />
+        {decodedToken && <Header decodedToken={decodedToken} />}
         <Switch className="main">
           <AdminRoute exact path="/upload" component={Upload} />
           <CommonRoute exact path="/courses/:id" component={Course} />
