@@ -45,8 +45,7 @@ class Login extends Component {
             opacity={0.6}
             imageSrc={back1}
             minHeight="100vh"
-            parallaxOffset="100"
-            isCentered="false"
+            parallaxOffset={100}
           >
             <div
               className="home"
@@ -59,7 +58,12 @@ class Login extends Component {
                 color: "white"
               }}
             >
-              <img src={logo} height="100vh" alt="My Course Guide" />
+              <img
+                src={logo}
+                height="auto"
+                width="100%"
+                alt="My Course Guide"
+              />
               <br />
               <br />
               <h2>Helping you make better choices</h2>
