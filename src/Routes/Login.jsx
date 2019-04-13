@@ -111,7 +111,7 @@ class Login extends Component {
               }}
             >
               <br />
-              Made with love from India ❤
+              Made with ❤ from Hyderabad
             </div>
           </LazyHero>
         </div>
