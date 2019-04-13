@@ -97,13 +97,14 @@ class Login extends Component {
           >
             <h2>
               <b>
-                <u>about us</u>
+                <u>About MCG</u>
               </b>
             </h2>
             <h4 style={{ marginLeft: "10%", marginRight: "10%" }}>
-              We here at My-Course-Guide aim to provide a platform for students
-              as well as professors to give and receive constructive feedbacks
-              about any course(s) they have taken or are currently taken
+              We here at My Course Guide aim to provide a platform for students
+              as well as professors to give and receive constructive feedback
+              about any course(s) they have taken, and help others by answering
+              their queries.
             </h4>
             <div
               style={{
@@ -111,7 +112,7 @@ class Login extends Component {
               }}
             >
               <br />
-              Made with ❤ from Hyderabad
+              Made with <span style={{ color: "#e25555" }}>❤</span> in Hyderabad
             </div>
           </LazyHero>
         </div>
