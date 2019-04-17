@@ -69,7 +69,7 @@ class Upload extends Component {
     console.log(this.pond);
     this.pond._pond.setOptions({
       server: {
-        url: `/api/csv`,
+        url: `/api/upload`,
         process: {
           url: "/",
           timeout: 3000000,
@@ -95,7 +95,7 @@ class Upload extends Component {
             <FilePond
               ref={ref => (this.pond = ref)}
               oninit={() => this.handleInit()}
-              name="csv"
+              name="file"
               onremovefile={this.clearTable}
             />
             {this.state.errorMsg ? (

@@ -53,6 +53,10 @@ const courseSchema = new Schema({
       _id: false,
       year: Number,
       semester: Number,
+      handoutAvailable: {
+        type: Boolean,
+        default: false
+      },
       professor: {
         _id: false,
         type: Schema.Types.ObjectId,
@@ -65,7 +69,7 @@ const courseSchema = new Schema({
 courseSchema.pre("find", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester numQuestions numReviews"
+    "id name campus history.year history.semester history.handoutAvailable numQuestions numReviews"
   );
   this.sort("id");
   next();
@@ -74,7 +78,7 @@ courseSchema.pre("find", function(next) {
 courseSchema.pre("findOne", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester numQuestions numReviews"
+    "id name campus history.year history.semester history.handoutAvailable numQuestions numReviews"
   );
   next();
 });

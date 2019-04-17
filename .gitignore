@@ -173,3 +173,5 @@ GitHub.sublime-settings
 .env
 dummy-data/
 build/
+server/handouts/*
+!server/handouts/.gitkeep
