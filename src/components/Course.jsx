@@ -11,6 +11,7 @@ import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import ReactSpeedometer from "react-d3-speedometer";
 import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
@@ -34,7 +35,8 @@ class Course extends Component {
       votes: { Record: null, Reply: null },
       showComposer: false,
       type: "",
-      currQuestion: null
+      currQuestion: null,
+      liteRating: 0
     };
   }
   async getCourse(id) {
@@ -43,7 +45,16 @@ class Course extends Component {
       `/api/courses/${id}` + (params.campus ? `?campus=${params.campus}` : "");
     try {
       let res = await axiosGET(url);
-      this.setState({ course: res.data });
+      let averages = res.data.averages;
+      let liteRating = Math.floor(
+        (10 * averages.attendance +
+          10 * averages.grading +
+          10 * averages.difficulty +
+          3 * averages.textbook +
+          5 * averages.overall) /
+          1.9
+      );
+      this.setState({ course: res.data, liteRating });
       this.getRecords();
     } catch (e) {
       console.log(e);
@@ -110,20 +121,26 @@ class Course extends Component {
     return (
       <div className="container-fluid">
         <Container>
-          <br />
-          <Row>
-            <Col lg={8}>
+          <Row className="h-100">
+            <Col lg={8} className="my-auto">
               <h6>{this.state.course.id}</h6>
               <h3>{this.state.course.name}</h3>
-            </Col>
-          </Row>
-          <Row>
-            <Col lg={8}>
               <h5>{this.state.course.history[0].professor.name}</h5>
               <p>{this.props.match.params.campus}</p>
             </Col>
+            <Col className="my-auto" style={{ width: "100%" }}>
+              <ReactSpeedometer
+                value={this.state.liteRating}
+                autoWidth={true}
+                minValue={0}
+                maxValue={100}
+                startColor="#CC0000"
+                endColor="#009900"
+                maxSegmentLabels={5}
+                segments={50}
+              />
+            </Col>
           </Row>
-          <br />
           <Row>
             <Col>
               <Collapse>

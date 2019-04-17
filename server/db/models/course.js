@@ -25,26 +25,31 @@ const courseSchema = new Schema({
     difficulty: {
       type: Number,
       max: 5,
+      default: 0,
       min: 0
     },
     attendance: {
       type: Number,
       max: 5,
+      default: 0,
       min: 0
     },
     grading: {
       type: Number,
       max: 5,
+      default: 0,
       min: 0
     },
     textbook: {
       type: Number,
       max: 5,
+      default: 0,
       min: 0
     },
     overall: {
       type: Number,
       max: 5,
+      default: 0,
       min: 0
     }
   },
@@ -65,7 +70,7 @@ const courseSchema = new Schema({
 courseSchema.pre("find", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester numQuestions numReviews"
+    "id name campus history.year history.semester numQuestions numReviews averages"
   );
   this.sort("id");
   next();
@@ -74,7 +79,7 @@ courseSchema.pre("find", function(next) {
 courseSchema.pre("findOne", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester numQuestions numReviews"
+    "id name campus history.year history.semester numQuestions numReviews averages"
   );
   next();
 });
