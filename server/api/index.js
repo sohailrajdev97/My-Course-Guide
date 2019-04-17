@@ -5,6 +5,7 @@ const auth = require("./auth");
 const upload = require("./upload");
 const course = require("./course");
 const checkToken = require("./authMiddleware");
+const handouts = require("./handouts");
 const professors = require("./professors");
 const records = require("./records");
 const replies = require("./replies");
@@ -19,6 +20,7 @@ router.use("/auth", auth);
 router.use("/courses", checkToken(["admin", "student", "prof", "hod"]), course);
 router.use("/upload", checkToken("admin"), upload);
 router.use("/records", records);
+router.use("/handouts", handouts);
 router.use("/replies", replies);
 router.use("/votes", votes);
 router.use(

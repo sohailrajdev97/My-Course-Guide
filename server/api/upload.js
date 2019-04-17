@@ -208,7 +208,7 @@ router.post("/", upload.single("file"), (req, res, next) => {
             historyItem.year === parseInt(splittedName[1]) &&
             historyItem.semester === parseInt(splittedName[2])
           ) {
-            historyItem.handoutAvailable = true;
+            historyItem.handout = name;
           }
         });
         await Course.updateOne({ _id: course._id }, course);
