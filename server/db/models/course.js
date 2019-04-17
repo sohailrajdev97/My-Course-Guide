@@ -69,7 +69,7 @@ const courseSchema = new Schema({
 courseSchema.pre("find", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester history.handoutAvailable numQuestions numReviews"
+    "id name campus history.year history.semester history.handout numQuestions numReviews"
   );
   this.sort("id");
   next();
@@ -78,7 +78,7 @@ courseSchema.pre("find", function(next) {
 courseSchema.pre("findOne", function(next) {
   this.populate("history.professor");
   this.select(
-    "id name campus history.year history.semester history.handoutAvailable numQuestions numReviews"
+    "id name campus history.year history.semester history.handout numQuestions numReviews"
   );
   next();
 });

@@ -11,7 +11,7 @@ router.get(
   (req, res, next) => {
     let file = path.join(process.cwd(), "server", "handouts", req.params.file);
     if (fs.existsSync(file)) {
-      return res.sendFile(file);
+      return res.download(file);
     } else {
       return res.json(404, { msg: "Handout not found" });
     }

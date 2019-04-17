@@ -57,6 +57,16 @@ class Course extends Component {
       this.setState({ ...res.data });
     });
   }
+  getHandout(file) {
+    axiosGET(`/api/handouts/${file}`).then(res => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file);
+      document.body.appendChild(link);
+      link.click();
+    });
+  }
   componentDidMount() {
     this.getCourse(this.props.match.params.id);
     axiosGET("/api/votes").then(res => {
@@ -103,6 +113,17 @@ class Course extends Component {
               <h6>Sem {item.semester}</h6>
             </Card.Title>
             <Card.Footer>{item.professor.name}</Card.Footer>
+            <br />
+            {item.handout ? (
+              <Button
+                variant="outline-primary"
+                onClick={() => {
+                  this.getHandout(item.handout);
+                }}
+              >
+                Download Handout
+              </Button>
+            ) : null}
           </Card.Body>
         </Card>
       ));
