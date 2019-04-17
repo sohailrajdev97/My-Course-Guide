@@ -53,9 +53,9 @@ const courseSchema = new Schema({
       _id: false,
       year: Number,
       semester: Number,
-      handoutAvailable: {
-        type: Boolean,
-        default: false
+      handout: {
+        type: String,
+        default: null
       },
       professor: {
         _id: false,
