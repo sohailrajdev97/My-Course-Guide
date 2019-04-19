@@ -93,27 +93,46 @@ class Review extends Component {
               <Row>
                 <Col lg={2}>
                   <h2>
-                  <OverlayTrigger
-                          key={"top"}
-                          placement={"top"}
-                          overlay={<Tooltip id={`tooltip-top`}>{labels[4][this.state.review.rating.overall-1]}</Tooltip>}
-                        >
-                          <Button variant={badgeVariant(this.state.review.rating.overall)}>
-                            {this.state.review.rating.overall}
-                          </Button>
-                        </OverlayTrigger>
+                    <OverlayTrigger
+                      key={"top"}
+                      placement={"top"}
+                      overlay={
+                        <Tooltip id={`tooltip-top`}>
+                          {labels[4][this.state.review.rating.overall - 1]}
+                        </Tooltip>
+                      }
+                    >
+                      <Button
+                        variant={badgeVariant(this.state.review.rating.overall)}
+                      >
+                        {this.state.review.rating.overall}
+                      </Button>
+                    </OverlayTrigger>
                   </h2>
                 </Col>
                 <Col>
                   <Row>
                     <Col>
                       <span>
-                      <OverlayTrigger
+                        <OverlayTrigger
                           key={"top"}
                           placement={"top"}
-                          overlay={<Tooltip id={`tooltip-top`}>{labels[0][this.state.review.rating.difficulty-1]}</Tooltip>}
+                          overlay={
+                            <Tooltip id={`tooltip-top`}>
+                              {
+                                labels[0][
+                                  this.state.review.rating.difficulty - 1
+                                ]
+                              }
+                            </Tooltip>
+                          }
                         >
-                          <Button variant= {badgeVariant(this.state.review.rating.difficulty)} size="sm">
+                          <Button
+                            variant={badgeVariant(
+                              this.state.review.rating.difficulty
+                            )}
+                            size="sm"
+                          >
                             {this.state.review.rating.difficulty}
                           </Button>
                         </OverlayTrigger>
@@ -122,12 +141,25 @@ class Review extends Component {
                     </Col>
                     <Col>
                       <div>
-                      <OverlayTrigger
+                        <OverlayTrigger
                           key={"top"}
                           placement={"top"}
-                          overlay={<Tooltip id={`tooltip-top`}>{labels[3][this.state.review.rating.attendance-1]}</Tooltip>}
+                          overlay={
+                            <Tooltip id={`tooltip-top`}>
+                              {
+                                labels[3][
+                                  this.state.review.rating.attendance - 1
+                                ]
+                              }
+                            </Tooltip>
+                          }
                         >
-                          <Button variant={badgeVariant(this.state.review.rating.attendance)} size="sm">
+                          <Button
+                            variant={badgeVariant(
+                              this.state.review.rating.attendance
+                            )}
+                            size="sm"
+                          >
                             {this.state.review.rating.attendance}
                           </Button>
                         </OverlayTrigger>
@@ -137,27 +169,45 @@ class Review extends Component {
                   </Row>
                   <Row>
                     <Col>
-                    <OverlayTrigger
-                          key={"top"}
-                          placement={"top"}
-                          overlay={<Tooltip id={`tooltip-top`}>{labels[2][this.state.review.rating.grading-1]}</Tooltip>}
+                      <OverlayTrigger
+                        key={"top"}
+                        placement={"top"}
+                        overlay={
+                          <Tooltip id={`tooltip-top`}>
+                            {labels[2][this.state.review.rating.grading - 1]}
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          variant={badgeVariant(
+                            this.state.review.rating.grading
+                          )}
+                          size="sm"
                         >
-                          <Button variant={badgeVariant(this.state.review.rating.grading)} size="sm">
-                            {this.state.review.rating.grading}
-                          </Button>
-                        </OverlayTrigger>
+                          {this.state.review.rating.grading}
+                        </Button>
+                      </OverlayTrigger>
                       &nbsp;Grading
                     </Col>
                     <Col>
-                    <OverlayTrigger
-                          key={"top"}
-                          placement={"top"}
-                          overlay={<Tooltip id={`tooltip-top`}>{labels[1][this.state.review.rating.textbook-1]}</Tooltip>}
+                      <OverlayTrigger
+                        key={"top"}
+                        placement={"top"}
+                        overlay={
+                          <Tooltip id={`tooltip-top`}>
+                            {labels[1][this.state.review.rating.textbook - 1]}
+                          </Tooltip>
+                        }
+                      >
+                        <Button
+                          variant={badgeVariant(
+                            this.state.review.rating.textbook
+                          )}
+                          size="sm"
                         >
-                          <Button variant={badgeVariant(this.state.review.rating.textbook)} size="sm">
-                            {this.state.review.rating.textbook}
-                          </Button>
-                        </OverlayTrigger>
+                          {this.state.review.rating.textbook}
+                        </Button>
+                      </OverlayTrigger>
                       &nbsp;Textbook
                     </Col>
                   </Row>
