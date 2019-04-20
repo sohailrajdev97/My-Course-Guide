@@ -121,17 +121,17 @@ class Course extends Component {
     return (
       <div className="container-fluid">
         <Container>
-          <Row className="h-100">
-            <Col lg={8} className="my-auto">
+          <Row>
+            <Col lg={8} className="pt-5">
               <h6>{this.state.course.id}</h6>
               <h3>{this.state.course.name}</h3>
               <h5>{this.state.course.history[0].professor.name}</h5>
               <p>{this.props.match.params.campus}</p>
             </Col>
-            <Col className="my-auto" style={{ width: "100%" }}>
+            <Col lg={4} className="pt-5">
               <ReactSpeedometer
                 value={this.state.liteRating}
-                autoWidth={true}
+                fluidWidth
                 minValue={0}
                 maxValue={100}
                 startColor="#CC0000"
@@ -139,6 +139,7 @@ class Course extends Component {
                 maxSegmentLabels={5}
                 segments={50}
               />
+              <center>Litemeter Rating</center>
             </Col>
           </Row>
           <Row>
