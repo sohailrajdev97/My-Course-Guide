@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("./auth");
-const csv = require("./csv");
+const upload = require("./upload");
 const course = require("./course");
 const checkToken = require("./authMiddleware");
+const handouts = require("./handouts");
 const professors = require("./professors");
 const records = require("./records");
 const replies = require("./replies");
@@ -17,8 +18,9 @@ router.all("/", (req, res, next) => {
 
 router.use("/auth", auth);
 router.use("/courses", checkToken(["admin", "student", "prof", "hod"]), course);
-router.use("/csv", checkToken("admin"), csv);
+router.use("/upload", checkToken("admin"), upload);
 router.use("/records", records);
+router.use("/handouts", handouts);
 router.use("/replies", replies);
 router.use("/votes", votes);
 router.use(

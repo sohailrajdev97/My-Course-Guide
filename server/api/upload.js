@@ -7,6 +7,9 @@ const upload = multer({
   dest: process.env.UPLOAD_DIR
 });
 const csv = require("fast-csv");
+const extract = require("extract-zip");
+const path = require("path");
+const fs = require("fs");
 
 const mongoose = require("mongoose");
 const Professor = mongoose.model("Professor");
@@ -157,35 +160,92 @@ let validator = async data => {
   return false;
 };
 
-router.post("/", upload.single("csv"), (req, res, next) => {
-  if (req.file.mimetype !== "text/csv") {
+router.post("/", upload.single("file"), (req, res, next) => {
+  if (req.file.mimetype === "text/csv") {
+    let invalidRows = [];
+    csv
+      .fromPath(req.file.path, {
+        headers: true
+      })
+      .validate((data, next) => {
+        validator(data).then(isValid => {
+          next(null, isValid);
+        });
+      })
+      .on("data-invalid", data => {
+        invalidRows.push(data);
+      })
+      .on("data", data => {})
+      .on("end", () => {
+        if (invalidRows.length === 0) {
+          res.status(200).json({});
+        } else {
+          res.status(400).json({
+            invalidRows
+          });
+        }
+      });
+  } else if (req.file.mimetype === "application/zip") {
+    let invalidRows = [];
+    let onEntry = async (entry, zipfile) => {
+      let name = entry.fileName;
+      let splittedName = name.split("_");
+      if (splittedName.length === 4 && name.split("/").length === 1) {
+        // COURSE_YEAR_SEMESTER_CAMPUS
+        let course = await Course.findOne({
+          id: splittedName[0],
+          campus: splittedName[3].split(".")[0],
+          history: {
+            $elemMatch: {
+              year: splittedName[1],
+              semester: splittedName[2]
+            }
+          }
+        }).lean();
+        if (!course) return invalidRows.push({ "File Name": name });
+        course.history.forEach(historyItem => {
+          if (
+            historyItem.year === parseInt(splittedName[1]) &&
+            historyItem.semester === parseInt(splittedName[2])
+          ) {
+            historyItem.handout = name;
+          }
+        });
+        await Course.updateOne({ _id: course._id }, course);
+      } else {
+        invalidRows.push({ "File Name": name });
+      }
+    };
+    extract(
+      req.file.path,
+      {
+        dir: path.join(process.cwd(), "server", "handouts"),
+        onEntry
+      },
+      err => {
+        if (err) {
+          console.log(err);
+          return res.json(500, { msg: "Server Error" });
+        }
+        if (invalidRows.length === 0) {
+          res.status(200).json({});
+        } else {
+          res.status(400).json({
+            invalidRows
+          });
+          invalidRows.forEach(file => {
+            fs.unlinkSync(
+              path.join(process.cwd(), "server", "handouts", file["File Name"])
+            );
+          });
+        }
+      }
+    );
+  } else {
     return res.status(400).json({
-      msg: "Only CSV files are allowed"
+      msg: "Only CSV / Zip files are allowed"
     });
   }
-  let invalidRows = [];
-  csv
-    .fromPath(req.file.path, {
-      headers: true
-    })
-    .validate((data, next) => {
-      validator(data).then(isValid => {
-        next(null, isValid);
-      });
-    })
-    .on("data-invalid", data => {
-      invalidRows.push(data);
-    })
-    .on("data", data => {})
-    .on("end", () => {
-      if (invalidRows.length === 0) {
-        res.status(200).json({});
-      } else {
-        res.status(400).json({
-          invalidRows
-        });
-      }
-    });
 });
 
 module.exports = router;
