@@ -9,3 +9,4 @@ require("./record.js");
 require("./reply.js");
 require("./student.js");
 require("./vote.js");
+require("./report.js");
