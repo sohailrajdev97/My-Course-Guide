@@ -42,33 +42,29 @@ router.post("/", checkToken("student"), async (req, res, next) => {
   }
 });
 
-router.get(
-  "/",
-  checkToken(["student", "prof", "hod", "admin"]),
-  async (req, res, next) => {
-    try {
-      if (req.user.role === "student") {
-        let reports = await Report.find({
-          by: req.user.id
-        });
-        return res.status(200).json(reports);
-      } else if (req.user.role === "admin") {
-        let reports = await Report.find();
-        return res.status(200).json(reports);
-      } else {
-        return res.status(200).json();
-      }
-    } catch (e) {
-      console.log(e);
-      return res.status(500).json({ msg: "Request failed" });
+router.get("/", checkToken(["student", "admin"]), async (req, res, next) => {
+  try {
+    if (req.user.role === "student") {
+      let reports = await Report.find({
+        by: req.user.id
+      });
+      return res.status(200).json(reports);
+    } else if (req.user.role === "admin") {
+      let reports = await Report.find();
+      return res.status(200).json(reports);
+    } else {
+      return res.status(200).json();
     }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ msg: "Request failed" });
   }
-);
+});
 
 router.delete("/:report", checkToken("admin"), async (req, res, next) => {
   try {
     let report = await Report.findOneAndDelete({ _id: req.params.report });
-    await Report.remove({ for: report.for._id });
+    await Report.deleteMany({ for: report.for._id });
     if (req.query.deleteReview) {
       await Record.findOneAndDelete({ _id: report.for._id });
       let course = await Course.findOne({ _id: report.for.course._id });
