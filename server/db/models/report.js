@@ -24,6 +24,7 @@ const reportSchema = new Schema(
     timestamps: true
   }
 );
+
 reportSchema.pre("find", function(next) {
   this.populate({ path: "for", model: "Record" });
   next();
