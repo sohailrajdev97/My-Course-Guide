@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Collapse from "rc-collapse";
 import "rc-collapse/assets/index.css";
 
-import { getParam, groupBy, pick, sortBy } from "lodash";
+import { get, groupBy, pick, sortBy } from "lodash";
 
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from "react-bootstrap/ButtonGroup";
@@ -295,8 +295,8 @@ class Course extends Component {
                 onChange={value => {
                   let reviews = [...this.state.reviews];
                   let sortFunc = param => (a, b) => {
-                    if (getParam(a, param) === getParam(b, param)) return 0;
-                    return getParam(a, param) > getParam(b, param) ? -1 : 1;
+                    if (get(a, param) === get(b, param)) return 0;
+                    return get(a, param) > get(b, param) ? -1 : 1;
                   };
                   switch (value) {
                     case 1: {

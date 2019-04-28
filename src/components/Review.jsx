@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import Badge from "react-bootstrap/Badge";
 import Container from "react-bootstrap/Container";
+import Collapse from "react-bootstrap/Collapse";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ToggleButton from "react-bootstrap/ToggleButton";
@@ -12,18 +13,42 @@ import TimeAgo from "react-timeago";
 
 import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
+import Button from "react-bootstrap/Button";
 
 class Review extends Component {
   constructor(props) {
     super(props);
     this.state = {
       review: null,
-      vote: null
+      vote: null,
+      showAll: false
     };
   }
 
   componentDidMount() {
     this.setState({ review: this.props.review, vote: this.props.vote });
+  }
+
+  getContent() {
+    let words = this.state.review.content.split(" ");
+    if (words.length < 50) {
+      return this.state.review.content;
+    }
+    return (
+      <div>
+        {words.slice(0, 50).join(" ")}
+        <Collapse in={this.state.showAll}>
+          <span>{words.slice(50).join(" ")}</span>
+        </Collapse>
+        <Button
+          variant="link"
+          size="sm"
+          onClick={() => this.setState({ showAll: !this.state.showAll })}
+        >
+          See {this.state.showAll ? "less" : "more"}
+        </Button>
+      </div>
+    );
   }
 
   render() {
@@ -140,7 +165,7 @@ class Review extends Component {
             <Col lg={8}>
               <Row>
                 <Col style={{ wordWrap: "break-word" }}>
-                  {this.state.review.content}
+                  {this.getContent()}
                 </Col>
               </Row>
               <Row>
