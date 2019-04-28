@@ -91,13 +91,29 @@ router.get(
   checkToken(["admin", "student", "prof", "hod"]),
   async (req, res, next) => {
     try {
-      let course = await Course.findOne({
-        id: req.params.course,
-        ...req.campusFilter
-      });
-      if (!course) return res.status(404).json({ msg: "Course not found" });
-      let records = await fetchRecords({ course });
-      return res.json(records);
+      let courses = [];
+      if (Object.entries(req.campusFilter).length === 0) {
+        courses = await Course.find({
+          id: req.params.course
+        });
+      } else {
+        courses.push(
+          await Course.findOne({
+            id: req.params.course,
+            ...req.campusFilter
+          })
+        );
+      }
+      if (!courses.length)
+        return res.status(404).json({ msg: "Course not found" });
+      let records = { reviews: [], questions: [] };
+      for (let course of courses) {
+        let courseRecords = await fetchRecords({ course });
+        Object.keys(courseRecords).forEach(key => {
+          records[key].push(...courseRecords[key]);
+        });
+      }
+      return res.status(200).json(records);
     } catch (e) {
       console.log(e);
       return res.status(500).json({ msg: "Request failed" });

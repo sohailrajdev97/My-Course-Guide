@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Plot from "react-plotly.js";
 import { groupBy, pick, sortBy } from "lodash";
 import { axiosGET } from "../utils/axiosClient";
+import { calcAvg } from "../utils/graphing";
 const dateformat = require("dateformat");
 
 class HoDDashboard extends Component {
@@ -42,27 +43,6 @@ class HoDDashboard extends Component {
     });
   }
 
-  calcAvg(arr) {
-    // calc avg fields of array of objects
-    let avg = {};
-    let mapped = arr.reduce(
-      (acc, obj) =>
-        Object.keys(obj).reduce(
-          (acc, key) =>
-            acc.set(
-              key,
-              (([sum, count]) => [sum + obj[key], count + 1])(
-                acc.get(key) || [0, 0]
-              )
-            ),
-          acc
-        ),
-      new Map()
-    );
-    mapped.forEach((k, v) => (avg[v] = k[0] / k[1]));
-    return avg;
-  }
-
   getMonthlyRatings(reviews) {
     reviews = reviews.map(review =>
       pick(review, ["rating", "createdAt", "course"])
@@ -77,9 +57,7 @@ class HoDDashboard extends Component {
         dateformat(review.createdAt, "mmmm yyyy")
       );
       for (let [month, monthlyRevs] of Object.entries(groupedByMY)) {
-        monthlyRatings[id][month] = this.calcAvg(
-          monthlyRevs.map(rev => rev.rating)
-        );
+        monthlyRatings[id][month] = calcAvg(monthlyRevs.map(rev => rev.rating));
       }
     }
     return monthlyRatings;
@@ -138,8 +116,10 @@ class HoDDashboard extends Component {
     return (
       <div>
         {this.numRecordsChart()}
-        {/* {this.state.reviews &&
-          this.allCoursesReviewsCharts(this.getMonthlyRatings(this.state.reviews))}{" "} */}
+        {this.state.reviews &&
+          this.allCoursesReviewsCharts(
+            this.getMonthlyRatings(this.state.reviews)
+          )}{" "}
       </div>
     );
   }
