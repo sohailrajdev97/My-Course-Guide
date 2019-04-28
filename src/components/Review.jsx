@@ -17,6 +17,7 @@ import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
 import Button from "react-bootstrap/Button";
 import { labels, fields} from "../assets/labels";
+
 class Review extends Component {
   constructor(props) {
     super(props);
@@ -77,70 +78,54 @@ class Review extends Component {
       this.state.review.rating.grading,
       this.state.review.rating.attendance
     ];
-    const items1 = []
-    const items2 = []
+    const items1 = [];
+    const items2 = [];
 
-  for (const [index, value] of desc.entries()) {
-    if(index < 2) {
-      items1.push(<Col>
-        <span>
-          <OverlayTrigger
-            key={"top"}
-            placement={"top"}
-            overlay={
-              <Tooltip id={`tooltip-top`}>
-                {
-                  labels[index][
-                    desc[index]-1
-                  ]
+    for (const [index, value] of desc.entries()) {
+      if (index < 2) {
+        items1.push(
+          <Col>
+            <span>
+              <OverlayTrigger
+                key={"top"}
+                placement={"top"}
+                overlay={
+                  <Tooltip id={`tooltip-top`}>
+                    {labels[index][desc[index] - 1]}
+                  </Tooltip>
                 }
-              </Tooltip>
-            }
-          >
-            <Button
-              variant={badgeVariant(
-                desc[index]
-              )}
-              size="sm"
-            >
-              {desc[index]}
-            </Button>
-          </OverlayTrigger>
-          &nbsp;{fields[index]}
-        </span>
-      </Col>)
-    } 
-    else {
-      items2.push(<Col>
-        <span>
-          <OverlayTrigger
-            key={"top"}
-            placement={"top"}
-            overlay={
-              <Tooltip id={`tooltip-top`}>
-                {
-                  labels[index][
-                    desc[index]-1
-                  ]
+              >
+                <Button variant={badgeVariant(desc[index])} size="sm">
+                  {desc[index]}
+                </Button>
+              </OverlayTrigger>
+              &nbsp;{fields[index]}
+            </span>
+          </Col>
+        );
+      } else {
+        items2.push(
+          <Col>
+            <span>
+              <OverlayTrigger
+                key={"top"}
+                placement={"top"}
+                overlay={
+                  <Tooltip id={`tooltip-top`}>
+                    {labels[index][desc[index] - 1]}
+                  </Tooltip>
                 }
-              </Tooltip>
-            }
-          >
-            <Button
-              variant={badgeVariant(
-                desc[index]
-              )}
-              size="sm"
-            >
-              {desc[index]}
-            </Button>
-          </OverlayTrigger>
-          &nbsp;{fields[index]}
-        </span>
-      </Col>)
+              >
+                <Button variant={badgeVariant(desc[index])} size="sm">
+                  {desc[index]}
+                </Button>
+              </OverlayTrigger>
+              &nbsp;{fields[index]}
+            </span>
+          </Col>
+        );
+      }
     }
-    
-  }
     return (
       <div>
         {!this.props.hideCourse ? (
@@ -176,12 +161,8 @@ class Review extends Component {
                   </h2>
                 </Col>
                 <Col>
-                  <Row>
-                    {items1}
-                  </Row>
-                  <Row>
-                    {items2}
-                  </Row>
+                  <Row>{items1}</Row>
+                  <Row>{items2}</Row>
                 </Col>
               </Row>
             </Col>
