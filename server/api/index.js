@@ -10,6 +10,7 @@ const professors = require("./professors");
 const records = require("./records");
 const replies = require("./replies");
 const votes = require("./votes");
+const reports = require("./reports");
 
 router.all("/", (req, res, next) => {
   console.log(`${req.method} for ${req.url}`);
@@ -28,5 +29,6 @@ router.use(
   checkToken(["admin", "student", "prof", "hod"]),
   professors
 );
+router.use("/reports", reports);
 
 module.exports = router;
