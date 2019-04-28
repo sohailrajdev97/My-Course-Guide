@@ -76,7 +76,15 @@ class HoDDashboard extends Component {
         };
         data.push(trace);
       }
-      charts.push(<Plot data={data} layout={{ title: cid }} key={cid} />);
+
+      let layout = {
+        title: cid,
+        xaxis: { rangeslider: { visible: true } },
+        yaxis: {
+          range: [1, 5]
+        }
+      };
+      charts.push(<Plot data={data} layout={layout} key={cid} />);
     }
     return charts;
   }

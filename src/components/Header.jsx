@@ -43,8 +43,6 @@ class Header extends Component {
           title={this.state.decodedToken.name}
           id="collasible-nav-dropdown"
         >
-          <NavDropdown.Item href="#">Preferences</NavDropdown.Item>
-          <NavDropdown.Divider />
           <LinkContainer to="/logout">
             <NavDropdown.Item>Logout</NavDropdown.Item>
           </LinkContainer>
@@ -62,11 +60,9 @@ class Header extends Component {
   }
   getAdminJSX() {
     return (
-      <Nav className="mr-auto">
-        <LinkContainer to="/upload">
-          <Nav.Link>Import Data</Nav.Link>
-        </LinkContainer>
-      </Nav>
+      <LinkContainer to="/upload">
+        <Nav.Link>Import Data</Nav.Link>
+      </LinkContainer>
     );
   }
   getSearchBarJSX() {
@@ -129,7 +125,13 @@ class Header extends Component {
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          {this.state.role === "admin" ? this.getAdminJSX() : null}
+          <Nav className="mr-auto">
+            {this.state.role === "admin" ? (
+              this.getAdminJSX()
+            ) : (
+              <Nav.Link href="/">Home</Nav.Link>
+            )}
+          </Nav>
           {this.state.role ? this.getCommonJSX() : null}
         </Navbar.Collapse>
       </Navbar>
