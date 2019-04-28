@@ -5,6 +5,7 @@ const checkToken = require("./authMiddleware");
 
 const mongoose = require("mongoose");
 const Course = mongoose.model("Course");
+const Professor = mongoose.model("Professor");
 const Record = mongoose.model("Record");
 const Reply = mongoose.model("Reply");
 const Student = mongoose.model("Student");
@@ -52,9 +53,23 @@ router.get(
         let records = await fetchRecords({ student: req.user.id });
         return res.status(200).json(records);
       } else {
-        let courses = await Course.find({
-          "history.professor": req.user.id
-        });
+        let courses = [];
+        if (req.user.role === "hod" && !req.query.onlyhod) {
+          let profs = await Professor.find({
+            department: req.user.department,
+            campus: req.user.campus
+          });
+          for (let prof of profs) {
+            let profCourses = await Course.find({
+              "history.professor": prof
+            });
+            courses = [...courses, ...profCourses];
+          }
+        } else {
+          courses = await Course.find({
+            "history.professor": req.user.id
+          });
+        }
         let records = { reviews: [], questions: [] };
         for (let course of courses) {
           let courseRecords = await fetchRecords({ course });
@@ -153,7 +168,8 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       content: req.body.content,
       student: req.user.id,
       rating: req.body.rating,
-      isAnonymous: req.body.isAnonymous ? true : false
+      isAnonymous: req.body.isAnonymous ? true : false,
+      createdAt: req.body.createdAt
     });
 
     let numQuestions = await Record.count({ type: "Question", course });
