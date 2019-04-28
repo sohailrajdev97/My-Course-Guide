@@ -69,7 +69,6 @@ class Course extends Component {
   }
   getReports() {
     axiosGET("/api/reports").then(res => {
-      // console.log(...res.data);
       this.setState({ reports: res.data });
     });
   }
@@ -113,24 +112,14 @@ class Course extends Component {
       history.push(<p key={item.year * 10 + item.sem}>{item.semester}</p>);
     });
   }
-  // isDisabled = (model, id) => {
-  //   let dis = this.state.reports.find({
-  //     forModel: { model },
-  //     for: { id }
-  //   });
-  //   return dis ? true : false;
-  // }
   generateReviewsList() {
     let reviews = [];
-    // console.log(this.state.reports);
     this.state.reviews.forEach(review => {
-      console.log(review._id);
       reviews.push(
         <Review
           reported={this.state.reports.find(report => {
-            return report.for === review._id;
+            return report.for._id === review._id;
           })}
-          // report={this.isDisabled("Record", review._id)}
           key={`${review._id}`}
           review={review}
           vote={this.state.votes.Record && this.state.votes.Record[review._id]}
