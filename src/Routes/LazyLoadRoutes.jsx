@@ -29,6 +29,11 @@ export const Course = Loadable({
   loading: () => <div>Loading...</div>
 });
 
+export const Activities = Loadable({
+  loader: () => import("../components/Activities.jsx"),
+  loading: () => <div>Loading...</div>
+});
+
 export const ErrorPage = Loadable({
   loader: () => import("./404/404.jsx"),
   loading: () => <div>Loading...</div>

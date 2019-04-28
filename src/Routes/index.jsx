@@ -16,7 +16,14 @@ import { loadProgressBar } from "axios-progress-bar";
 import "../styles/progres-bar.css";
 
 // Import lazy loaded route components
-import { Home, Login, ErrorPage, Upload, Course } from "./LazyLoadRoutes.jsx";
+import {
+  Home,
+  Login,
+  ErrorPage,
+  Upload,
+  Course,
+  Activities
+} from "./LazyLoadRoutes.jsx";
 import Logout from "./Logout.jsx";
 
 loadProgressBar();
@@ -67,6 +74,7 @@ class Routes extends Component {
         <Switch className="main">
           <AdminRoute exact path="/upload" component={Upload} />
           <CommonRoute exact path="/courses/:id" component={Course} />
+          <CommonRoute exact path="/activities" component={Activities} />
           <AdminRoute exact path="/courses/:id/:campus" component={Course} />
           <Route
             path="/login"

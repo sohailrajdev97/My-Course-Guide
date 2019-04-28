@@ -43,6 +43,9 @@ class Header extends Component {
           title={this.state.decodedToken.name}
           id="collasible-nav-dropdown"
         >
+          <LinkContainer to="/activities">
+            <NavDropdown.Item>My Activities</NavDropdown.Item>
+          </LinkContainer>
           <LinkContainer to="/logout">
             <NavDropdown.Item>Logout</NavDropdown.Item>
           </LinkContainer>

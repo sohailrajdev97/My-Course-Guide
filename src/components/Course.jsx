@@ -263,6 +263,7 @@ class Course extends Component {
                 }}
                 questions={this.state.questions}
                 votes={this.state.votes}
+                hideCourse
               />
             </Col>
           </Row>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -53,41 +54,43 @@ class QuestionSection extends Component {
                       : "Professor")}
                 </small>
               </Col>
-              <Col className="text-right">
-                <ToggleButtonGroup
-                  type="checkbox"
-                  onChange={value => {
-                    axiosPOST("/api/votes/up", {
-                      reply: answer._id
-                    }).then(() => {
-                      let votes = this.state.votes.Reply;
-                      if (votes[answer._id]) {
-                        delete votes[answer._id];
-                        answer.upvotes--;
-                      } else {
-                        votes[answer._id] = "up";
-                        answer.upvotes++;
-                      }
-                      this.setState({ "votes.Reply": votes });
-                    });
-                  }}
-                  defaultValue={
-                    isStudent && this.state.votes.Reply[answer._id] ? [1] : []
-                  }
-                >
-                  <ToggleButton
-                    value={1}
-                    variant="outline-success"
-                    size="sm"
-                    disabled={!isStudent}
+              {this.props.noVotes ? null : (
+                <Col className="text-right">
+                  <ToggleButtonGroup
+                    type="checkbox"
+                    onChange={value => {
+                      axiosPOST("/api/votes/up", {
+                        reply: answer._id
+                      }).then(() => {
+                        let votes = this.state.votes.Reply;
+                        if (votes[answer._id]) {
+                          delete votes[answer._id];
+                          answer.upvotes--;
+                        } else {
+                          votes[answer._id] = "up";
+                          answer.upvotes++;
+                        }
+                        this.setState({ "votes.Reply": votes });
+                      });
+                    }}
+                    defaultValue={
+                      isStudent && this.state.votes.Reply[answer._id] ? [1] : []
+                    }
                   >
-                    {isStudent && this.state.votes.Reply[answer._id]
-                      ? "Marked"
-                      : "Mark"}
-                    &nbsp;as helpful ({answer.upvotes})
-                  </ToggleButton>
-                </ToggleButtonGroup>
-              </Col>
+                    <ToggleButton
+                      value={1}
+                      variant="outline-success"
+                      size="sm"
+                      disabled={!isStudent}
+                    >
+                      {isStudent && this.state.votes.Reply[answer._id]
+                        ? "Marked"
+                        : "Mark"}
+                      &nbsp;as helpful ({answer.upvotes})
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                </Col>
+              )}
             </Row>
           </Container>
         )
@@ -101,6 +104,17 @@ class QuestionSection extends Component {
       questions.forEach(ques =>
         items.push(
           <Card key={ques._id}>
+            <Card.Header>
+              {!this.props.hideCourse ? (
+                <h5>
+                  <Link to={`/courses/${ques.course.id}`}>{`${
+                    ques.course.id
+                  } - ${ques.course.name}`}</Link>
+                </h5>
+              ) : (
+                ""
+              )}
+            </Card.Header>
             <Card.Body>
               <Container>
                 <Row>
@@ -116,55 +130,57 @@ class QuestionSection extends Component {
                         : `${ques.student.name} - ${ques.student.id}`}
                     </small>
                   </Col>
-                  <Col className="text-right">
-                    <ToggleButtonGroup
-                      type="checkbox"
-                      onChange={value => {
-                        axiosPOST("/api/votes/up", {
-                          record: ques._id
-                        }).then(() => {
-                          let votes = this.state.votes.Record;
-                          if (votes[ques._id]) {
-                            delete votes[ques._id];
-                            ques.upvotes--;
-                          } else {
-                            votes[ques._id] = "up";
-                            ques.upvotes++;
-                          }
-                          this.setState({ "votes.Record": votes });
-                        });
-                      }}
-                      defaultValue={
-                        isStudent && this.state.votes.Record[ques._id]
-                          ? [1]
-                          : []
-                      }
-                    >
-                      <ToggleButton
-                        disabled={!isStudent}
-                        value={1}
-                        variant="outline-secondary"
-                        size="sm"
-                        style={{ marginRight: "5px" }}
-                      >
-                        I also had this question ({ques.upvotes})
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                    {this.user.role !== "admin" ? (
-                      <Button
-                        onClick={() => {
-                          this.props.giveAnswer(ques);
+                  {this.props.noVotes ? null : (
+                    <Col className="text-right">
+                      <ToggleButtonGroup
+                        type="checkbox"
+                        onChange={value => {
+                          axiosPOST("/api/votes/up", {
+                            record: ques._id
+                          }).then(() => {
+                            let votes = this.state.votes.Record;
+                            if (votes[ques._id]) {
+                              delete votes[ques._id];
+                              ques.upvotes--;
+                            } else {
+                              votes[ques._id] = "up";
+                              ques.upvotes++;
+                            }
+                            this.setState({ "votes.Record": votes });
+                          });
                         }}
-                        size="sm"
-                        variant="outline-primary"
+                        defaultValue={
+                          isStudent && this.state.votes.Record[ques._id]
+                            ? [1]
+                            : []
+                        }
                       >
-                        Add Answer
-                      </Button>
-                    ) : null}
-                  </Col>
+                        <ToggleButton
+                          disabled={!isStudent}
+                          value={1}
+                          variant="outline-secondary"
+                          size="sm"
+                          style={{ marginRight: "5px" }}
+                        >
+                          I also had this question ({ques.upvotes})
+                        </ToggleButton>
+                      </ToggleButtonGroup>
+                      {this.user.role !== "admin" ? (
+                        <Button
+                          onClick={() => {
+                            this.props.giveAnswer(ques);
+                          }}
+                          size="sm"
+                          variant="outline-primary"
+                        >
+                          Add Answer
+                        </Button>
+                      ) : null}
+                    </Col>
+                  )}
                 </Row>
               </Container>
-              {genAnswers(ques)}
+              {this.props.noAnswers ? null : genAnswers(ques)}
             </Card.Body>
           </Card>
         )
