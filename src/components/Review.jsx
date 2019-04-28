@@ -60,8 +60,6 @@ class Review extends Component {
   }
 
   render() {
-    // let reportmsg = ;
-    // let isDisabled = this.props.report ? true : false;
     let isStudent = getDecodedToken().role === "student";
     if (!this.state.review) return <div />;
     let badgeVariant = val => {

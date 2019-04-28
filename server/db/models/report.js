@@ -29,5 +29,12 @@ reportSchema.pre("find", function(next) {
   this.populate({ path: "for", model: "Record" });
   next();
 });
-
+reportSchema.pre("findOne", function(next) {
+  this.populate({ path: "for", model: "Record" });
+  next();
+});
+reportSchema.pre("findOneAndDelete", function(next) {
+  this.populate({ path: "for", model: "Record" });
+  next();
+});
 mongoose.model("Report", reportSchema);

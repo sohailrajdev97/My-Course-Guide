@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import ReportedReview from "./ReportedReview";
 import { axiosGET, axiosDELETE } from "../utils/axiosClient";
 import SeeAll from "./SeeAll";
-import ToggleButton from "react-bootstrap/ToggleButton";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -40,8 +40,8 @@ class AdminDashboard extends Component {
         <div key={report._id}>
           <ReportedReview key={`${report.for._id}`} review={report.for} />
           <div className="text-right">
-            <ToggleButtonGroup type="checkbox">
-              <ToggleButton
+            <ButtonGroup>
+              <Button
                 variant="success"
                 size="sm"
                 onClick={() => {
@@ -51,21 +51,22 @@ class AdminDashboard extends Component {
                 }}
               >
                 Keep
-              </ToggleButton>
-              <ToggleButton
+              </Button>
+              <Button
                 variant="outline-danger"
                 size="sm"
                 onClick={() => {
                   axiosDELETE(
                     `/api/reports/${report._id}?deleteReview=true`
                   ).then(res => {
-                    this.getReports();
+                    if (res.msg === "Report and Review deleted")
+                      this.getReports();
                   });
                 }}
               >
                 Delete
-              </ToggleButton>
-            </ToggleButtonGroup>
+              </Button>
+            </ButtonGroup>
           </div>
           <hr />
         </div>
