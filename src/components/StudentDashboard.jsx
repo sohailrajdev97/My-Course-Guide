@@ -13,6 +13,7 @@ import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import QuestionSection from "./QuestionSection";
 
 import SeeAll from "./SeeAll";
 import { axiosGET } from "../utils/axiosClient";
@@ -24,9 +25,15 @@ class StudentDashboard extends Component {
       departments: new Set(),
       professors: [],
       courses: [],
+      questions: [],
       votes: null,
       filter: {
-        activeKeys: ["filter-time", "filter-type", "filter-dept"],
+        activeKeys: [
+          "filter-time",
+          "filter-type",
+          "filter-dept",
+          "filter-ques"
+        ],
         selectedDepartments: [],
         departmentSearchField: "",
         profSearchField: "",
@@ -227,6 +234,50 @@ class StudentDashboard extends Component {
     });
     return <SeeAll items={courses} count={10} name="courses" />;
   }
+
+  generateLitemaxList() {
+    let courses = [];
+    let courseId = [];
+    let liteRating = [];
+    let i = 0;
+    this.state.courses.forEach(course => {
+      liteRating.push(
+        Math.floor(
+          (10 * course.averages.attendance +
+            10 * course.averages.grading +
+            10 * course.averages.difficulty +
+            3 * course.averages.textbook +
+            5 * course.averages.overall) /
+            1.9
+        )
+      );
+      courseId.push(course.id);
+      courses.push(
+        <Row key={`course-${course.id}`}>
+          <Col>
+            <Card>
+              <Card.Header>
+                <h6>{course.id}</h6>
+                <h6>
+                  <Link to={`/courses/${course.id}`}>{course.name}</Link>
+                </h6>
+                <h6>{liteRating[i]}</h6>
+                {/* <h6>{courseId.indexOf(course.id)}</h6> */}
+              </Card.Header>
+            </Card>
+          </Col>
+        </Row>
+      );
+      i++;
+    });
+    courses.sort(function(a, b) {
+      return (
+        liteRating[courseId.indexOf(a.id)] > liteRating[courseId.indexOf(b.id)]
+      );
+    });
+    return <SeeAll items={courses} count={5} name="courses" />;
+  }
+
   changeActiveKeys(newKeys) {
     let filter = { ...this.state.filter };
     filter.activeKeys = newKeys;
@@ -330,6 +381,43 @@ class StudentDashboard extends Component {
             </ButtonToolbar>
             <br />
             {this.generateCourseList()}
+          </Col>
+          <Col lg="3">
+            <Row>
+              <Col>
+                <h5>Recent Trends</h5>
+                <hr />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Collapse
+                  activeKey={this.state.filter.activeKeys}
+                  onChange={this.changeActiveKeys.bind(this)}
+                >
+                  <Collapse.Panel header="Recent Questions" key="filter-ques">
+                    <Form.Group style={{ marginLeft: "10px" }}>
+                      <QuestionSection
+                        giveAnswer={qid => {
+                          this.setState({
+                            showComposer: true,
+                            currQuestion: qid,
+                            type: "Answer"
+                          });
+                        }}
+                        questions={this.state.questions}
+                        votes={this.state.votes}
+                      />
+                    </Form.Group>
+                  </Collapse.Panel>
+                  <Collapse.Panel header="Litemax Course" key="filter-litemax">
+                    <Form.Group style={{ marginLeft: "10px" }}>
+                      {this.generateLitemaxList()}
+                    </Form.Group>
+                  </Collapse.Panel>
+                </Collapse>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>
