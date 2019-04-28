@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Collapse from "rc-collapse";
 import "rc-collapse/assets/index.css";
 
-import getParam from "lodash/get";
+import { getParam, groupBy, pick, sortBy } from "lodash";
 
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from "react-bootstrap/ButtonGroup";
@@ -16,6 +16,8 @@ import Row from "react-bootstrap/Row";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 
+import Plot from "react-plotly.js";
+
 import Composer from "./Composer";
 import QuestionSection from "./QuestionSection";
 import Review from "./Review";
@@ -23,6 +25,8 @@ import SeeAll from "./SeeAll";
 
 import { axiosGET } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
+import { calcAvg } from "../utils/graphing";
+const dateformat = require("dateformat");
 
 class Course extends Component {
   constructor(props) {
@@ -36,7 +40,8 @@ class Course extends Component {
       showComposer: false,
       type: "",
       currQuestion: null,
-      liteRating: 0
+      liteRating: 0,
+      crossCampus: null
     };
   }
   async getCourse(id) {
@@ -56,6 +61,7 @@ class Course extends Component {
       );
       this.setState({ course: res.data, liteRating });
       this.getRecords();
+      this.user.role === "admin" && this.crossCampus();
     } catch (e) {
       console.log(e);
     }
@@ -64,7 +70,11 @@ class Course extends Component {
     if (!this.state.course) {
       return;
     }
-    axiosGET(`/api/records/${this.state.course.id}`).then(res => {
+    const params = this.props.match.params;
+    axiosGET(
+      `/api/records/${this.state.course.id}` +
+        (params.campus ? `?campus=${params.campus}` : "")
+    ).then(res => {
       this.setState({ ...res.data });
     });
   }
@@ -80,9 +90,10 @@ class Course extends Component {
   }
   componentDidMount() {
     this.getCourse(this.props.match.params.id);
-    axiosGET("/api/votes").then(res => {
-      this.setState({ votes: { ...res.data } });
-    });
+    this.user.role === "admin" &&
+      axiosGET("/api/votes").then(res => {
+        this.setState({ votes: { ...res.data } });
+      });
   }
   componentWillReceiveProps(nextProps) {
     this.getCourse(nextProps.match.params.id);
@@ -107,6 +118,44 @@ class Course extends Component {
       );
     });
     return <SeeAll items={reviews} count={5} name="reviews" />;
+  }
+  crossCampus() {
+    let reviews = [];
+    axiosGET(`/api/records/${this.state.course.id}`).then(res => {
+      res.data.reviews.forEach(review => {
+        reviews.push(pick(review, ["course.campus", "rating", "createdAt"]));
+      });
+      sortBy(reviews, "createdAt");
+      let campusWise = groupBy(reviews, "course.campus");
+      let data = [];
+      for (let [campus, reviews] of Object.entries(campusWise)) {
+        let groupedByMY = groupBy(reviews, review =>
+          dateformat(review.createdAt, "mmmm yyyy")
+        );
+        let x = [],
+          y = [];
+        for (let monthlyRevs of Object.values(groupedByMY)) {
+          x.push(new Date(monthlyRevs[0].createdAt));
+          y.push(calcAvg(monthlyRevs.map(rev => rev.rating)).overall);
+        }
+        data.push({
+          x,
+          y,
+          name: campus
+        });
+      }
+      let layout = {
+        title: "Overall rating across campuses",
+        xaxis: {
+          rangeslider: { visible: true },
+          type: "date"
+        },
+        yaxis: {
+          range: [1, 5]
+        }
+      };
+      this.setState({ crossCampus: <Plot data={data} layout={layout} /> });
+    });
   }
   render() {
     if (!this.state.course) {
@@ -180,6 +229,11 @@ class Course extends Component {
             </Col>
           </Row>
           <br />
+          <Row>
+            <Col>
+              <center>{this.state.crossCampus}</center>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <h3 id="questions">Questions</h3>
