@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Plot from "react-plotly.js";
-import { groupBy, pick } from "lodash";
+import { groupBy, pick, sortBy } from "lodash";
 import { axiosGET } from "../utils/axiosClient";
 const dateformat = require("dateformat");
 
@@ -21,7 +21,7 @@ class HoDDashboard extends Component {
       let reviews = [];
       let questions = [];
       res.data.reviews.forEach(review => {
-        reviews.push(review);
+        reviews.push({ ...review, createdAt: new Date(review.createdAt) });
         if (!courseIDs.has(review.course.id)) {
           courseIDs.add(review.course.id);
           courses.push(review.course);
@@ -37,6 +37,7 @@ class HoDDashboard extends Component {
       courses.sort((left, right) => {
         return right.name < left.name;
       });
+      reviews = sortBy(reviews, ["createdAt"]);
       this.setState({ courses, questions, reviews });
     });
   }
@@ -84,7 +85,7 @@ class HoDDashboard extends Component {
     return monthlyRatings;
   }
 
-  allCoursesChart(monthlyRatings) {
+  allCoursesReviewsCharts(monthlyRatings) {
     let charts = [];
     for (let [cid, monthly] of Object.entries(monthlyRatings)) {
       let data = [];
@@ -102,12 +103,43 @@ class HoDDashboard extends Component {
     return charts;
   }
 
+  numRecordsChart() {
+    let data = [];
+    ["reviews", "questions"].forEach(type => {
+      let groupedByMY = groupBy(this.state[type], record =>
+        dateformat(record.createdAt, "mmmm yyyy")
+      );
+      let x = [],
+        y = [];
+      for (let month of Object.keys(groupedByMY)) {
+        let date = new Date(groupedByMY[month][0].createdAt);
+        date.setDate(1);
+        x.push(date);
+        y.push(groupedByMY[month].length);
+      }
+      data.push({
+        x,
+        y,
+        type: "scatter",
+        name: type
+      });
+    });
+    let layout = {
+      title: "New Questions/Reviews per Month",
+      xaxis: {
+        rangeslider: { visible: true },
+        type: "date"
+      }
+    };
+    return <Plot data={data} layout={layout} />;
+  }
+
   render() {
     return (
       <div>
-        {" "}
-        {this.state.reviews &&
-          this.allCoursesChart(this.getMonthlyRatings(this.state.reviews))}{" "}
+        {this.numRecordsChart()}
+        {/* {this.state.reviews &&
+          this.allCoursesReviewsCharts(this.getMonthlyRatings(this.state.reviews))}{" "} */}
       </div>
     );
   }
