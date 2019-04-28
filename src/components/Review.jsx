@@ -29,7 +29,6 @@ class Review extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.reported);
     this.setState({
       review: this.props.review,
       vote: this.props.vote,
@@ -61,8 +60,6 @@ class Review extends Component {
   }
 
   render() {
-    // let reportmsg = ;
-    // let isDisabled = this.props.report ? true : false;
     let isStudent = getDecodedToken().role === "student";
     if (!this.state.review) return <div />;
     let badgeVariant = val => {
@@ -208,8 +205,8 @@ class Review extends Component {
                               for: this.state.review._id
                             }).then(res => {
                               this.setState({ isDisabled: true });
+                              this.setState({ reportmsg: "Reported" });
                             });
-                            this.setState({ reportmsg: "Reported" });
                           }}
                         >
                           {this.state.reportmsg}
