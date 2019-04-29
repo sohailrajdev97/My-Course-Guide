@@ -255,7 +255,7 @@ class StudentDashboard extends Component {
           10 * course.averages.difficulty +
           3 * course.averages.textbook +
           5 * course.averages.overall) /
-        1.9
+          1.9
       );
       course.liteRating = liteRating;
       courses.push(course);
@@ -346,21 +346,21 @@ class StudentDashboard extends Component {
                   let courses = [...this.state.courses];
                   switch (value) {
                     case 1: {
-                      courses.sort(function (a, b) {
+                      courses.sort(function(a, b) {
                         if (a.id === b.id) return 0;
                         return a.id > b.id ? 1 : -1;
                       });
                       break;
                     }
                     case 2: {
-                      courses.sort(function (a, b) {
+                      courses.sort(function(a, b) {
                         if (a.numQuestions === b.numQuestions) return 0;
                         return a.numQuestions > b.numQuestions ? -1 : 1;
                       });
                       break;
                     }
                     case 3: {
-                      courses.sort(function (a, b) {
+                      courses.sort(function(a, b) {
                         if (a.numReviews === b.numReviews) return 0;
                         return a.numReviews > b.numReviews ? -1 : 1;
                       });
