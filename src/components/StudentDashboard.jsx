@@ -11,9 +11,11 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import QuestionSection from "./QuestionSection";
+import { orderBy } from "lodash";
 
 import SeeAll from "./SeeAll";
 import { axiosGET } from "../utils/axiosClient";
@@ -41,6 +43,13 @@ class StudentDashboard extends Component {
       }
     };
   }
+  getQuestions() {
+    axiosGET("/api/records").then(res => {
+      this.setState({
+        questions: [...res.data.questions.slice(0, 3)]
+      });
+    });
+  }
   componentDidMount() {
     axiosGET("/api/courses").then(res => {
       let departments = new Set();
@@ -65,6 +74,7 @@ class StudentDashboard extends Component {
         departments,
         professors
       });
+      this.getQuestions();
     });
   }
   selectFilterItem(type, event) {
@@ -127,6 +137,7 @@ class StudentDashboard extends Component {
   generateDepartmentForm() {
     let departments = [];
     this.state.departments.forEach(department => {
+      // let id = Array.join(department.split(" "));
       if (
         department
           .toLowerCase()
@@ -237,44 +248,34 @@ class StudentDashboard extends Component {
 
   generateLitemaxList() {
     let courses = [];
-    let courseId = [];
-    let liteRating = [];
-    let i = 0;
     this.state.courses.forEach(course => {
-      liteRating.push(
-        Math.floor(
-          (10 * course.averages.attendance +
-            10 * course.averages.grading +
-            10 * course.averages.difficulty +
-            3 * course.averages.textbook +
-            5 * course.averages.overall) /
-            1.9
-        )
+      let liteRating = Math.floor(
+        (10 * course.averages.attendance +
+          10 * course.averages.grading +
+          10 * course.averages.difficulty +
+          3 * course.averages.textbook +
+          5 * course.averages.overall) /
+          1.9
       );
-      courseId.push(course.id);
-      courses.push(
-        <Row key={`course-${course.id}`}>
-          <Col>
-            <Card>
-              <Card.Header>
-                <h6>{course.id}</h6>
-                <h6>
-                  <Link to={`/courses/${course.id}`}>{course.name}</Link>
-                </h6>
-                <h6>{liteRating[i]}</h6>
-                {/* <h6>{courseId.indexOf(course.id)}</h6> */}
-              </Card.Header>
-            </Card>
-          </Col>
-        </Row>
-      );
-      i++;
+      course.liteRating = liteRating;
+      courses.push(course);
     });
-    courses.sort(function(a, b) {
-      return (
-        liteRating[courseId.indexOf(a.id)] > liteRating[courseId.indexOf(b.id)]
-      );
-    });
+    courses = orderBy(courses, ["liteRating"], ["desc"]);
+    courses = courses.map(course => (
+      <Row key={`course-${course.id}`}>
+        <Col>
+          <Card>
+            <Card.Header>
+              <h6>{course.id}</h6>
+              <h6>
+                <Link to={`/courses/${course.id}`}>{course.name}</Link>
+              </h6>
+              <Button size="sm">{course.liteRating}</Button>
+            </Card.Header>
+          </Card>
+        </Col>
+      </Row>
+    ));
     return <SeeAll items={courses} count={5} name="courses" />;
   }
 
@@ -398,15 +399,10 @@ class StudentDashboard extends Component {
                   <Collapse.Panel header="Recent Questions" key="filter-ques">
                     <Form.Group style={{ marginLeft: "10px" }}>
                       <QuestionSection
-                        giveAnswer={qid => {
-                          this.setState({
-                            showComposer: true,
-                            currQuestion: qid,
-                            type: "Answer"
-                          });
-                        }}
                         questions={this.state.questions}
-                        votes={this.state.votes}
+                        noVotes
+                        noAnswers
+                        hideBy
                       />
                     </Form.Group>
                   </Collapse.Panel>

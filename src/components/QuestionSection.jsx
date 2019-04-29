@@ -124,10 +124,16 @@ class QuestionSection extends Component {
                   <Col>
                     {" "}
                     <small className="text-muted">
-                      Submitted <TimeAgo date={ques.createdAt} /> by{" "}
-                      {ques.isAnonymous
-                        ? "Anonymous"
-                        : `${ques.student.name} - ${ques.student.id}`}
+                      Submitted <TimeAgo date={ques.createdAt} />
+                      {!this.props.hideBy ? (
+                        <span>
+                          {" "}
+                          by{" "}
+                          {ques.isAnonymous
+                            ? "Anonymous"
+                            : `${ques.student.name} - ${ques.student.id}`}
+                        </span>
+                      ) : null}
                     </small>
                   </Col>
                   {this.props.noVotes ? null : (
