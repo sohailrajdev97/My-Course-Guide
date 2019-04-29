@@ -39,7 +39,7 @@ class Review extends Component {
 
   getContent() {
     let words = this.state.review.content.split(" ");
-    if (words.length < 50) {
+    if (words.length < 51) {
       return this.state.review.content;
     }
     return (

@@ -34,7 +34,8 @@ router.post(
       record: req.body.record,
       content: req.body.content,
       replierType: typeHash[req.user.role],
-      by: req.user.id
+      by: req.user.id,
+      createdAt: req.body.createdAt
     });
     await Vote.create({ for: reply._id, forModel: "Reply" });
     return res.json({ msg: "Reply posted" });

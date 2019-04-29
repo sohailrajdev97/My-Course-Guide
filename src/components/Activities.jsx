@@ -4,14 +4,16 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { axiosGET } from "../utils/axiosClient";
-
+import { orderBy } from "lodash";
 import Review from "./Review";
 import QuestionSection from "./QuestionSection";
 import SeeAll from "./SeeAll";
+import { getDecodedToken } from "../utils/jwt";
 
 class Activities extends Component {
   constructor(props) {
     super(props);
+    this.user = getDecodedToken().role;
     this.state = {
       questions: [],
       reviews: []
@@ -19,9 +21,12 @@ class Activities extends Component {
   }
   componentDidMount() {
     axiosGET("/api/records").then(res => {
+      let { questions, reviews } = res.data;
+      questions = orderBy(questions, ["createdAt"], ["desc"]);
+      reviews = orderBy(reviews, ["createdAt"], ["desc"]);
       this.setState({
-        questions: res.data.questions,
-        reviews: res.data.reviews
+        questions,
+        reviews
       });
     });
   }
@@ -38,7 +43,11 @@ class Activities extends Component {
         <br />
         <Row>
           <Col>
-            <h2 className="text-center">My Activities</h2>
+            <h2 className="text-center">
+              {this.user === "Student"
+                ? "My Activities"
+                : "Activities in your Courses"}
+            </h2>
           </Col>
         </Row>
         <Row>
