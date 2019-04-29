@@ -90,7 +90,7 @@ class Course extends Component {
   }
   componentDidMount() {
     this.getCourse(this.props.match.params.id);
-    this.user.role === "admin" &&
+    this.user.role !== "admin" &&
       axiosGET("/api/votes").then(res => {
         this.setState({ votes: { ...res.data } });
       });

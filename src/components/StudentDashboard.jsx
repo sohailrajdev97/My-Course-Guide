@@ -120,7 +120,6 @@ class StudentDashboard extends Component {
   generateDepartmentForm() {
     let departments = [];
     this.state.departments.forEach(department => {
-      // let id = Array.join(department.split(" "));
       if (
         department
           .toLowerCase()
@@ -251,47 +250,6 @@ class StudentDashboard extends Component {
                   activeKey={this.state.filter.activeKeys}
                   onChange={this.changeActiveKeys.bind(this)}
                 >
-                  {/* <Collapse.Panel header="Time" key="filter-time">
-                    <Form.Group>
-                      <Form.Check
-                        type="checkbox"
-                        id="time-upcoming"
-                        label="Upcoming"
-                      />
-                      <Form.Check
-                        type="checkbox"
-                        id="time-current"
-                        label="Current"
-                      />
-                      <Form.Check
-                        type="checkbox"
-                        id="time-previous"
-                        label="Previous"
-                      />
-                    </Form.Group>
-                  </Collapse.Panel>
-                  <Collapse.Panel header="Type" key="filter-type">
-                    <Form.Group>
-                      <Form.Check
-                        type="radio"
-                        name="course-type"
-                        id="type-all"
-                        label="All"
-                      />
-                      <Form.Check
-                        type="radio"
-                        name="course-type"
-                        id="type-cdc"
-                        label="CDCs"
-                      />
-                      <Form.Check
-                        type="radio"
-                        name="course-type"
-                        id="type-humanities"
-                        label="Humanities"
-                      />
-                    </Form.Group>
-                  </Collapse.Panel> */}
                   <Collapse.Panel header="Department" key="filter-dept">
                     <Form.Control
                       type="text"
