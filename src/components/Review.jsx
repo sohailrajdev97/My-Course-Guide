@@ -15,8 +15,7 @@ import TimeAgo from "react-timeago";
 
 import { axiosPOST } from "../utils/axiosClient";
 import { getDecodedToken } from "../utils/jwt";
-import Button from "react-bootstrap/Button";
-import { labels, fields} from "../assets/labels";
+import { labels, fields } from "../assets/labels";
 
 class Review extends Component {
   constructor(props) {
@@ -87,16 +86,16 @@ class Review extends Component {
           <Col>
             <span>
               <OverlayTrigger
-                key={"top"}
+                key={fields[index]}
                 placement={"top"}
                 overlay={
-                  <Tooltip id={`tooltip-top`}>
-                    {labels[index][desc[index] - 1]}
+                  <Tooltip id={`tooltip-${fields[index]}`}>
+                    {labels[index][value - 1]}
                   </Tooltip>
                 }
               >
-                <Button variant={badgeVariant(desc[index])} size="sm">
-                  {desc[index]}
+                <Button variant={badgeVariant(value)} size="sm">
+                  {value}
                 </Button>
               </OverlayTrigger>
               &nbsp;{fields[index]}
@@ -108,16 +107,16 @@ class Review extends Component {
           <Col>
             <span>
               <OverlayTrigger
-                key={"top"}
-                placement={"top"}
+                key={fields[index]}
+                placement={"bottom"}
                 overlay={
-                  <Tooltip id={`tooltip-top`}>
-                    {labels[index][desc[index] - 1]}
+                  <Tooltip id={`tooltip-${fields[index]}`}>
+                    {labels[index][value - 1]}
                   </Tooltip>
                 }
               >
-                <Button variant={badgeVariant(desc[index])} size="sm">
-                  {desc[index]}
+                <Button variant={badgeVariant(value)} size="sm">
+                  {value}
                 </Button>
               </OverlayTrigger>
               &nbsp;{fields[index]}
@@ -144,10 +143,10 @@ class Review extends Component {
                 <Col lg={2}>
                   <h2>
                     <OverlayTrigger
-                      key={"top"}
-                      placement={"top"}
+                      key="overall"
+                      placement={"bottom"}
                       overlay={
-                        <Tooltip id={`tooltip-top`}>
+                        <Tooltip id={`tooltip-overall`}>
                           {labels[4][this.state.review.rating.overall - 1]}
                         </Tooltip>
                       }
@@ -161,7 +160,7 @@ class Review extends Component {
                   </h2>
                 </Col>
                 <Col>
-                  <Row>{items1}</Row>
+                  <Row style={{ paddingBottom: 3 }}>{items1}</Row>
                   <Row>{items2}</Row>
                 </Col>
               </Row>
