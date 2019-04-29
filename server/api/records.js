@@ -218,7 +218,7 @@ router.post("/", checkToken(["student"]), async (req, res, next) => {
       }
     );
     await Vote.create({ for: record._id, forModel: "Record" });
-    return res.json({ msg: "Record Created" });
+    return res.json({ msg: "Record Created", record: record._id });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ msg: "Request Failed" });

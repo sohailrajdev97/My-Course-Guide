@@ -39,6 +39,7 @@ class HoDDashboard extends Component {
         return right.name < left.name;
       });
       reviews = sortBy(reviews, ["createdAt"]);
+      questions = sortBy(questions, ["createdAt"]);
       this.setState({ courses, questions, reviews });
     });
   }
