@@ -36,7 +36,7 @@ class Course extends Component {
       course: null,
       questions: [],
       reviews: [],
-      votes: { Record: null, Reply: null },
+      votes: { Record: {}, Reply: {} },
       showComposer: false,
       type: "",
       currQuestion: null,
