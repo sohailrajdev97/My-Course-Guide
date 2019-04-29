@@ -184,72 +184,70 @@ class Review extends Component {
                   </small>
                 </Col>
                 <Col lg={5}>
-                  {this.props.vote ? (
-                    <ToggleButtonGroup
-                      type="checkbox"
-                      onChange={value => {
-                        let action = null,
-                          prev = this.state.vote;
-                        if (this.state.vote) {
-                          if (value.indexOf(this.state.vote) >= 0)
-                            action = this.state.vote === "up" ? "down" : "up";
-                          else action = this.state.vote;
-                        } else {
-                          action = value[0];
-                        }
-                        let vote = action === this.state.vote ? null : action;
-                        this.setState({ vote });
-                        axiosPOST("/api/votes/" + action, {
-                          record: this.state.review._id
-                        }).then(res => {
-                          let review = { ...this.state.review };
-                          switch (res.data.msg) {
-                            case "Upvote added": {
-                              review.upvotes++;
-                              if (prev === "down") review.downvotes--;
-                              break;
-                            }
-                            case "Downvote added": {
-                              review.downvotes++;
-                              if (prev === "up") review.upvotes--;
-                              break;
-                            }
-                            case "Removed upvote": {
-                              review.upvotes--;
-                              break;
-                            }
-                            case "Removed downvote": {
-                              review.downvotes--;
-                              break;
-                            }
-                            default:
-                              break;
-                          }
-                          this.setState({ review });
-                        });
-                      }}
-                      value={
-                        isStudent && this.state.vote ? [this.state.vote] : []
+                  <ToggleButtonGroup
+                    type="checkbox"
+                    onChange={value => {
+                      let action = null,
+                        prev = this.state.vote;
+                      if (this.state.vote) {
+                        if (value.indexOf(this.state.vote) >= 0)
+                          action = this.state.vote === "up" ? "down" : "up";
+                        else action = this.state.vote;
+                      } else {
+                        action = value[0];
                       }
+                      let vote = action === this.state.vote ? null : action;
+                      this.setState({ vote });
+                      axiosPOST("/api/votes/" + action, {
+                        record: this.state.review._id
+                      }).then(res => {
+                        let review = { ...this.state.review };
+                        switch (res.data.msg) {
+                          case "Upvote added": {
+                            review.upvotes++;
+                            if (prev === "down") review.downvotes--;
+                            break;
+                          }
+                          case "Downvote added": {
+                            review.downvotes++;
+                            if (prev === "up") review.upvotes--;
+                            break;
+                          }
+                          case "Removed upvote": {
+                            review.upvotes--;
+                            break;
+                          }
+                          case "Removed downvote": {
+                            review.downvotes--;
+                            break;
+                          }
+                          default:
+                            break;
+                        }
+                        this.setState({ review });
+                      });
+                    }}
+                    value={
+                      isStudent && this.state.vote ? [this.state.vote] : []
+                    }
+                  >
+                    <ToggleButton
+                      disabled={!isStudent}
+                      value="up"
+                      variant="outline-success"
+                      size="sm"
                     >
-                      <ToggleButton
-                        disabled={!isStudent}
-                        value="up"
-                        variant="outline-success"
-                        size="sm"
-                      >
-                        Helpful ({this.state.review.upvotes})
-                      </ToggleButton>
-                      <ToggleButton
-                        disabled={!isStudent}
-                        value="down"
-                        variant="outline-danger"
-                        size="sm"
-                      >
-                        Not Helpful ({this.state.review.downvotes})
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  ) : null}
+                      Helpful ({this.state.review.upvotes})
+                    </ToggleButton>
+                    <ToggleButton
+                      disabled={!isStudent}
+                      value="down"
+                      variant="outline-danger"
+                      size="sm"
+                    >
+                      Not Helpful ({this.state.review.downvotes})
+                    </ToggleButton>
+                  </ToggleButtonGroup>
                 </Col>
               </Row>
             </Col>
