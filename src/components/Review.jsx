@@ -196,7 +196,7 @@ class Review extends Component {
                     <Col>
                       <small className="text-muted">
                         <Button
-                          disabled={this.state.isDisabled}
+                          disabled={!isStudent || this.state.isDisabled}
                           variant="link"
                           size="sm"
                           onClick={() => {
