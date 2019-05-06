@@ -7,8 +7,6 @@ import LazyHero from "react-lazy-hero";
 import logo from "../assets/logo.png";
 import back1 from "../assets/back1.jpg";
 import back2 from "../assets/back2.jpg";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 class Login extends Component {
   constructor(props) {
@@ -112,41 +110,6 @@ class Login extends Component {
               about any course(s) they have taken, and help others by answering
               their queries.
             </h4>
-            <br />
-            <br />
-            <div>
-              <h2>Contact Us</h2>
-              <Row>
-                <Col />
-                <Col>Krut Patel(Scrum Master)</Col>
-                <Col>2017A7PS0184H</Col>
-                <Col />
-              </Row>
-              <Row>
-                <Col />
-                <Col>Rynaa Grover(Product Owner)</Col>
-                <Col>2017A7PS0258H</Col>
-                <Col />
-              </Row>
-              <Row>
-                <Col />
-                <Col>Niral Khambhati</Col>
-                <Col>2017A7PS0130H</Col>
-                <Col />
-              </Row>
-              <Row>
-                <Col />
-                <Col>Sohail Rajdev</Col>
-                <Col>2016AAPS0158H</Col>
-                <Col />
-              </Row>
-              <Row>
-                <Col />
-                <Col>Arnav Buch</Col>
-                <Col>2017A7PS1722H</Col>
-                <Col />
-              </Row>
-            </div>
             <br />
             <br />
             <div
